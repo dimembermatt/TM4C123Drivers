@@ -13,9 +13,6 @@
 
 /** Device specific imports. */
 #include "ST7735.h"
-#include "Font.h"
-#include "../Miscellaneous/Misc.h"
-#include "../inc/tm4c123gh6pm.h"
 
 /** List of ST7735 system commands. See page 77 from STT7735_v2.1.pdf. */
 #define ST7735_NOP     0x00
@@ -893,6 +890,7 @@ void ST7735DrawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t
  * @param image Reference to the 16-bit color BMP image.
  * 
  * NOTE: Must be less than or equal to 128 pixels wide by 160 pixels high.
+ * TODO: Speed this up.
  */
 void ST7735DrawBitmap(int16_t x, int16_t y, int16_t w, int16_t h, const uint16_t *image) {
     int16_t skipC = 0;                      // non-zero if columns need to be skipped due to clipping.
@@ -951,8 +949,8 @@ void ST7735DrawBitmap(int16_t x, int16_t y, int16_t w, int16_t h, const uint16_t
  * ST7735DrawChar draws a single character on the screen.
  * Requires (11 + size*size*6*8) bytes of transmission (assuming image fully on
  * screen). Drawn irrespective of where the cursor is.
- * @param x Column that the character is displayed on. From the left edge. (0 to 20)
- * @param y Row that the character is displayed on. From the top edge. (0 to 15)
+ * @param x Column that the character is displayed on. From the left edge.
+ * @param y Row that the character is displayed on. From the top edge.
  * @param c Character to be printed.
  * @param textColor Character RGB color.
  * @param bgColor Background RGB color.

@@ -3,13 +3,14 @@
  * Devices: LM4F120; TM4C123
  * Description: Miscellaneous functions for general use.
  * Authors: Jonathan Valvano. Revised by Matthew Yu.
- * Last Modified: 2/9/21
+ * Last Modified: 2/11/21
  */
-
-#pragma once
 
 /** General imports. */
 #include <stdint.h>
+
+/** Device specific imports. */
+#include "Misc.h"
 
 /**
  * delayMillisec delays the process by 1 ms. Tuned to the 80 MHz TM4C clock.

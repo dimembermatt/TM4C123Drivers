@@ -1,17 +1,17 @@
 /**
- * File name: Font.h
+ * File name: Font.c
  * Devices: LM4F120; TM4C123
  * Description: Font list.
  * Authors: Jonathan Valvano. Revised by Matthew Yu.
- * Last Modified: 2/9/21
+ * Last Modified: 2/11/21
  */
-#pragma once
 
 /** General imports. */
 #include <stdint.h>
 
-// standard ascii 5x7 font
-// originally from glcdfont.c from Adafruit project
+/** Device specific imports. */
+#include "Font.h"
+
 const uint8_t Font[] = {
   0x00, 0x00, 0x00, 0x00, 0x00,
   0x3E, 0x5B, 0x4F, 0x5B, 0x3E,

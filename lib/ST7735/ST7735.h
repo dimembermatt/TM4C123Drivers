@@ -6,7 +6,14 @@
  * Last Modified: 2/10/21
  */
 #pragma once
+
+/** General imports. */
 #include <stdint.h>
+
+/** Device specific imports. */
+#include "../Miscellaneous/Font.h"
+#include "../Miscellaneous/Misc.h"
+#include "../../inc/tm4c123gh6pm.h"
 
 /** Flags for ST7735_InitR(). */
 enum initRFlags{
@@ -111,7 +118,7 @@ void ST7735FillScreen(uint16_t color);
  * @param r Red value
  * @param g Green value
  * @param b Blue value
- * @return 16-bit packed color (RGB) value with R and B swapped.
+ * @return 16-bit packed color (RGB) value.
  */
 uint16_t ST7735Color565(uint8_t r, uint8_t g, uint8_t b);
 
@@ -242,7 +249,7 @@ void ST7735DrawBitmap(int16_t x, int16_t y, int16_t w, int16_t h, const uint16_t
  * @param c Character to be printed.
  * @param textColor Character RGB color.
  * @param bgColor Background RGB color.
- * @param size Number of pixels per character pizel. Scales the character across
+ * @param size Number of pixels per character pixel. Scales the character across
  *             multiple rows and columns.
  */
 void ST7735DrawChar(int16_t x, int16_t y, char c, int16_t textColor, int16_t bgColor, uint8_t size);
