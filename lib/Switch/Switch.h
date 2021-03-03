@@ -3,46 +3,40 @@
  * Devices: LM4F120; TM4C123
  * Description: Low level drivers for onboard and offboard switches. Performs
  * internal debouncing.
- * Authors: Jonathan Valvano. Revised by Matthew Yu.
- * Last Modified: 2/25/21
+ * Authors: Matthew Yu.
+ * Last Modified: 03/03/21
  */
 #pragma once
 
 /** General imports. */
+#include <stdio.h>
 #include <stdint.h>
 
 /** Device specific imports. */
-#include "tm4c123gh6pm.h"
-#include "Misc.h"
+#include "../../inc/tm4c123gh6pm.h"
+#include "../Miscellaneous/Misc.h"
+#include "../../inc/GPIO.h"
 
 #define DEBOUNCE_DELAY 10 /* 10 ms */
+
 
 /**
  * SwitchInit initializes a switch with provided function pointers to tasks
  * executed when the switch is pressed or released.
- * @param pin Pin that the switch is initialized to. TODO: this param
+ * @param pin Pin that the switch is initialized to.
  * @param touchTask Function executed when switch is pressed (falling edge).
  * @param releaseTask Function executed when switch is released (rising edge).
- * Functions take no parameters and return no values explicitly.
- * We assume a debounce time of about 10ms.
+ * @note Functions must take no explicit parameters and return values.
+ *       Only Port F pins are supported (including onboard pins).
+ *       Default interrupt priority is 5.
+ *       PORTF pin analog and alternative functionality is disabled after initialization.
+ *       Requires the EnableInterrupts() call if edge triggered interrupts are enabled.
  */
-void SwitchInit(uint32_t pin, void (*touchTask)(void), void (*releaseTask)(void));
-
-/**
- * SwitchWaitForRelease polls until a release is detected. Blocking.
- * @param pin Pin that the switch is tied to.
- */
-void SwitchWaitForRelease(uint32_t pin);
-
-/**
- * SwitchWaitForPress polls until a press is detected. Blocking.
- * @param pin Pin that the switch is tied to.
- */
-void SwitchWaitForPress(uint32_t pin);
+void SwitchInit(pin_t pin, void (*touchTask)(void), void (*releaseTask)(void));
 
 /**
  * SwitchGetValue gets the current value of the switch.
  * @param pin Pin that switch is tied to.
  * @return False if pressed, True if released.
  */
-unsigned long SwitchGetValue(uint32_t pin);
+unsigned long SwitchGetValue(pin_t pin);
