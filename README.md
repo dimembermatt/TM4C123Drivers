@@ -4,6 +4,19 @@ This repository contains a selection of drivers originally written by Jonathan V
 
 ---
 
+## Recommended Pin Allocation
+
+| Type                         | Port |
+|------------------------------|------|
+| ST7735, CAN                  | A    |
+| DAC, audio, CAN, I2C         | B    |
+| Comparators, UART, USB       | C    |
+| ADC, USB                     | D    |
+| Wifi, UART, CAN, I2C         | E    |
+| Buttons, Switches            | F    |
+
+---
+
 ## TODO
 
 Drivers that need to be developed/refactored:
@@ -12,5 +25,6 @@ Drivers that need to be developed/refactored:
 - ADC
 - SysTick
 - USB
+- I2C
 - Bluetooth(?)
 - Motor Drivers

@@ -14,14 +14,10 @@
 
 /** Device specific imports. */
 #include "../../inc/tm4c123gh6pm.h"
-#include "../Miscellaneous/Misc.h"
 #include "../../inc/GPIO.h"
 
-#define DEBOUNCE_DELAY 10 /* 10 ms */
-
-
 /**
- * SwitchInit initializes a switch with provided function pointers to tasks
+ * SwitchInit initializes a switch on Port F with provided function pointers to tasks
  * executed when the switch is pressed or released.
  * @param pin Pin that the switch is initialized to.
  * @param touchTask Function executed when switch is pressed (falling edge).

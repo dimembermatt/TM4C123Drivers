@@ -13,11 +13,13 @@
 /** Device specific imports. */
 #include "Switch.h"
 
+/** Boolean status of a switch, used for debouncing. */
 typedef enum PinStatus {
     RAISED,
     LOWERED
 } PinStatus;
 
+/** Configuration of a single switch. */
 typedef struct SwitchConfig {
     /** Pin ID. */
     pin_t pin;
