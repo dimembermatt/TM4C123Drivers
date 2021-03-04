@@ -39,14 +39,12 @@ void iterateCycle(void) {
     static uint32_t cycle = 0;
 
     for (uint8_t i = 0; i < MAX_SOUNDS; ++i) {
-        if (sounds[i].id != NULL) {
+        if (sounds[i].id != -1) {
             // Iteration frequency is 64 times of the tone frequency.
             // If the cycle is evenly divisible by the iteration frequency
             // period, then we output to DAC and execute the next interation.
-            if (cycle % freqToPeriod(sounds[i].freq*64, MAX_FREQ) == 0) {
-                DACOut(sounds[i].waveform[sounds[i].position], sounds[i].pins);
-                sounds[i].position = (sounds[i].position + 1) % 64;
-            }
+            DACOut(sounds[i].waveform[sounds[i].position], sounds[i].pins);
+            sounds[i].position = (sounds[i].position) % 64;
         }
     }
 
@@ -107,10 +105,10 @@ void playSound(int8_t id, uint32_t freq, uint8_t* waveform, DACConfig pins) {
     // nothing.
     else { return; }
 
-    maxFreq = (maxFreq < freq) ? freq : maxFreq;
+    maxFreq = (freq > maxFreq) ? freq : maxFreq;
 
     // Initialize timer 2a.
-    TimerInit(TIMER_2A, freqToPeriod(maxFreq, MAX_FREQ), iterateCycle);
+    TimerInit(TIMER_2A, freqToPeriod(maxFreq*64, MAX_FREQ), iterateCycle);
 }
 
 /**

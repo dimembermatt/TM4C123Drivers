@@ -36,9 +36,21 @@ static uint8_t TriangleWave[64] = {
     2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32
 };
 
+static uint8_t Test[64] = {
+	0, 1, 0, 1, 0, 1, 0, 1,
+	0, 1, 0, 1, 0, 1, 0, 1,
+	0, 1, 0, 1, 0, 1, 0, 1,
+	0, 1, 0, 1, 0, 1, 0, 1,
+	0, 1, 0, 1, 0, 1, 0, 1,
+	0, 1, 0, 1, 0, 1, 0, 1,
+	0, 1, 0, 1, 0, 1, 0, 1,
+	0, 1, 0, 1, 0, 1, 0, 1,
+};
+
 /**
  * playSound plays a tone at a specified frequency and envelope for the provided
- * pins. Utilizes timer 2 for interrupts.
+ * pins. Utilizes timer 2 for interrupts. Requires calling EnableInterrupts()
+ * after initialization.
  * @param id        Identifier of the sound being played. Up to 5 unique
  *                  identifiers can be played. Useful for playing multiple
  *                  sounds at once.

@@ -52,7 +52,7 @@ void Timer3A_Handler(void);
 void Timer3B_Handler(void);
 void Timer4A_Handler(void);
 void Timer4B_Handler(void);
-void Timer5A_Handler(void);
+//void Timer5A_Handler(void);
 void Timer5B_Handler(void);
 
 /** Handler definitions for wide timers. */

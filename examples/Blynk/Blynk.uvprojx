@@ -49,7 +49,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\</OutputDirectory>
-          <OutputName>DAC</OutputName>
+          <OutputName>Blynk</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -394,34 +394,44 @@
               <FilePath>..\..\inc\PLL.c</FilePath>
             </File>
             <File>
-              <FileName>DAC.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\lib\DAC\DAC.c</FilePath>
-            </File>
-            <File>
-              <FileName>AudioExample.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\AudioExample.c</FilePath>
-            </File>
-            <File>
-              <FileName>Audio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\lib\DAC\Audio.c</FilePath>
-            </File>
-            <File>
               <FileName>Timers.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\lib\Timers\Timers.c</FilePath>
             </File>
             <File>
-              <FileName>Texas.c</FileName>
+              <FileName>ST7735.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\inc\Texas.c</FilePath>
+              <FilePath>..\..\lib\ST7735\ST7735.c</FilePath>
             </File>
             <File>
-              <FileName>CortexM.c</FileName>
+              <FileName>UART0int.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\inc\CortexM.c</FilePath>
+              <FilePath>..\..\inc\UART0int.c</FilePath>
+            </File>
+            <File>
+              <FileName>BlynkExample.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BlynkExample.c</FilePath>
+            </File>
+            <File>
+              <FileName>esp8266.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\inc\esp8266.c</FilePath>
+            </File>
+            <File>
+              <FileName>Font.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\lib\Miscellaneous\Font.c</FilePath>
+            </File>
+            <File>
+              <FileName>Misc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\lib\Miscellaneous\Misc.c</FilePath>
+            </File>
+            <File>
+              <FileName>Blynk.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\lib\Blynk\Blynk.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -39,7 +39,15 @@ Drivers that need to be developed/refactored:
     - Feature: Speedup ST7735DrawBitmap.
     - Bug: ST7735On and ST7735Off don't work as expected. In particular, I expect ST7735Off to have backlight off.
 - DAC
+  - Feature: Fix input scaling to num of available pins allocated in the config.
   - Audio generation
+    - Bug: Audio kind of works, but not really.
+- UART
+    - Feature: Convert from inc/ to lib/.
+- ESP8266
+    - Feature: Convert from inc/ to lib/.
+- Blynk
+  - Feature: Dependency on UART, ESP8266 to update includes currently pointing to inc/.
 - ADC
 - SysTick
 - USB

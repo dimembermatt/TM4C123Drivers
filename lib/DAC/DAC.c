@@ -40,10 +40,18 @@ void DACInit(DACConfig pins) {
 
 /**
  * DACOut outputs data to the relevant DAC pins set by DACInit.
- * @param data A value from 0 - 63. Clipped based on how many bits are part of the DAC.
+ * @param data A value from 0 - 63. Scaled based on how many bits are part of the DAC.
  * @param pins The list of pins to write data to, in order of LSB to MSB.
  */
 void DACOut(uint8_t data, DACConfig pins) {
+	uint8_t numPins = 0;
+    for (uint8_t i = 0; i < MAX_DAC_PINS; i++) {
+        if (pins.pinList[i] >= PIN_B0 && pins.pinList[i] <= PIN_B7) {
+            ++numPins;
+        }
+    }
+    //data /= pow(2, MAX_DAC_PINS-numPins);
+
     uint32_t adjustedData = 0;
 	for (uint8_t i = 0; i < MAX_DAC_PINS; i++) {
         if (pins.pinList[i] >= PIN_B0 && pins.pinList[i] <= PIN_B7) { // Valid pin.

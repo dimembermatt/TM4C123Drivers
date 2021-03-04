@@ -354,12 +354,14 @@ void Timer4B_Handler(void) {
     }
 }
 
+/**
 void Timer5A_Handler(void) {
     TIMER5_ICR_R |= TIMERXA_ICR_TATOCINT;
     if (timerConfig.timer5ATask != NULL) {
         timerConfig.timer5ATask();
     }
 }
+*/
 
 void Timer5B_Handler(void) {
     TIMER5_ICR_R |= TIMERXB_ICR_TATOCINT;
@@ -391,5 +393,5 @@ void WideTimer5B_Handler(void) {}
  * @return Output period, in cycles.
  */ 
 uint32_t freqToPeriod(uint32_t freq, uint32_t maxFreq) {
-    return (uint32_t) ceil(maxFreq/freq);
+    return (uint32_t) ceil(maxFreq/freq);	
 }

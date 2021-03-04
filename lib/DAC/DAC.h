@@ -29,7 +29,7 @@ void DACInit(DACConfig pins);
 
 /**
  * DACOut outputs data to the relevant DAC pins set by DACInit.
- * @param data A value from 0 - 63. Clipped based on how many bits are part of the DAC.
+ * @param data A value from 0 - 63. Scaled based on how many bits are part of the DAC.
  * @param pins The list of pins to write data to, in order of LSB to MSB.
  */
 void DACOut(uint8_t data, DACConfig pins);
