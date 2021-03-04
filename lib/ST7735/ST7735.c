@@ -14,6 +14,7 @@
 /** Device specific imports. */
 #include "ST7735.h"
 
+
 /** List of ST7735 system commands. See page 77 from STT7735_v2.1.pdf. */
 #define ST7735_NOP     0x00
 #define ST7735_SWRESET 0x01

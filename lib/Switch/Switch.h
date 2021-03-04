@@ -16,6 +16,7 @@
 #include "../../inc/tm4c123gh6pm.h"
 #include "../../inc/GPIO.h"
 
+
 /**
  * SwitchInit initializes a switch on Port F with provided function pointers to tasks
  * executed when the switch is pressed or released.

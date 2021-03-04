@@ -12,6 +12,7 @@
 /** Device specific imports. */
 #include "Misc.h"
 
+
 /**
  * delayMillisec delays the process by 1 ms. Tuned to the 80 MHz TM4C clock.
  * @param n The number of ms to delay the process.

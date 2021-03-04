@@ -6,7 +6,10 @@
  * Authors: Jonathan Valvano. Revised by Matthew Yu.
  * Last Modified: 2/10/21
  */
+
+/** Device specific imports. */
 #include "ECG.h"
+
 
 /**
  * ECGClear clears the existing plot and wipes the screen.

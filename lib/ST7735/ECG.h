@@ -7,7 +7,10 @@
  * Last Modified: 2/10/21
  */
 #pragma once
+
+/** General imports. */
 #include <stdint.h>
+
 
 // full scaled defined as 3V
 // Input is 0 to 511, 0 => 159 and 511 => 32

@@ -29,8 +29,10 @@ void dummyTaskFalling(void) {
 /** Initializes both onboard switches to test triggers. */
 int main(void) {
     PLL_Init(Bus80MHz);
+    DisableInterrupts();
     SwitchInit(PIN_F0, dummyTaskRising, dummyTaskFalling);
     SwitchInit(PIN_F4, dummyTaskRising, dummyTaskFalling);
+    EnableInterrupts();
 
     while (1) {
         // View in debugging mode with risingCounter and fallingCounter added to watch 1.

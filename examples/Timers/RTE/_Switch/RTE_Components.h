@@ -3,8 +3,8 @@
  * Auto generated Run-Time-Environment Configuration File
  *      *** Do not modify ! ***
  *
- * Project: 'DAC' 
- * Target:  'DAC' 
+ * Project: 'Timers' 
+ * Target:  'Switch' 
  */
 
 #ifndef RTE_COMPONENTS_H

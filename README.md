@@ -17,9 +17,27 @@ This repository contains a selection of drivers originally written by Jonathan V
 
 ---
 
+## Bugfixing
+
+- When trying to flash the program, you might get the error `No ULINK2/ME Device found`. Since we're using the Stellaris ICDI to flash, go to `Options for Target 'Switch'` -> `Debug` tab -> `Use: ULINK2/ME Cortex Debugger`. Scroll to `Stellaris ICDI` option and press OK.
+
+---
+
 ## TODO
 
 Drivers that need to be developed/refactored:
+- Timers
+    - Feature: Wide Timer implementation.
+    - Bug: Unable to run both A and B timers at once.
+        - May be more general issue of B timers not working properly.
+    - Feature: Select clock mode.
+    - Feature: One shot vs periodic timer mode.
+    - Feature: Count down vs count up timers.
+    - Feature: Timer priority.
+- ST7735
+    - Bug: L648, line for setAddrWindow with unknown purpose.
+    - Feature: Speedup ST7735DrawBitmap.
+    - Bug: ST7735On and ST7735Off don't work as expected. In particular, I expect ST7735Off to have backlight off.
 - DAC
   - Audio generation
 - ADC

@@ -49,7 +49,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\</OutputDirectory>
-          <OutputName>Switch</OutputName>
+          <OutputName>DAC</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -394,14 +394,24 @@
               <FilePath>..\..\inc\PLL.c</FilePath>
             </File>
             <File>
-              <FileName>DACExample.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\DACExample.c</FilePath>
-            </File>
-            <File>
               <FileName>DAC.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\lib\DAC\DAC.c</FilePath>
+            </File>
+            <File>
+              <FileName>AudioExample.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\AudioExample.c</FilePath>
+            </File>
+            <File>
+              <FileName>Audio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\lib\DAC\Audio.c</FilePath>
+            </File>
+            <File>
+              <FileName>Timers.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\lib\Timers\Timers.c</FilePath>
             </File>
           </Files>
         </Group>
