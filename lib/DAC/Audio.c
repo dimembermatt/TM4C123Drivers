@@ -59,6 +59,7 @@ void iterateCycle(void) {
  * @param pins      The list of pins to configure the DAC with.
  */
 void playSound(int8_t id, uint32_t freq, uint8_t* waveform, DACConfig pins) {
+    // TODO: if prevents existing id overwrites from occuring.
     if (soundsConfigured == MAX_SOUNDS) return;    
     DACInit(pins);
 
@@ -98,7 +99,9 @@ void playSound(int8_t id, uint32_t freq, uint8_t* waveform, DACConfig pins) {
     // nothing.
     else { return; }
 
+    // TODO: this doesn't support multiple audio playing at once.
     maxFreq = (freq > maxFreq) ? freq : maxFreq;
+    if (freq == 0) { maxFreq = 0; }
 
     // Initialize timer 2a.
     TimerInit(TIMER_2A, freqToPeriod(maxFreq*64, MAX_FREQ), iterateCycle);

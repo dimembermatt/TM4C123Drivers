@@ -125,7 +125,7 @@ void GPIOPortF_Handler(void) {
  * @param pin Pin that switch is tied to.
  * @return False if pressed, True if released.
  */
-unsigned long SwitchGetValue(pin_t pin) {
+uint8_t SwitchGetValue(pin_t pin) {
     uint8_t pinAddress = pow(2, pin % 8);
     return (~GPIO_PORTF_DATA_R & pinAddress) >> (pin % 8);
 }

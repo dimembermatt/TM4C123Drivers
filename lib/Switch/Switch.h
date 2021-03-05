@@ -37,4 +37,4 @@ void SwitchInit(pin_t pin, void (*touchTask)(void), void (*releaseTask)(void));
  * @param pin Pin that switch is tied to.
  * @return False if pressed, True if released.
  */
-unsigned long SwitchGetValue(pin_t pin);
+uint8_t SwitchGetValue(pin_t pin);
