@@ -3,15 +3,17 @@
  * Devices: LM4F120; TM4C123
  * Description: Low level drivers for using onboard timers.
  * Authors: Matthew Yu.
- * Last Modified: 03/03/21
+ * Last Modified: 03/04/21
  **/
 #pragma once
 
 /** General imports. */
 #include <stdint.h>
+#include <stdio.h>
+#include <math.h>
 
 /** Device specific imports. */
-#include "../../inc/tm4c123gh6pm.h"
+#include <TM4C123Drivers/inc/tm4c123gh6pm.h>
 
 
 #define MAX_FREQ 80000000 // 80 MHz

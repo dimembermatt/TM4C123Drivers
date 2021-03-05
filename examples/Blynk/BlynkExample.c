@@ -6,16 +6,13 @@
  * Last Modified: 03/04/21
  */
 
-/** General imports. */
-#include <stdio.h>
-
 /** Device specific imports. */
-#include "../inc/tm4c123gh6pm.h"
-#include "../inc/PLL.h"
-#include "../inc/esp8266.h"
-#include "../lib/ST7735/ST7735.h"
-#include "../lib/Timers/Timers.h"
-#include "../lib/Blynk/Blynk.h"
+#include <TM4C123Drivers/inc/tm4c123gh6pm.h>
+#include <TM4C123Drivers/inc/PLL.h>
+#include <TM4C123Drivers/inc/esp8266.h>
+#include <TM4C123Drivers/lib/ST7735/ST7735.h>
+#include <TM4C123Drivers/lib/Timers/Timers.h>
+#include <TM4C123Drivers/lib/Blynk/Blynk.h>
 
 
 void EnableInterrupts(void);    // Defined in startup.s

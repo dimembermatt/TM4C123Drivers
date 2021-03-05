@@ -3,15 +3,17 @@
  * Devices: LM4F120; TM4C123
  * Description: Low level drivers to produce audio from a DAC.
  * Authors: Matthew Yu.
- * Last Modified: 03/03/21
+ * Last Modified: 03/04/21
  **/
 #pragma once
 
 /** General imports. */
 #include <stdint.h>
+#include <stdio.h>
 
 /** Device specific imports. */
 #include "DAC.h"
+#include <TM4C123Drivers/lib/Timers/Timers.h>
 
 
 static uint8_t SineWave[64] = {

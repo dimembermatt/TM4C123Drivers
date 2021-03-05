@@ -7,13 +7,12 @@
  * Last Modified: 03/03/21
  */
 
-/** General imports. */
-
 /** Device specific imports. */
-#include "../inc/tm4c123gh6pm.h"
-#include "../inc/PLL.h"
-#include "../lib/ST7735/ST7735.h"
-#include "../lib/BMP/BMP.h"
+#include <TM4C123Drivers/inc/tm4c123gh6pm.h>
+#include <TM4C123Drivers/inc/PLL.h>
+#include <TM4C123Drivers/lib/ST7735/ST7735.h>
+#include <TM4C123Drivers/lib/BMP/BMP.h>
+
 
 /** 40x160 Longhorn logo. */
 const uint16_t longhornLogo[] = {

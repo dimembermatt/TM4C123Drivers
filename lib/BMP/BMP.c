@@ -3,7 +3,7 @@
  * Devices: LM4F120; TM4C123
  * Description: Defined BMP images.
  * Authors: Matthew Yu.
- * Last Modified: 2/25/21
+ * Last Modified: 03/04/21
  */
 
 /** Device specific imports. */

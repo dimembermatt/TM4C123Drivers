@@ -3,7 +3,7 @@
  * Devices: LM4F120; TM4C123
  * Description: Font list.
  * Authors: Jonathan Valvano. Revised by Matthew Yu.
- * Last Modified: 2/11/21
+ * Last Modified: 03/04/21
  */
 #pragma once
 
@@ -11,6 +11,8 @@
 #include <stdint.h>
 
 
-// standard ascii 5x7 font
-// originally from glcdfont.c from Adafruit project
+/**
+ * standard ASCII 5x7 font.
+ * Orginally from glcdfont.c from Adafruit project.
+ */
 extern const uint8_t Font[];

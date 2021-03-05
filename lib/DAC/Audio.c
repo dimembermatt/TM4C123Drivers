@@ -3,16 +3,11 @@
  * Devices: LM4F120; TM4C123
  * Description: Low level drivers to produce audio from a DAC.
  * Authors: Matthew Yu.
- * Last Modified: 03/03/21
+ * Last Modified: 03/04/21
  **/
-
-/** General imports. */
-#include <stdint.h>
-#include <stdio.h>
 
 /** Device specific imports. */
 #include "Audio.h"
-#include "../Timers/Timers.h"
 
 
 struct SoundConfig {
@@ -66,8 +61,6 @@ void iterateCycle(void) {
 void playSound(int8_t id, uint32_t freq, uint8_t* waveform, DACConfig pins) {
     if (soundsConfigured == MAX_SOUNDS) return;    
     DACInit(pins);
-
-    DisableInterrupts();
 
     int8_t foundIdx = -1;
     int8_t newIdx = -1;

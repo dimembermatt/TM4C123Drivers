@@ -3,17 +3,19 @@
  * Devices: LM4F120; TM4C123
  * Description: Low level drivers for the ST7735 160x128 LCD.
  * Authors: Jonathan Valvano. Revised by Matthew Yu.
- * Last Modified: 2/10/21
+ * Last Modified: 03/04/21
  */
 #pragma once
 
 /** General imports. */
+#include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 /** Device specific imports. */
-#include "../Miscellaneous/Font.h"
-#include "../Miscellaneous/Misc.h"
-#include "../../inc/tm4c123gh6pm.h"
+#include <TM4C123Drivers/inc/tm4c123gh6pm.h>
+#include <TM4C123Drivers/lib/Miscellaneous/Font.h>
+#include <TM4C123Drivers/lib/Miscellaneous/Misc.h>
 
 
 /** Flags for ST7735_InitR(). */

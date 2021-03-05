@@ -4,19 +4,24 @@
  * Description: Example program to demonstrate outputting audio from a speaker.
  * Authors: Matthew Yu.
  * Last Modified: 03/03/21
+ * TODO: WIP
  */
 
 /** General imports. */
 #include <stdio.h>
 
 /** Device specific imports. */
-#include "../inc/tm4c123gh6pm.h"
-#include "../inc/PLL.h"
-#include "../inc/GPIO.h"
-#include "../lib/DAC/Audio.h"
-#include "../lib/DAC/DAC.h"
-#include "../inc/TExaS.h"
+#include <TM4C123Drivers/inc/tm4c123gh6pm.h>
+#include <TM4C123Drivers/inc/PLL.h>
+#include <TM4C123Drivers/inc/GPIO.h>
+#include <TM4C123Drivers/lib/DAC/Audio.h>
+#include <TM4C123Drivers/lib/DAC/DAC.h>
+#include <TM4C123Drivers/inc/TExaS.h> // For testing.
 
+
+void EnableInterrupts(void);    // Defined in startup.s
+void DisableInterrupts(void);   // Defined in startup.s
+void WaitForInterrupt(void);    // Defined in startup.s
 
 // measures analog voltage on PD3
 void ScopeTask(void){  // called 10k/sec
@@ -31,7 +36,9 @@ DACConfig config = {
 int main(void) {
     TExaS_SetTask(&ScopeTask);
     PLL_Init(Bus80MHz);
+    DisableInterrupts();
     playSound(0, 440, Test, config);
+
 	EnableInterrupts();
 
     // Connect up with a speaker using pins B0 - B3 and try to listen for 440 Hz sine wave.

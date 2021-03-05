@@ -11,10 +11,11 @@
 /** General imports. */
 #include <stdio.h>
 #include <stdint.h>
+#include <math.h>
 
 /** Device specific imports. */
-#include "../../inc/tm4c123gh6pm.h"
-#include "../../inc/GPIO.h"
+#include <TM4C123Drivers/inc/tm4c123gh6pm.h>
+#include <TM4C123Drivers/inc/GPIO.h">
 
 
 /**

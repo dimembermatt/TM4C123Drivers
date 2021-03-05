@@ -6,14 +6,12 @@
  * Last Modified: 03/03/21
  */
 
-/** General imports. */
-#include <stdio.h>
-
 /** Device specific imports. */
-#include "../inc/tm4c123gh6pm.h"
-#include "../inc/PLL.h"
-#include "../lib/DAC/DAC.h"
-#include "../inc/GPIO.h"
+#include <TM4C123Drivers/inc/tm4c123gh6pm.h>
+#include <TM4C123Drivers/inc/PLL.h>
+#include <TM4C123Drivers/lib/DAC/DAC.h>
+#include <TM4C123Drivers/inc/GPIO.h>
+
 
 DACConfig config = {
     {PIN_B0, PIN_COUNT, PIN_COUNT, PIN_COUNT, PIN_COUNT, PIN_COUNT}

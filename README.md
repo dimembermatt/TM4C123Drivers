@@ -19,7 +19,8 @@ This repository contains a selection of drivers originally written by Jonathan V
 
 ## Bugfixing
 
-- When trying to flash the program, you might get the error `No ULINK2/ME Device found`. Since we're using the Stellaris ICDI to flash, go to `Options for Target 'Switch'` -> `Debug` tab -> `Use: ULINK2/ME Cortex Debugger`. Scroll to `Stellaris ICDI` option and press OK.
+- When trying to flash the program, you might get the error `No ULINK2/ME Device found`. Since we're using the Stellaris ICDI to flash, go to `Options for Target '[Project]'` -> `Debug` tab -> `Use: ULINK2/ME Cortex Debugger`. Scroll to `Stellaris ICDI` option and press OK.
+- When compiling the program, errors such as `Lab4.c(14): error:  #5: cannot open source input file "TM4C123Drivers/inc/tm4c123gh6pm.h": No such file or directory` may appear. Go to `Options for Target '[Project]'` -> `C/C++` tab -> `Include Paths` textbox. Include the parent directory path containing `TM4C123Drivers` (i.e., `..;..\..\..;C:\Users\matth\Documents\EE445L`). Press OK after the Compiler control string shows something like the following: `-I C:/Users/matth/Documents/EE445L`.
 
 ---
 

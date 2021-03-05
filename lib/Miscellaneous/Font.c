@@ -3,11 +3,8 @@
  * Devices: LM4F120; TM4C123
  * Description: Font list.
  * Authors: Jonathan Valvano. Revised by Matthew Yu.
- * Last Modified: 2/11/21
+ * Last Modified: 03/04/21
  */
-
-/** General imports. */
-#include <stdint.h>
 
 /** Device specific imports. */
 #include "Font.h"

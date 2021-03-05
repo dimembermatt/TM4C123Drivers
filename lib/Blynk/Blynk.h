@@ -15,11 +15,11 @@
 #include <stdlib.h>
 
 /** Device specific imports. */
-#include "../../inc/tm4c123gh6pm.h"
-#include "../../inc/PLL.h"
-#include "../Timers/Timers.h"
-#include "../../inc/UART.h" // TODO: convert into lib later.
-#include "../../inc/esp8266.h" // TODO: convert into lib later.
+#include <TM4C123Drivers/inc/tm4c123gh6pm.h>
+#include <TM4C123Drivers/inc/PLL.h>
+#include <TM4C123Drivers/lib/Timers/Timers.h>
+#include <TM4C123Drivers/inc/UART.h> // TODO: convert into lib later.
+#include <TM4C123Drivers/inc/esp8266.h> // TODO: convert into lib later.
 
 /**
  * TM4CtoBlynk sends data to the Blynk app.

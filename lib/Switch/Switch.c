@@ -2,13 +2,10 @@
  * File name: Switch.c
  * Devices: LM4F120; TM4C123
  * Description: Low level drivers for onboard and offboard switches. Performs
- * internal debouncing.
+ * internal debounceing.
  * Authors: Matthew Yu.
- * Last Modified: 03/03/21
+ * Last Modified: 03/04/21
  */
-
-/** General imports. */
-#include <math.h>
 
 /** Device specific imports. */
 #include "Switch.h"

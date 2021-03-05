@@ -3,16 +3,12 @@
  * configures DAC output
  * runs on LM4F120 or TM4C123
  * Author: Matthew Yu
- * Last Modified: 11/28/2018
- * 11/28/18 - standardized comment style, preparing for c++ rewrite
- **/
-
-/** General imports. */
-#include <stdint.h>
-#include <math.h>
+ * Last Modified: 03/04/21
+ */
 
 /** Device specific imports. */
 #include "DAC.h"
+
 
 #define MAX_DAC_PINS 6
 
