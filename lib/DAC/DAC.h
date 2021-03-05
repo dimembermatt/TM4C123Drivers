@@ -13,12 +13,13 @@
 
 /** Device specific imports. */
 #include <TM4C123Drivers/inc/tm4c123gh6pm.h>
-#include <TM4C123Drivers/inc/GPIO.h">
+#include <TM4C123Drivers/inc/GPIO.h>
 
 
 /** Configuration of a single DAC object. */
 typedef struct DACConfig {
     pin_t pinList[6];
+    uint8_t numUsedPins;
 } DACConfig;
 
 /**

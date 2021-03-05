@@ -91,7 +91,7 @@ void ST7735SetRotation(uint8_t m);
 void ST7735InvertDisplay(int i);
 
 /**
- * ST7735SetCursor Moves the cursor to the desired X and Y position. The next
+ * ST7735SetTextCursor Moves the cursor to the desired X and Y position. The next
  * character will be printed here. Typically used for graphing.
  * @param x New cursor X position. (0 to 20)
  * @param y New cursor Y position. (0 to 15)

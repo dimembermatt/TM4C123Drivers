@@ -14,7 +14,6 @@
 #include <TM4C123Drivers/lib/Timers/Timers.h>
 #include <TM4C123Drivers/lib/Blynk/Blynk.h>
 
-
 void EnableInterrupts(void);    // Defined in startup.s
 void DisableInterrupts(void);   // Defined in startup.s
 void WaitForInterrupt(void);    // Defined in startup.s
@@ -31,12 +30,10 @@ void retreiveInformation(void) {
     messageReceived = BlynktoTM4C(buf, 64);
 }
 
-
 /** Initializes both onboard switches to test triggers. */
 int main(void) {
     PLL_Init(Bus80MHz);
     DisableInterrupts();
-
     ST7735Init();
     ST7735DrawString(0, 0, "EE445L Lab 4D Blynk", ST7735_WHITE, ST7735_BLACK);
 
@@ -54,7 +51,7 @@ int main(void) {
 	while(1) {
         WaitForInterrupt();
 
-            // NOTE: debug statements
+        // NOTE: debug statements
         if (messageReceived) {
             char pinNumber[2] = "99";
             char pinInteger[8] = "0000";

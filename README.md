@@ -35,6 +35,7 @@ Drivers that need to be developed/refactored:
     - Feature: One shot vs periodic timer mode.
     - Feature: Count down vs count up timers.
     - Feature: Timer priority.
+    - Feature: Run on base+offset for driver implementation
 - ST7735
     - Bug: L648, line for setAddrWindow with unknown purpose.
     - Feature: Speedup ST7735DrawBitmap.

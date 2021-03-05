@@ -433,6 +433,16 @@
               <FileType>1</FileType>
               <FilePath>..\..\lib\Blynk\Blynk.c</FilePath>
             </File>
+            <File>
+              <FileName>DAC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\lib\DAC\DAC.c</FilePath>
+            </File>
+            <File>
+              <FileName>Audio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\lib\DAC\Audio.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

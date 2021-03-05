@@ -39,7 +39,7 @@ void iterateCycle(void) {
             // If the cycle is evenly divisible by the iteration frequency
             // period, then we output to DAC and execute the next interation.
             DACOut(sounds[i].waveform[sounds[i].position], sounds[i].pins);
-            sounds[i].position = (sounds[i].position) % 64;
+            sounds[i].position = (sounds[i].position + 1) % 64;
         }
     }
 

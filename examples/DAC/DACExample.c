@@ -14,7 +14,8 @@
 
 
 DACConfig config = {
-    {PIN_B0, PIN_COUNT, PIN_COUNT, PIN_COUNT, PIN_COUNT, PIN_COUNT}
+    {PIN_B0, PIN_COUNT, PIN_COUNT, PIN_COUNT, PIN_COUNT, PIN_COUNT},
+    1
 };
 
 /** Initializes both onboard switches to test triggers. */
