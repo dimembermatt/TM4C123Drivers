@@ -43,6 +43,8 @@ typedef enum {
  *                    TimerXX_Handler. 
  * @note Note the following potential conflicts:
  *       - The TExaS scope (Texas.c) uses Timer5A.
+ *       Note that B-side timer functionality is currently broken, and WTimers
+ *       are not yet supported.
  */
 void TimerInit(timer_t timer, uint32_t period, void (*handlerTask)(void));
 
