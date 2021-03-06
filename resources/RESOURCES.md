@@ -41,6 +41,17 @@ If your project requires a lot of pins and you're needing to be selective, check
 | Wifi, UART, CAN, I2C         | E    |
 | Buttons, Switches            | F    |
 
+### Onboard Switches and LEDs
+
+To be clear, the onboard switches for the TM4C is in the following pattern (from [microcontrollers lab](https://microcontrollerslab.com/controlling-led-push-button-tiva-launchpad/)):
+- Left Button <=> SW1 <=> PF4
+- Right Button <=> SW2 <=> PF0
+
+LEDs are as follows:
+- Red <=> PF1
+- Blue <=> PF2
+- Green <=> PF3
+
 ---
 
 ## ST7735 TFT Display
