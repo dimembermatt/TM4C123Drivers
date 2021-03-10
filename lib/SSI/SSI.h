@@ -43,10 +43,29 @@ typedef struct SSIConfig {
     uint8_t dataBitSize;
 } SSIConfig_t;
 
+/**
+ * SSIInit initializes a given SSI module. 
+ * @param SSIConfig Configuration details of a given SSI module.
+ * @note Potentially add the following parameters:
+ *          - Set whether SSInClk pin is high when no data is transferred (p. 969)
+ *          - Set whether SSI loopback mode is enabled (p. 972)
+ *          - Add parameter in SSIConfig_t for bit rate and SysClk speed.
+ *          Determine appropriate prescaler and bit rate selection in SSICR0.
+ */
 void SSIInit(SSIConfig_t SSIConfig);
 
-void SSIClose(void);
+/**
+ * SPIRead attempts to read the latest set of data in the internal buffer. Busy
+ * waits until the receive buffer is not empty.
+ * @param ssi SSI to check buffer for.
+ * @return Right justified 16-bit data in the SSI data register.
+ */
+uint16_t SPIRead(enum SSISelect ssi);
 
-void SPIRead(void);
-
-void SPIWrite(void);
+/**
+ * SPIWrite attempts to write data in the internal buffer. Busy
+ * waits until the transmit buffer is not full.
+ * @param ssi SSI to write into.
+ * @param Right justified 16-bit data to write.
+ */
+void SPIWrite(enum SSISelect ssi, uint16_t data);

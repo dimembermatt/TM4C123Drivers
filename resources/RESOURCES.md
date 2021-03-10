@@ -26,6 +26,10 @@ For the full list, see the Interrupts table (2-9, pg. 104) on the TM4C MCU Datas
 
 It's sometimes not obvious what TM4C register maps to the register definitions defined in [tm4c123gh6pm.h](../inc/tm4c123gh6pm.h). The [TM4C123 Timer Programming page](http://shukra.cedt.iisc.ernet.in/edwiki/EmSys:TM4C123_Timer_Programming) makes it easy to identify which GPTMxxx register belongs to what.
 
+### SSI Register Map
+
+Similarly, the [SPI Programming in TI ARM TIVA page](http://shukra.cedt.iisc.ernet.in/edwiki/EmSys:SPI_programming_in_TI_ARM_Tiva) provides useful information for developing SPI drivers and other SSI drivers for the TM4C.
+
 ### GPIO Selection
 
 If your project requires a lot of pins and you're needing to be selective, check out pg 1351 in the datasheet (Table 23-5, GPIO Pins and Alternate Functions) to see what analog and alternate functions can be assigned to each pin. The Recommended Pin Allocation Table below is a summary on a potential combinations you can have for your connected devices, but is not the only set of combinations.

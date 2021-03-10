@@ -103,8 +103,39 @@ void SSIInit(SSIConfig_t SSIConfig) {
     GET_REG(SSI_BASE + SSIOffset + SSI_CR1_OFFSET) |= 0x00000002;
 }
 
-void SSIClose(void) {}
+/**
+ * See L157 of ST7735.c for extra insight on how SSI0 is managed,
+ * as well as p. 974 of the TM4C datasheet.
+ */
 
-void SPIRead(void) {}
+/**
+ * SPIRead attempts to read the latest set of data in the internal buffer. Busy
+ * waits until the receive buffer is not empty.
+ * @param ssi SSI to check buffer for.
+ * @return Right justified 16-bit data in the SSI data register.
+ */
+uint16_t SPIRead(enum SSISelect ssi) {
+    /* We'll generate the SSI offset to find the correct addresses for each
+     * SSI module. */
+    uint32_t SSIOffset = 0x1000 * (ssi%4);
 
-void SPIWrite(void) {}
+    /* Poll until Receive FIFO is not empty. */
+    while ((GET_REG(SSI_BASE + SSIOffset + SSI_SR_OFFSET) & 0x4) == 0) {}
+    return GET_REG(SSI_BASE + SSIOffset + SSI_DR_OFFSET) & 0x00FF;
+}
+
+/**
+ * SPIWrite attempts to write data in the internal buffer. Busy
+ * waits until the transmit buffer is not full.
+ * @param ssi SSI to write into.
+ * @param Right justified 16-bit data to write.
+ */
+void SPIWrite(enum SSISelect ssi, uint16_t data) {
+    /* We'll generate the SSI offset to find the correct addresses for each
+     * SSI module. */
+    uint32_t SSIOffset = 0x1000 * (ssi%4);
+
+    /* Poll until Transmit FIFO is not full. */
+    while ((GET_REG(SSI_BASE + SSIOffset + SSI_SR_OFFSET) & 0x2) == 0) {}
+    GET_REG(SSI_BASE + SSIOffset + SSI_DR_OFFSET) = data;
+}
