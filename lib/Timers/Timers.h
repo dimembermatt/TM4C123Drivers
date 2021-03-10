@@ -9,11 +9,6 @@
 
 /** General imports. */
 #include <stdint.h>
-#include <stdio.h>
-#include <math.h>
-
-/** Device specific imports. */
-#include <TM4C123Drivers/inc/tm4c123gh6pm.h>
 
 
 #define MAX_FREQ 80000000 // 80 MHz

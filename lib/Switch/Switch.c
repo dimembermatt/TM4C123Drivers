@@ -4,11 +4,19 @@
  * Description: Low level drivers for onboard and offboard switches. Performs
  * internal debounceing.
  * Authors: Matthew Yu.
- * Last Modified: 03/04/21
+ * Last Modified: 03/10/21
+ * TODO: update interrupts and handlers to use any generic pin provided. Remove
+ * tm4c123gh6pm.
  */
+
+/** General imports. */
+#include <math.h>
+#include <stdio.h>
 
 /** Device specific imports. */
 #include "Switch.h"
+#include <TM4C123Drivers/inc/RegDefs.h>
+#include <TM4C123Drivers/inc/tm4c123gh6pm.h>
 
 
 /** Boolean status of a switch, used for debouncing. */
@@ -53,45 +61,54 @@ static struct SwitchConfig switchConfig[] = {
  * @note Functions must take no explicit parameters and return values.
  *       Only Port F pins are supported (including onboard pins).
  *       Default interrupt priority is 5.
- *       PORTF pin analog and alternative functionality is disabled after initialization.
  *       Requires the EnableInterrupts() call if edge triggered interrupts are enabled.
  */
 void SwitchInit(pin_t pin, void (*touchTask)(void), void (*releaseTask)(void)) {
-    /**
-     * To initialize the GPIO pin to accept a switch input, we must do the following steps:
-     */
-    SYSCTL_RCGCGPIO_R |= 0x00000020;                // 1) Activate the clock for the relevant port.
-    while ((SYSCTL_PRGPIO_R & 0x00000020) == 0) {}; // 2) Stall until clock is ready.
-    if (pin == PIN_F0)
-        GPIO_PORTF_LOCK_R = GPIO_LOCK_KEY;          // 3) Unlock the port (if PC0-3, PD7, PF0).
+    /* 1. Generate the config. */
+    GPIOConfig_t pinConfig = {pin, PULL_DOWN, false, false, 0, false};
 
-    uint8_t pinAddress = pow(2, pin % 8);           // 4) Determine the pin address. I.e. PF1 (41) % 8 = 1. 
-    GPIO_PORTF_CR_R |= pinAddress;                  // 5) Allow changes to selected pin. 
-    GPIO_PORTF_AMSEL_R = 0;                         // 6) Disable analog functionality across PORTF.
-    GPIO_PORTF_AFSEL_R = 0;                         // 7) Disable alternative function functionality across PORTF.
-    GPIO_PORTF_PCTL_R = 0;                          // 8) Clear PCTL register to select regular digital function across PORTF.
-    GPIO_PORTF_DIR_R &= ~pinAddress;                // 9) Set pin to be an input (0).
-    if (pin == PIN_F0 || pin == PIN_F4)             
-        GPIO_PORTF_PUR_R |= pinAddress;             // 10) Enable pull-ups for on board switches.
-    GPIO_PORTF_DEN_R |= pinAddress;                 // 11) Enable digital IO for the pin.
+    /* 2. Enable pull up resistors for PF0 and PF4. */
+    if (pin == PIN_F0 || pin == PIN_F4) pinConfig.GPIOPull = PULL_UP;
 
-    // 12) Enable PortF edge triggered interrupts if we specify a task for the pin.
+    /* 3. Initialize the GPIO. */
+    GPIOInit(pinConfig);
+
+    /* 4. Enable PortF edge triggered interrupts if we specify a task for the pin. */
     if (touchTask != NULL || releaseTask != NULL) {
-        GPIO_PORTF_IS_R &= ~pinAddress;                         // 12a) Set pin as edge-sensitive.
+        /* 5. Generate the port offset and pinAddress to find the correct addresses. */
+        uint32_t portOffset = 0;
+        if (pinConfig.GPIOPin < PIN_E0) portOffset = 0x1000 * (pinConfig.GPIOPin/8);
+        /* Jump to 0x4002.4000 for PORTE. */
+        else portOffset = 0x00020000 + 0x1000 * ((pinConfig.GPIOPin-PIN_E0)/8);
+        uint8_t pinAddress = pow(2, pinConfig.GPIOPin % 8);
+
+        /* 6. Set pin as edge sensitive. */
+        GET_REG(GPIO_PORT_BASE + portOffset + GPIO_IS_OFFSET) &= ~pinAddress;
         if (touchTask != NULL && releaseTask != NULL) {   
-            GPIO_PORTF_IBE_R |= pinAddress;                     // 12b) Set pin to interrupt on both edges.
+            /* 6b. Set pin to interrupt on both edges. */
+            GET_REG(GPIO_PORT_BASE + portOffset + GPIO_IBE_OFFSET) |= pinAddress;
         } else {
-            GPIO_PORTF_IBE_R &= ~pinAddress;                    // 12c) Set pin to interrupt as dictated by GPIOIEV.
+            /* 6c. Set pin to interrupt as dictated by GPIOIEV. */
+            GET_REG(GPIO_PORT_BASE + portOffset + GPIO_IBE_OFFSET) &= ~pinAddress;
             if (touchTask != NULL) {
-                GPIO_PORTF_IEV_R |= pinAddress;                 // 12d) Set pin to interrupt on a rising edge.
+                /* 6d. Set pin to interrupt on a rising edge. */
+                GET_REG(GPIO_PORT_BASE + portOffset + GPIO_IEV_OFFSET) |= pinAddress;
             } else {
-                GPIO_PORTF_IEV_R &= ~pinAddress;                // 12e) Set pin to interrupt on a falling edge.
+                /* 6e. Set pin to interrupt on a falling edge. */
+                GET_REG(GPIO_PORT_BASE + portOffset + GPIO_IEV_OFFSET) &= ~pinAddress;
             }
-        } 
-        GPIO_PORTF_ICR_R |= pinAddress;                         // 12f) Clear flag for the pin.
-        GPIO_PORTF_IM_R |= pinAddress;                          // 12g) Arm interrupt for pin.
-        NVIC_PRI7_R = (NVIC_PRI7_R & 0xFF00FFFF) | 0x00A00000;  // 12h) Give the interrupt priority 5.
-        NVIC_EN0_R = 0x40000000;                                // 12i) Enable interrupt 30 in NVIC.
+        }
+        /* 6f. Clear flag for the pin. TODO: see p. 657 step 7 in the
+         * initialization example and follow those instructions. */
+        GET_REG(GPIO_PORT_BASE + portOffset + GPIO_ICR_OFFSET) |= pinAddress;
+        /* 6g. Arm interrupt for pin. */
+        GET_REG(GPIO_PORT_BASE + portOffset + GPIO_IM_OFFSET) |= pinAddress;
+        /* 6h. Give the interrupt priority 5. TODO: THIS IS SPECIFICALLY FOR
+         * PORTF GPIO INTERRUPTS. See p. 104 Table 2-9 and Timer.c implementation
+         * for doing this generically. */
+        NVIC_PRI7_R = (NVIC_PRI7_R & 0xFF00FFFF) | 0x00A00000;
+        /* 6i. Enable interrupt 30 in NVIC. */
+        NVIC_EN0_R = 0x40000000;
     }
 
     switchConfig[pin % 8].touchTask = touchTask;

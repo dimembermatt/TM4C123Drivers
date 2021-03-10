@@ -13,6 +13,8 @@ Please see [RESOURCES.md](resources/RESOURCES.md) for additional content that ma
 ## TODO
 
 Drivers that need to be developed/refactored:
+- Switches
+    - Need interrupt generalization for pins not from port F.
 - Timers
     - Feature: Wide Timer implementation.
     - Bug: Unable to run both A and B timers at once.

@@ -3,9 +3,15 @@
  * Devices: LM4F120; TM4C123
  * Description: TM4C123GH6PM Register definitions for drivers.
  * Authors: Matthew Yu.
- * Last Modified: 03/06/21
+ * Last Modified: 03/10/21
  **/
 #pragma once
+
+/** 
+ * Function for generating code for getting a register. Left hand side of
+ * assignment only. 
+ */
+#define GET_REG(addr) (*((volatile uint32_t *)(addr)))
 
 /**
  * See Table 11-12. Timers Register Map on p. 726 of the TM4C Datasheet for
@@ -40,8 +46,12 @@
 #define GPTMTBPV_OFFSET     0x068
 #define GPTMPP_OFFSET       0xFC0
 
+/** Used for acknowledging Timer A and Timer B interrupt flag. */
+#define TIMERXA_ICR_TATOCINT 0x00000001
+#define TIMERXB_ICR_TATOCINT 0x00000100
+
 /** 
- * See Table 3-8. Peripherals Register Map on p, 134 of the TM4C Datasheet for
+ * See Table 3-8. Peripherals Register Map on p. 134 of the TM4C Datasheet for
  * more details.
  */
 #define PERIPHERALS_BASE    0xE000E000
@@ -85,3 +95,69 @@
 #define NVIC_PRI32_OFFSET   0x480
 #define NVIC_PRI33_OFFSET   0x484
 #define NVIC_PRI34_OFFSET   0x488
+
+/**
+ * See Table 5-8. System Control Register Map on p. 232 of the TM4C Datasheet
+ * for more details.
+ */
+#define SYSCTL_BASE             0x400FE000
+#define SYSCTL_RCGCTIMER_OFFSET 0x604
+#define SYSCTL_RCGCGPIO_OFFSET  0x608
+#define SYSCTL_RCGCSSI_OFFSET   0x61C
+#define SYSCTL_PRTIMER_OFFSET   0xA04
+#define SYSCTL_PRGPIO_OFFSET    0xA08
+#define SYSCTL_PRSSI_OFFSET     0xA1C
+
+/** 
+ * See Table 10-6. GPIO Register Map on p. 660 of the TM4C Datasheet for more
+ * details. 
+ */
+#define GPIO_PORT_BASE      0x40004000
+#define GPIO_LOCK_KEY       0x4C4F434B
+#define GPIO_DATA_OFFSET    0x000
+#define GPIO_DIR_OFFSET     0x400
+#define GPIO_IS_OFFSET      0x404
+#define GPIO_IBE_OFFSET     0x408
+#define GPIO_IEV_OFFSET     0x40C
+#define GPIO_IM_OFFSET      0x410
+#define GPIO_RIS_OFFSET     0x414
+#define GPIO_MIS_OFFSET     0x418
+#define GPIO_ICR_OFFSET     0x41C
+#define GPIO_AFSEL_OFFSET   0x420
+#define GPIO_DR2R_OFFSET    0x500
+#define GPIO_DR4R_OFFSET    0x504
+#define GPIO_DR8R_OFFSET    0x508
+#define GPIO_ODR_OFFSET     0x50C
+#define GPIO_PUR_OFFSET     0x510
+#define GPIO_PDR_OFFSET     0x514
+#define GPIO_SLR_OFFSET     0x518
+#define GPIO_DEN_OFFSET     0x51C
+#define GPIO_LOCK_OFFSET    0x520
+#define GPIO_CR_OFFSET      0x524
+#define GPIO_AMSEL_OFFSET   0x528
+#define GPIO_PCTL_OFFSET    0x52C
+#define GPIO_ADCCTL_OFFSET  0x530
+#define GPIO_DMACTL_OFFSET  0x534
+/** 
+ * As of 03/09/21, Peripheral ID and PrimeCell ID registers are not supported.
+ */
+
+/** 
+ * See Table 15-2. SSI Register Map on p. 967 of the TM4C Datasheet for
+ * more details.
+ */
+#define SSI_BASE            0x40008000
+#define SSI_CR0_OFFSET      0x000
+#define SSI_CR1_OFFSET      0x004
+#define SSI_DR_OFFSET       0x008
+#define SSI_SR_OFFSET       0x00C
+#define SSI_CPSR_OFFSET     0x010
+#define SSI_IM_OFFSET       0x014
+#define SSI_RIS_OFFSET      0x018
+#define SSI_MIS_OFFSET      0x01C
+#define SSI_ICR_OFFSET      0x020
+#define SSI_DMACTL_OFFSET   0x024
+#define SSI_CC_OFFSET       0xFC8
+/** 
+ * As of 03/09/21, Peripheral ID and PrimeCell ID registers are not supported.
+ */

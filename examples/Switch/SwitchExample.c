@@ -10,10 +10,9 @@
 #include <stdio.h>
 
 /** Device specific imports. */
-#include <TM4C123Drivers/inc/tm4c123gh6pm.h>
 #include <TM4C123Drivers/inc/PLL.h>
 #include <TM4C123Drivers/lib/Switch/Switch.h>
-#include <TM4C123Drivers/inc/GPIO.h>
+#include <TM4C123Drivers/lib/GPIO/GPIO.h>
 
 
 void EnableInterrupts(void);    // Defined in startup.s

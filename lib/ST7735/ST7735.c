@@ -3,11 +3,21 @@
  * Devices: LM4F120; TM4C123
  * Description: Low level drivers for the ST7735 160x128 LCD.
  * Authors: Jonathan Valvano. Revised by Matthew Yu.
- * Last Modified: 03/04/21
+ * Last Modified: 03/10/21
  */
+
+/** General imports. */
+#include <stdint.h>
+#include <stdlib.h>
 
 /** Device specific imports. */
 #include "ST7735.h"
+#include <TM4C123Drivers/inc/tm4c123gh6pm.h>
+#include <TM4C123Drivers/inc/RegDefs.h>
+#include <TM4C123Drivers/lib/GPIO/GPIO.h>
+#include <TM4C123Drivers/lib/SSI/SSI.h>
+#include <TM4C123Drivers/lib/Miscellaneous/Font.h>
+#include <TM4C123Drivers/lib/Miscellaneous/Misc.h>
 
 
 /** List of ST7735 system commands. See page 77 from STT7735_v2.1.pdf. */
@@ -355,18 +365,22 @@ void static commonInit(const uint8_t *cmdList) {
     volatile uint32_t delay;
     ST7735StartCol  = ST7735StartRow = 0; // May be overridden in init func
 
-    SYSCTL_RCGCSSI_R |= 0x01;  // activate SSI0
-    SYSCTL_RCGCGPIO_R |= 0x01; // activate port A
-    while ((SYSCTL_PRGPIO_R&0x01)==0) {}; // allow time for clock to start
+    /* SSI0Fss (PA3) is temporarily used as GPIO, so by default has alternative
+     * functionality off. */
+    GPIOConfig_t GPIOconfigs[5] = {
+        {PIN_A2, PULL_DOWN, true,  true,  2, false},
+        {PIN_A3, PULL_DOWN, true,  true,  2, false},
+        {PIN_A5, PULL_DOWN, true,  false, 2, false},
+        {PIN_A6, PULL_DOWN, true,  false, 0, false},
+        {PIN_A7, PULL_DOWN, true,  false, 0, false}
+    };
 
-    // toggle RST low to reset; CS low so it'll listen to us
-    // SSI0Fss is temporarily used as GPIO
-    GPIO_PORTA_DIR_R |= 0xC8;               // make PA3,6,7 out
-    GPIO_PORTA_AFSEL_R &= ~0xC8;            // disable alt funct on PA3,6,7
-    GPIO_PORTA_DEN_R |= 0xC8;               // enable digital I/O on PA3,6,7
-                                            // configure PA3,6,7 as GPIO
-    GPIO_PORTA_PCTL_R = (GPIO_PORTA_PCTL_R & 0x00FF0FFF) + 0x00000000;
-    GPIO_PORTA_AMSEL_R &= ~0xC8;            // disable analog functionality on PA3,6,7
+    /* 1. Initialize GPIO. */
+    for (uint8_t i = 0; i < 5; i++) {
+        GPIOInit(GPIOconfigs[i]);
+    }
+
+    /* 2. Toggle RST low to reset; CS low so it'll listen to us. */
     TFT_CS = TFT_CS_LOW;
     RESET = RESET_HIGH;
     delayMillisec(500);
@@ -375,30 +389,17 @@ void static commonInit(const uint8_t *cmdList) {
     RESET = RESET_HIGH;
     delayMillisec(500);
 
-    // initialize SSI0
-    GPIO_PORTA_AFSEL_R |= 0x2C;             // enable alt funct on PA2,3,5
-    GPIO_PORTA_DEN_R |= 0x2C;               // enable digital I/O on PA2,3,5
-                                            // configure PA2,3,5 as SSI
-    GPIO_PORTA_PCTL_R = (GPIO_PORTA_PCTL_R & 0xFF0F00FF) + 0x00202200;
-    GPIO_PORTA_AMSEL_R &= ~0x2C;            // disable analog functionality on PA2,3,5
-    SSI0_CR1_R &= ~SSI_CR1_SSE;             // disable SSI
-    SSI0_CR1_R &= ~SSI_CR1_MS;              // master mode
-                                            // configure for system clock/PLL baud clock source
-    SSI0_CC_R = (SSI0_CC_R & ~SSI_CC_CS_M) + SSI_CC_CS_SYSPLL;
-    //                                        // clock divider for 3.125 MHz SSIClk (50 MHz PIOSC/16)
-    //  SSI0_CPSR_R = (SSI0_CPSR_R&~SSI_CPSR_CPSDVSR_M)+16;
-                                            // clock divider for 8 MHz SSIClk (80 MHz PLL/24)
-                                            // SysClk/(CPSDVSR*(1+SCR))
-                                            // 80/(10*(1+0)) = 8 MHz (slower than 4 MHz)
-    SSI0_CPSR_R = (SSI0_CPSR_R & ~SSI_CPSR_CPSDVSR_M) + 10; // must be even number
-    SSI0_CR0_R &= ~(SSI_CR0_SCR_M |         // SCR = 0 (8 Mbps data rate)
-                    SSI_CR0_SPH |           // SPH = 0
-                    SSI_CR0_SPO);           // SPO = 0
-                                            // FRF = Freescale format
-    SSI0_CR0_R = (SSI0_CR0_R & ~SSI_CR0_FRF_M) + SSI_CR0_FRF_MOTO;
-                                            // DSS = 8-bit data
-    SSI0_CR0_R = (SSI0_CR0_R & ~SSI_CR0_DSS_M) + SSI_CR0_DSS_8;
-    SSI0_CR1_R |= SSI_CR1_SSE;              // enable SSI
+    /* 3. Turn PA3 SSI0Fss alternative functionality back on again. */
+    GPIOconfigs[2].isAlternative = true;
+    GPIOInit(GPIOconfigs[2]);
+
+    /* 5. Initialize SSI0. This reinitializes the gpio pins, but putting this in
+     *    front and just manipulating PA5 doesn't work, probably because SSI0 is
+     *    enabled.*/
+    SSIConfig_t SSI0Config = {
+        SSI0_PA, FREESCALE_SPI, true, 0x8
+    };
+    SSIInit(SSI0Config);
 
     if (cmdList) commandList(cmdList);
 }

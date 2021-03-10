@@ -418,6 +418,16 @@
               <FileType>1</FileType>
               <FilePath>..\..\lib\BMP\BMP.c</FilePath>
             </File>
+            <File>
+              <FileName>GPIO.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\lib\GPIO\GPIO.c</FilePath>
+            </File>
+            <File>
+              <FileName>SSI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\lib\SSI\SSI.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

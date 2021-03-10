@@ -6,14 +6,15 @@
  * Last Modified: 03/06/21
  **/
 
+/** General Imports. */
+#include <stdio.h>
+#include <math.h>
+
 /** Device specific imports. */
 #include "Timers.h"
+#include <TM4C123Drivers/inc/tm4c123gh6pm.h>
 #include <TM4C123Drivers/inc/RegDefs.h>
 
-#define TIMERXA_ICR_TATOCINT 0x00000001
-#define TIMERXB_ICR_TATOCINT 0x00000100
-
-#define GET_REG(addr) (*((volatile uint32_t *)(addr)))
 
 /** Our handler type used by timers. */
 typedef void (*handlerFunctionPtr_t)(void);
