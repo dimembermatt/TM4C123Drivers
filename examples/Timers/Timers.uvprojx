@@ -394,11 +394,6 @@
               <FilePath>..\..\inc\PLL.c</FilePath>
             </File>
             <File>
-              <FileName>Switch.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\lib\Switch\Switch.c</FilePath>
-            </File>
-            <File>
               <FileName>Misc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\lib\Miscellaneous\Misc.c</FilePath>

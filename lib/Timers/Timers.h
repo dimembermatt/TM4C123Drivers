@@ -3,17 +3,12 @@
  * Devices: LM4F120; TM4C123
  * Description: Low level drivers for using onboard timers.
  * Authors: Matthew Yu.
- * Last Modified: 03/04/21
+ * Last Modified: 03/06/21
  **/
 #pragma once
 
 /** General imports. */
 #include <stdint.h>
-#include <stdio.h>
-#include <math.h>
-
-/** Device specific imports. */
-#include <TM4C123Drivers/inc/tm4c123gh6pm.h>
 
 
 #define MAX_FREQ 80000000 // 80 MHz
@@ -37,9 +32,14 @@ typedef enum {
 
 /**
  * TimerInit initializes an arbitrary timer with a handler function reference.
- * @param timer Enum identifying which timer to initialize.
- * @param period Reload time, in cycles.
- * @param handlerTask Function pointer to what should be called by the TimerXX_Handler.
+ * @param timer       Enum identifying which timer to initialize.
+ * @param period      Reload time, in cycles.
+ * @param handlerTask Function pointer to what should be called by the
+ *                    TimerXX_Handler. 
+ * @note Note the following potential conflicts:
+ *       - The TExaS scope (Texas.c) uses Timer5A.
+ *       Note that B-side timer functionality is currently broken, and WTimers
+ *       are not yet supported.
  */
 void TimerInit(timer_t timer, uint32_t period, void (*handlerTask)(void));
 
@@ -54,7 +54,7 @@ void Timer3A_Handler(void);
 void Timer3B_Handler(void);
 void Timer4A_Handler(void);
 void Timer4B_Handler(void);
-//void Timer5A_Handler(void);
+void Timer5A_Handler(void);
 void Timer5B_Handler(void);
 
 /** Handler definitions for wide timers. */

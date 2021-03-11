@@ -4,7 +4,9 @@
  * Description: Example program to demonstrate the capabilities of the ST7735
  * driver. Swap between mains to see usage of various ST7735 routines.
  * Authors: Jonathan Valvano. Modified by Matthew Yu.
- * Last Modified: 03/03/21
+ * Last Modified: 03/10/21
+ * 
+ * Note: Also tests the lib/SSI files.
  */
 
 /** Device specific imports. */

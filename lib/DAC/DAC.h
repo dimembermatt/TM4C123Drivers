@@ -3,17 +3,15 @@
  * Devices: LM4F120; TM4C123
  * Description: Low level drivers Digital to Analog Output.
  * Authors: Matthew Yu.
- * Last Modified: 03/04/21
+ * Last Modified: 03/10/21
  */
 #pragma once
 
 /** General imports. */
 #include <stdint.h>
-#include <math.h>
 
 /** Device specific imports. */
-#include <TM4C123Drivers/inc/tm4c123gh6pm.h>
-#include <TM4C123Drivers/inc/GPIO.h>
+#include <TM4C123Drivers/lib/GPIO/GPIO.h>
 
 
 /** Configuration of a single DAC object. */

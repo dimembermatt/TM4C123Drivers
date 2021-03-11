@@ -1,13 +1,17 @@
 /**
  * DAC.c
- * configures DAC output
- * runs on LM4F120 or TM4C123
- * Author: Matthew Yu
- * Last Modified: 03/04/21
+ * Devices: LM4F120; TM4C123
+ * Description: Low level drivers to configure a resistor ladder DAC output.
+ * Authors: Matthew Yu.
+ * Last Modified: 03/10/21
  */
+
+/** General Imports. */
+#include <stdbool.h>
 
 /** Device specific imports. */
 #include "DAC.h"
+#include <TM4C123Drivers/inc/tm4c123gh6pm.h>
 
 
 #define MAX_DAC_PINS 6
@@ -19,17 +23,11 @@
  * @param pins A list of pins to initialize, in order of LSB to MSB.
  */
 void DACInit(DACConfig pins) {
-    SYSCTL_RCGCGPIO_R |= 0x00000002;                // 1) Activate the clock for the relevant port.
-    while ((SYSCTL_PRGPIO_R & 0x00000002) == 0) {}; // 2) Stall until clock is ready.
-    GPIO_PORTB_AMSEL_R = 0;                         // 3) Disable analog functionality across PORTB.
-    GPIO_PORTB_AFSEL_R = 0;                         // 4) Disable alternative function functionality across PORTB.
-	for (uint8_t i = 0; i < MAX_DAC_PINS; i++) {
+    GPIOConfig_t config = {PIN_B0, PULL_DOWN, true, false, 0, false};
+    for (uint8_t i = 0; i < MAX_DAC_PINS; i++) {
         if (pins.pinList[i] >= PIN_B0 && pins.pinList[i] <= PIN_B7) { // Valid pin.
-            uint8_t pinAddress = pow(2, pins.pinList[i] % 8);
-            // 5) Set pins to be output (1).
-            GPIO_PORTB_DIR_R |= pinAddress;
-            // 6) Enable digital IO for pins.
-            GPIO_PORTB_DEN_R |= pinAddress;
+            config.GPIOPin = pins.pinList[i];
+            GPIOInit(config);
         }
     }
 }
@@ -40,15 +38,10 @@ void DACInit(DACConfig pins) {
  * @param pins The list of pins to write data to, in order of LSB to MSB.
  */
 void DACOut(uint8_t data, DACConfig pins) {
-    // data /= pow(2, MAX_DAC_PINS-pins.numUsedPins);
-
-    uint32_t adjustedData = 0;
 	for (uint8_t i = 0; i < MAX_DAC_PINS; i++) {
         if (pins.pinList[i] >= PIN_B0 && pins.pinList[i] <= PIN_B7) { // Valid pin.
-            uint8_t placeVal = (data>>i) & 1;
-            pin_t pin = pins.pinList[i];
-        	adjustedData |= (uint8_t) (pow(2, pin % 8) * placeVal);
+            uint8_t placeVal = (data>>i) & 0x1;
+            GPIOSetBit(pins.pinList[i], placeVal);
         }
     }
-    GPIO_PORTB_DATA_R = adjustedData;
 }

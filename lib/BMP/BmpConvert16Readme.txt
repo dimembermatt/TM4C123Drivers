@@ -12,7 +12,7 @@ See BmpConvert.cpp for how it works
 3) Open the corresponding txt file, select all, copy
 4) Open uVision compiler
    paste new image as a data constant
-5) Draw the image by calling ST7735_DrawBitmap
+5) Draw the image by calling ST7735DrawBitmap
    E.g., center a 120x160 image
-         ST7735_DrawBitmap(4, 159, Horse, 120, 160);
+         ST7735DrawBitmap(4, 159, 120, 160, Horse);
 

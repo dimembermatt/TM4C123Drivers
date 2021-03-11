@@ -403,6 +403,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\lib\DAC\DAC.c</FilePath>
             </File>
+            <File>
+              <FileName>GPIO.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\lib\GPIO\GPIO.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

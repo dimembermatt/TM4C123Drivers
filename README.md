@@ -4,29 +4,17 @@ This repository contains a selection of drivers originally written by Jonathan V
 
 ---
 
-## Recommended Pin Allocation
+## Resources
 
-| Type                         | Port |
-|------------------------------|------|
-| ST7735, CAN                  | A    |
-| DAC, audio, CAN, I2C         | B    |
-| Comparators, UART, USB       | C    |
-| ADC, USB                     | D    |
-| Wifi, UART, CAN, I2C         | E    |
-| Buttons, Switches            | F    |
-
----
-
-## Bugfixing
-
-- When trying to flash the program, you might get the error `No ULINK2/ME Device found`. Since we're using the Stellaris ICDI to flash, go to `Options for Target '[Project]'` -> `Debug` tab -> `Use: ULINK2/ME Cortex Debugger`. Scroll to `Stellaris ICDI` option and press OK.
-- When compiling the program, errors such as `Lab4.c(14): error:  #5: cannot open source input file "TM4C123Drivers/inc/tm4c123gh6pm.h": No such file or directory` may appear. Go to `Options for Target '[Project]'` -> `C/C++` tab -> `Include Paths` textbox. Include the parent directory path containing `TM4C123Drivers` (i.e., `..;..\..\..;C:\Users\matth\Documents\EE445L`). Press OK after the Compiler control string shows something like the following: `-I C:/Users/matth/Documents/EE445L`.
+Please see [RESOURCES.md](resources/RESOURCES.md) for additional content that may help with bufgixing, device documentation, and so on.
 
 ---
 
 ## TODO
 
 Drivers that need to be developed/refactored:
+- Switches
+    - Need interrupt generalization for pins not from port F.
 - Timers
     - Feature: Wide Timer implementation.
     - Bug: Unable to run both A and B timers at once.
