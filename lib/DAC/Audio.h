@@ -13,7 +13,7 @@
 
 /** Device specific imports. */
 #include "DAC.h"
-#include <TM4C123Drivers/lib/Timers/Timers.h>
+#include <../TM4C123Drivers/TM4C123Drivers/lib/Timers/Timers.h>
 
 
 static uint8_t SineWave[64] = {
