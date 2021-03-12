@@ -22,26 +22,22 @@
  * dependent on the user managing the pins data structures.
  * @param pins A list of pins to initialize, in order of LSB to MSB.
  */
-void DACInit(DACConfig pins) {
+void DACInit(DACConfig_t pins) {
     GPIOConfig_t config = {PIN_B0, PULL_DOWN, true, false, 0, false};
     for (uint8_t i = 0; i < MAX_DAC_PINS; i++) {
-        if (pins.pinList[i] >= PIN_B0 && pins.pinList[i] <= PIN_B7) { // Valid pin.
-            config.GPIOPin = pins.pinList[i];
-            GPIOInit(config);
-        }
+		config.GPIOPin = pins.pinList[i];
+		GPIOInit(config);
     }
 }
 
 /**
  * DACOut outputs data to the relevant DAC pins set by DACInit.
- * @param data A value from 0 - 63. Scaled based on how many bits are part of the DAC.
  * @param pins The list of pins to write data to, in order of LSB to MSB.
+ * @param data A value from 0 - 63. Scaled based on how many bits are part of the DAC.
  */
-void DACOut(uint8_t data, DACConfig pins) {
+void DACOut(DACConfig_t pins, uint8_t data) {
 	for (uint8_t i = 0; i < MAX_DAC_PINS; i++) {
-        if (pins.pinList[i] >= PIN_B0 && pins.pinList[i] <= PIN_B7) { // Valid pin.
-            uint8_t placeVal = (data>>i) & 0x1;
-            GPIOSetBit(pins.pinList[i], placeVal);
-        }
+		uint8_t placeVal = (data>>i) & 0x1;
+		GPIOSetBit(pins.pinList[i], placeVal);
     }
 }

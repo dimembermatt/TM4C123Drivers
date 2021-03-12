@@ -15,6 +15,7 @@
 /** Device imports. */
 #include "GPIO.h"
 #include <TM4C123Drivers/inc/RegDefs.h>
+#include <TM4C123Drivers/inc/tm4c123gh6pm.h>
 
 /**
  * GPIOInit initializes a GPIO pin given a configuration.
@@ -52,7 +53,7 @@ void GPIOInit(GPIOConfig_t pinConfig) {
 
     /* 5. Determine the pin address. I.E. PF1 (41) % 8 = 1. */
     uint8_t pinAddress = pow(2, pinConfig.GPIOPin % 8);
-
+    
     /* 6. Allow changes to selected pin. */
     GET_REG(GPIO_PORT_BASE + portOffset + GPIO_CR_OFFSET) |= pinAddress;
 
@@ -65,20 +66,21 @@ void GPIOInit(GPIOConfig_t pinConfig) {
     if (pinConfig.isAlternative) {
         GET_REG(GPIO_PORT_BASE + portOffset + GPIO_AFSEL_OFFSET) |= pinAddress;
         uint32_t mask = 0xFFFFFFFF;
-        mask &= ~(0xF << (pinAddress * 4));
-        GET_REG(GPIO_PORT_BASE + portOffset + GPIO_PCTL_OFFSET) = 
-            (GET_REG(GPIO_PORT_BASE + portOffset + GPIO_PCTL_OFFSET) & mask) | 
-            pinConfig.alternateFunction;
+        mask &= ~(0xF << ((pinConfig.GPIOPin % 8) * 4));
+        GET_REG(GPIO_PORT_BASE + portOffset + GPIO_PCTL_OFFSET) &= mask;
+        GET_REG(GPIO_PORT_BASE + portOffset + GPIO_PCTL_OFFSET) |=
+            (pinConfig.alternateFunction << ((pinConfig.GPIOPin % 8) * 4));
     }
 
-    /* 9. Set pin drive strength. This step is not performed. */
+    /* 9. Set pin drive strength to 8mA. This step is performed by default. */
+    GET_REG(GPIO_PORT_BASE + portOffset + GPIO_DR8R_OFFSET) |= pinAddress;
 
-    /* 10. Set pullup by default. */
+    /* 10. Set pullup, pulldown, or open drain. */
     if (pinConfig.GPIOPull == PULL_UP) {
         GET_REG(GPIO_PORT_BASE + portOffset + GPIO_PUR_OFFSET) |= pinAddress;
     } else if (pinConfig.GPIOPull == PULL_DOWN) {
         GET_REG(GPIO_PORT_BASE + portOffset + GPIO_PDR_OFFSET) |= pinAddress;
-    } else {
+    } else if (pinConfig.GPIOPull == OPEN_DRAIN) {
         GET_REG(GPIO_PORT_BASE + portOffset + GPIO_ODR_OFFSET) |= pinAddress;
     }
 
@@ -104,7 +106,13 @@ void GPIOInit(GPIOConfig_t pinConfig) {
  * @param pin Pin to set. Assumes it's an output.
  * @param value 0 (false) or 1 (true) value to set pin to.
  */
+void EnableInterrupts(void);    // Defined in startup.s
+void DisableInterrupts(void);   // Defined in startup.s
+void WaitForInterrupt(void);    // Defined in startup.s
 void GPIOSetBit(pin_t pin, bool value) {
+    /* Early return on invalid pin_t value. */
+    if (pin >= PIN_COUNT) return;
+
     /* 1. Generate the port offset to find the correct addresses. */
     uint32_t portOffset = 0;
     if (pin < PIN_E0) portOffset = 0x1000 * (pin/8);
@@ -134,6 +142,9 @@ void GPIOSetBit(pin_t pin, bool value) {
  * @return value 0 (false) or 1 (true) value of the pin.
  */
 bool GPIOGetBit(pin_t pin) {
+    /* Early return on invalid pin_t value. */
+    if (pin >= PIN_COUNT) return 0;
+
     /* 1. Generate the port offset to find the correct addresses. */
     uint32_t portOffset = 0;
     if (pin < PIN_E0) portOffset = 0x1000 * (pin/8);

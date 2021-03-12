@@ -11,6 +11,7 @@
 #include "SSI.h"
 #include <TM4C123Drivers/inc/RegDefs.h>
 #include <TM4C123Drivers/lib/GPIO/GPIO.h>
+#include <TM4C123Drivers/inc/tm4c123gh6pm.h>
 
 
 /**
@@ -20,6 +21,7 @@
  *          - Set whether SSInClk pin is high when no data is transferred (p. 969)
  *          - Set whether SSI loopback mode is enabled (p. 972)
  *          - Add parameter in SSIConfig_t for bit rate and SysClk speed.
+ *          - Set device to Receive or Transmit (but not both).
  *          Determine appropriate prescaler and bit rate selection in SSICR0.
  */
 void SSIInit(SSIConfig_t SSIConfig) {
@@ -36,10 +38,10 @@ void SSIInit(SSIConfig_t SSIConfig) {
 
     /* 2. Enable the appropriate GPIO pins. */
     GPIOConfig_t configs[4] = {
-        {PIN_A2, PULL_DOWN, true,  true, 2, false},    /* SSI0Clk. */
+        {PIN_A2, PULL_UP,   true,  true, 2, false},    /* SSI0Clk. */
         {PIN_A3, PULL_DOWN, true,  true, 2, false},    /* SSI0Fss. */
-        {PIN_A4, PULL_DOWN, false, true, 2, false},    /* SSI0Rx.  */
-        {PIN_A5, PULL_DOWN, true,  true, 2, false},    /* SSI0Tx.  */
+        {PIN_A4, PULL_UP,   false, true, 2, false},    /* SSI0Rx.  */
+        {PIN_A5, PULL_UP,   true,  true, 2, false},    /* SSI0Tx.  */
     };
     switch(SSIConfig.SSI) {
         case SSI2_PB:
@@ -74,7 +76,8 @@ void SSIInit(SSIConfig_t SSIConfig) {
             break;
     }
     for (uint8_t i = 0; i < 4; i++) {
-        GPIOInit(configs[i]);
+        if (i != 2) /* TODO: remove when can select RX/TX mode. For now, hard code. */
+            GPIOInit(configs[i]);
     }
 
     /* 3. We'll generate the SSI offset to find the correct addresses for each
@@ -97,8 +100,10 @@ void SSIInit(SSIConfig_t SSIConfig) {
     /* 8. Set Frame Format and N-bit data size. */
     GET_REG(SSI_BASE + SSIOffset + SSI_CR0_OFFSET) &= ~(0x0000FFFF);
     GET_REG(SSI_BASE + SSIOffset + SSI_CR0_OFFSET) |= 
-        (SSIConfig.frameFormat << 4) | (SSIConfig.dataBitSize-1);
-    
+        (SSIConfig.frameFormat << 4) | 
+        (0x1 << 6) |
+        (SSIConfig.dataBitSize-1);
+
     /* 9. Re-enable SSI operation. */
     GET_REG(SSI_BASE + SSIOffset + SSI_CR1_OFFSET) |= 0x00000002;
 }
@@ -124,6 +129,10 @@ uint16_t SPIRead(enum SSISelect ssi) {
     return GET_REG(SSI_BASE + SSIOffset + SSI_DR_OFFSET) & 0x00FF;
 }
 
+void EnableInterrupts(void);    // Defined in startup.s
+void DisableInterrupts(void);   // Defined in startup.s
+void WaitForInterrupt(void);    // Defined in startup.s
+
 /**
  * SPIWrite attempts to write data in the internal buffer. Busy
  * waits until the transmit buffer is not full.
@@ -133,9 +142,11 @@ uint16_t SPIRead(enum SSISelect ssi) {
 void SPIWrite(enum SSISelect ssi, uint16_t data) {
     /* We'll generate the SSI offset to find the correct addresses for each
      * SSI module. */
+	DisableInterrupts();
     uint32_t SSIOffset = 0x1000 * (ssi%4);
 
     /* Poll until Transmit FIFO is not full. */
     while ((GET_REG(SSI_BASE + SSIOffset + SSI_SR_OFFSET) & 0x2) == 0) {}
     GET_REG(SSI_BASE + SSIOffset + SSI_DR_OFFSET) = data;
+	EnableInterrupts();
 }

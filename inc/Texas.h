@@ -7,12 +7,12 @@
 
 /* This example accompanies the books
    "Embedded Systems: Real Time Interfacing to ARM Cortex M Microcontrollers",
-   ISBN: 978-1463590154, Jonathan Valvano, copyright (c) 2020
+   ISBN: 978-1463590154, Jonathan Valvano, copyright (c) 2021
 
    "Embedded Systems: Real-Time Operating Systems for ARM Cortex-M Microcontrollers",
-   ISBN: 978-1466468863, Jonathan Valvano, copyright (c) 2020
+   ISBN: 978-1466468863, Jonathan Valvano, copyright (c) 2021
 
- Copyright 2020 by Jonathan W. Valvano, valvano@mail.utexas.edu
+ Copyright 2021 by Jonathan W. Valvano, valvano@mail.utexas.edu
     You may use, edit, run or distribute this file
     as long as the above copyright notice remains
  THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
@@ -27,13 +27,16 @@
 
 enum TExaSmode{
   SCOPE,
-  LOGICANALYZER
+  LOGICANALYZER,
+  SCOPE_PD2,
+  SCOPE_PE2,
+  SCOPE_PB5
 };
 
 // ************TExaS_Init*****************
 // Initialize scope or logic analyzer, triggered by periodic timer
 // This needs to be called once
-// Inputs: Scope or Logic analyzer
+// Inputs: Scope or Logic analyzer or scope on PD2 or PE2 or PB5
 //         Bus clock frequency in Hz
 // Outputs: none
 void TExaS_Init(enum TExaSmode mode, uint32_t busfrequency);

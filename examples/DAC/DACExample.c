@@ -13,7 +13,7 @@
 #include <TM4C123Drivers/lib/GPIO/GPIO.h>
 
 
-DACConfig config = {
+DACConfig_t config = {
     {PIN_B0, PIN_COUNT, PIN_COUNT, PIN_COUNT, PIN_COUNT, PIN_COUNT},
     1
 };
@@ -25,14 +25,14 @@ int main(void) {
 
     // View in debugging mode with GPIO_PORTB_DATA_R added to watch 1.
     // Step through program to see pins change.
-    DACOut(0, config); // GPIO_PORTB_DATA_R should be 0x00.
-    DACOut(1, config); // GPIO_PORTB_DATA_R should be 0x01.
-    DACOut(2, config); // GPIO_PORTB_DATA_R should be 0x00.
+    DACOut(config, 0); // GPIO_PORTB_DATA_R should be 0x00.
+    DACOut(config, 1); // GPIO_PORTB_DATA_R should be 0x01.
+    DACOut(config, 2); // GPIO_PORTB_DATA_R should be 0x00.
 
     config.pinList[1] = PIN_B2;
     DACInit(config);
-    DACOut(2, config); // GPIO_PORTB_DATA_R should be 0x04.
-    DACOut(3, config); // GPIO_PORTB_DATA_R should be 0x05.
+    DACOut(config, 2); // GPIO_PORTB_DATA_R should be 0x04.
+    DACOut(config, 3); // GPIO_PORTB_DATA_R should be 0x05.
 	
 	while(1) {}
 }

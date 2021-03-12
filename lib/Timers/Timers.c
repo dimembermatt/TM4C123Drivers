@@ -230,12 +230,12 @@ void Timer4B_Handler(void) {
     }
 }
 
-void Timer5A_Handler(void) {
-    TIMER5_ICR_R |= TIMERXA_ICR_TATOCINT;
-    if (interruptSettings[10].timerHandlerTask != NULL) {
-        interruptSettings[10].timerHandlerTask();
-    }
-}
+// void Timer5A_Handler(void) {
+//     TIMER5_ICR_R |= TIMERXA_ICR_TATOCINT;
+//     if (interruptSettings[10].timerHandlerTask != NULL) {
+//         interruptSettings[10].timerHandlerTask();
+//     }
+// }
 
 void Timer5B_Handler(void) {
     TIMER5_ICR_R |= TIMERXB_ICR_TATOCINT;

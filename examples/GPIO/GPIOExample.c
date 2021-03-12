@@ -12,10 +12,6 @@
 #include <TM4C123Drivers/lib/GPIO/GPIO.h>
 #include <TM4C123Drivers/lib/Miscellaneous/Misc.h>
 
-#define PF0       (*((volatile uint32_t *)0x40025004))
-#define PF1       (*((volatile uint32_t *)0x40025008))
-#define PF2       (*((volatile uint32_t *)0x40025010))
-
 void EnableInterrupts(void);    // Defined in startup.s
 void DisableInterrupts(void);   // Defined in startup.s
 void WaitForInterrupt(void);    // Defined in startup.s

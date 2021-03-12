@@ -261,6 +261,77 @@ void ADC1_Init(void){ volatile unsigned long delay;
   ADC1_IM_R = 0x0000;             // 13) disable SS3 interrupts
   ADC1_ACTSS_R = 0x0008;          // 14) enable sample sequencer 3
 }
+// start conversions, sample always
+// ADC1
+// PD2 Ain5
+// 16-point averaging 125kHz sampling
+void ADC1_Init_PD2(void){ volatile unsigned long delay;
+  SYSCTL_RCGCADC_R |= 0x02;       // 1) ADC1 clock
+  SYSCTL_RCGCGPIO_R |= 0x08;      // 2) activate clock for Port D
+  while((SYSCTL_PRGPIO_R&0x08) == 0){};// allow time for clock to stabilize
+  GPIO_PORTD_DIR_R &= ~0x04;      // 3) make PD2 input
+  GPIO_PORTD_AFSEL_R |= 0x04;     // 4) enable alternate function on PD2
+  GPIO_PORTD_DEN_R &= ~0x04;      // 5) disable digital I/O on PD2
+  GPIO_PORTD_AMSEL_R |= 0x04;     // 6) enable analog functionality on PD2
+  for(delay = 0; delay<20; delay++){};  // allow time for clock to stabilize
+  ADC1_PC_R = 0x01;               // 7) 125K rate
+  ADC1_SSPRI_R = 0x0123;          // 8) Sequencer 3 is highest priority
+  ADC1_ACTSS_R = 0x0000;          // 9) disable sample sequencer 3
+  ADC1_EMUX_R |= 0xF000;          // 10) seq3 is always/continuous trigger
+  ADC1_SAC_R = 0x03;              //   8-point average 125kHz/8 = 15,625 Hz
+  ADC1_SSMUX3_R = 5;              // 11) set channel 5
+  ADC1_SSCTL3_R = 0x0006;         // 12) no TS0 D0, yes IE0 END0
+  ADC1_IM_R = 0x0000;             // 13) disable SS3 interrupts
+  ADC1_ACTSS_R = 0x0008;          // 14) enable sample sequencer 3
+}
+
+// start conversions, sample always
+// ADC1
+// PE2 Ain1
+// 16-point averaging 125kHz sampling
+void ADC1_Init_PE2(void){ volatile unsigned long delay;
+  SYSCTL_RCGCADC_R |= 0x02;       // 1) ADC1 clock
+  SYSCTL_RCGCGPIO_R |= 0x10;      // 2) activate clock for Port E
+  while((SYSCTL_PRGPIO_R&0x10) == 0){};// allow time for clock to stabilize
+  GPIO_PORTE_DIR_R &= ~0x04;      // 3) make PE2 input
+  GPIO_PORTE_AFSEL_R |= 0x04;     // 4) enable alternate function on PE2
+  GPIO_PORTE_DEN_R &= ~0x04;      // 5) disable digital I/O on PE2
+  GPIO_PORTE_AMSEL_R |= 0x04;     // 6) enable analog functionality on PE2
+  for(delay = 0; delay<20; delay++){};  // allow time for clock to stabilize
+  ADC1_PC_R = 0x01;               // 7) 125K rate
+  ADC1_SSPRI_R = 0x0123;          // 8) Sequencer 3 is highest priority
+  ADC1_ACTSS_R = 0x0000;          // 9) disable sample sequencer 3
+  ADC1_EMUX_R |= 0xF000;          // 10) seq3 is always/continuous trigger
+  ADC1_SAC_R = 0x03;              //   8-point average 125kHz/8 = 15,625 Hz
+  ADC1_SSMUX3_R = 1;              // 11) set channel 1
+  ADC1_SSCTL3_R = 0x0006;         // 12) no TS0 D0, yes IE0 END0
+  ADC1_IM_R = 0x0000;             // 13) disable SS3 interrupts
+  ADC1_ACTSS_R = 0x0008;          // 14) enable sample sequencer 3
+}
+
+// start conversions, sample always
+// ADC1
+// PB5 Ain11
+// 16-point averaging 125kHz sampling
+void ADC1_Init_PB5(void){ volatile unsigned long delay;
+  SYSCTL_RCGCADC_R |= 0x02;       // 1) ADC1 clock
+  SYSCTL_RCGCGPIO_R |= 0x02;      // 2) activate clock for Port B
+  while((SYSCTL_PRGPIO_R&0x02) == 0){};// allow time for clock to stabilize
+  GPIO_PORTB_DIR_R &= ~0x20;      // 3) make PB5 input
+  GPIO_PORTB_AFSEL_R |= 0x20;     // 4) enable alternate function on PB5
+  GPIO_PORTB_DEN_R &= ~0x20;      // 5) disable digital I/O on PB5
+  GPIO_PORTB_AMSEL_R |= 0x20;     // 6) enable analog functionality on PB5
+  for(delay = 0; delay<20; delay++){};  // allow time for clock to stabilize
+  ADC1_PC_R = 0x01;               // 7) 125K rate
+  ADC1_SSPRI_R = 0x0123;          // 8) Sequencer 3 is highest priority
+  ADC1_ACTSS_R = 0x0000;          // 9) disable sample sequencer 3
+  ADC1_EMUX_R |= 0xF000;          // 10) seq3 is always/continuous trigger
+  ADC1_SAC_R = 0x03;              //   8-point average 125kHz/8 = 15,625 Hz
+  ADC1_SSMUX3_R = 11;             // 11) set channel 11
+  ADC1_SSCTL3_R = 0x0006;         // 12) no TS0 D0, yes IE0 END0
+  ADC1_IM_R = 0x0000;             // 13) disable SS3 interrupts
+  ADC1_ACTSS_R = 0x0008;          // 14) enable sample sequencer 3
+}
 
 // ************TExaS_Init*****************
 // Initialize grader, triggered by periodic timer
@@ -279,10 +350,22 @@ void TExaS_Init(enum TExaSmode mode,uint32_t busfrequency){
   LogicData |= 0x80; // bit 7 means logic data
   if(mode == LOGICANALYZER){
   // enable 10k periodic interrupt if logic analyzer mode
-    PeriodicTask2_Init(&LogicAnalyzer,busfrequency,10000,5); // run logic analyzer
+    PeriodicTask2_Init(&LogicAnalyzer,busfrequency,10000,4); // run logic analyzer
   }
   if(mode == SCOPE){
     ADC1_Init();  // activate PD3 as analog input
+    PeriodicTask2_Init(&Scope,busfrequency,10000,8); // run scope at 10k
+  }
+  if(mode == SCOPE_PD2){
+    ADC1_Init_PD2();  // activate PD2 as analog input
+    PeriodicTask2_Init(&Scope,busfrequency,10000,5); // run scope at 10k
+  }
+  if(mode == SCOPE_PE2){
+    ADC1_Init_PE2();  // activate PE2 as analog input
+    PeriodicTask2_Init(&Scope,busfrequency,10000,5); // run scope at 10k
+  }
+  if(mode == SCOPE_PB5){
+    ADC1_Init_PB5();  // activate PB5 as analog input
     PeriodicTask2_Init(&Scope,busfrequency,10000,5); // run scope at 10k
   }
 }

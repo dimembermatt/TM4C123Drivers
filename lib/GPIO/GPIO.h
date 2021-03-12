@@ -28,7 +28,8 @@ typedef enum pin{
 typedef enum pull {
     PULL_UP,
     PULL_DOWN,
-    OPEN_DRAIN
+    OPEN_DRAIN,
+    NONE
 } pull_t;
 
 typedef struct GPIOConfig {
