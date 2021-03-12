@@ -100,7 +100,8 @@ dkms.conf
 # Generated output files
 /Listings/*
 /Objects/*
-/RTE/*
+*/*/RTE/*
+*/*/*.scvd
 
 # Debugger files
 # define exception below if needed
