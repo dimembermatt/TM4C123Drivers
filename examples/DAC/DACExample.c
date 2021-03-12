@@ -7,14 +7,16 @@
  */
 
 /** Device specific imports. */
+
 #include <TM4C123Drivers/inc/tm4c123gh6pm.h>
 #include <TM4C123Drivers/inc/PLL.h>
 #include <TM4C123Drivers/lib/DAC/DAC.h>
 #include <TM4C123Drivers/lib/GPIO/GPIO.h>
 
 
+
 DACConfig config = {
-    {PIN_B0, PIN_COUNT, PIN_COUNT, PIN_COUNT, PIN_COUNT, PIN_COUNT},
+    {PIN_D0, PIN_COUNT, PIN_COUNT, PIN_COUNT, PIN_COUNT, PIN_COUNT},
     1
 };
 
@@ -25,14 +27,14 @@ int main(void) {
 
     // View in debugging mode with GPIO_PORTB_DATA_R added to watch 1.
     // Step through program to see pins change.
-    DACOut(0, config); // GPIO_PORTB_DATA_R should be 0x00.
-    DACOut(1, config); // GPIO_PORTB_DATA_R should be 0x01.
-    DACOut(2, config); // GPIO_PORTB_DATA_R should be 0x00.
+    DACOut(0, config); // GPIO_PORTD_DATA_R should be 0x00.
+    DACOut(1, config); // GPIO_PORTD_DATA_R should be 0x01.
+    DACOut(2, config); // GPIO_PORTD_DATA_R should be 0x00.
 
-    config.pinList[1] = PIN_B2;
+    config.pinList[1] = PIN_D2;
     DACInit(config);
-    DACOut(2, config); // GPIO_PORTB_DATA_R should be 0x04.
-    DACOut(3, config); // GPIO_PORTB_DATA_R should be 0x05.
+    DACOut(2, config); // GPIO_PORTD_DATA_R should be 0x04.
+    DACOut(3, config); // GPIO_PORTD_DATA_R should be 0x05.
 	
 	while(1) {}
 }

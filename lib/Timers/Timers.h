@@ -11,6 +11,7 @@
 #include <stdint.h>
 
 
+
 #define MAX_FREQ 80000000 // 80 MHz
 
 /** Enumerator defining all possible timers sans SysTick. */
