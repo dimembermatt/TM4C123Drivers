@@ -13,18 +13,16 @@ Please see [RESOURCES.md](resources/RESOURCES.md) for additional content that ma
 ## TODO
 
 Drivers that need to be developed/refactored:
+- Complete GPIOSetBitFast/GPIOGetBitFast and figure out how to add compiler flags to select between GPIOGetBit and GPIOGetBitFast and SetBit equivalents.
+    - Unfortunately, dynamic generation of addresses is too slow for high speed ISRs. For applications like audio or SSI, this is not tolerable. Ergo we need a drop in speedy replacement for said applications. GPIOGet/SetBitFast does this with a switch statement (LUTs are slow).
 - Switches
     - Need interrupt generalization for pins not from port F.
+    - Potentially move interrupt generation and handling to GPIO.h.
 - Timers
+    - Bug: B timers not working.
     - Feature: Wide Timer implementation.
-    - Bug: Unable to run both A and B timers at once.
-        - May be more general issue of B timers not working properly.
     - Feature: Select clock mode.
-    - Feature: One shot vs periodic timer mode.
     - Feature: Count down vs count up timers.
-    - Feature: Timer priority.
-    - Feature: Run on base+offset for driver implementation
-    - Feature: Add back in TimerB timers; use dynamic generation instead to save space.
 - ST7735
     - Bug: L648, line for setAddrWindow with unknown purpose.
     - Feature: Speedup ST7735DrawBitmap.
@@ -40,8 +38,11 @@ Drivers that need to be developed/refactored:
 - Blynk
   - Feature: Dependency on UART, ESP8266 to update includes currently pointing to inc/.
 - ADC
-- SysTick
 - USB
 - I2C
 - Bluetooth(?)
 - Motor Drivers
+
+General improvements
+- Gradually remove dependencies on tm4c123gh6pm.h. 
+    - The rationale for this is that a lot of initialization code can be generalized to improve user API, at the expense of extra initial cycles to do register address calculation using defines in RegDefs.h. tm4c123gh6pm becomes redundant in this case, with defines for hardcoded events (not to mention, 12870 lines of it).

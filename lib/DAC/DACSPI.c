@@ -3,7 +3,7 @@
  * Devices: LM4F120; TM4C123
  * Description: Low level drivers for the TLV5616CP SPI DAC chip.
  * Authors: Matthew Yu.
- * Last Modified: 03/10/21
+ * Last Modified: 03/13/21
  */
 #pragma once
 
@@ -12,9 +12,9 @@
 
 /**
  * DACSPIInit initializes a given SSI port.
- * Multiple DACs can be configured, but is dependent on the user managing the
- * SSI data structures.
  * @param SSIConfig Struct defining relevant SSI module details for output.
+ * @note Multiple DACs can be configured, but the user retains responsibility
+ *       for managing the SSI data structures.
  */
 void DACSPIInit(SSIConfig_t SSIConfig) {
     /* TODO: can do a little bit more abstraction on input to SSISelect. */

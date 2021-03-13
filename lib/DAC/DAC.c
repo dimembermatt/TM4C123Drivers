@@ -3,7 +3,7 @@
  * Devices: LM4F120; TM4C123
  * Description: Low level drivers to configure a resistor ladder DAC output.
  * Authors: Matthew Yu.
- * Last Modified: 03/10/21
+ * Last Modified: 03/13/21
  */
 
 /** General Imports. */
@@ -18,15 +18,25 @@
 
 /**
  * DACInit initializes an N-bit DAC on Port B.
- * Goes up to 6 bits of resolution. Multiple DACs can be configured, but is
- * dependent on the user managing the pins data structures.
  * @param pins A list of pins to initialize, in order of LSB to MSB.
+ * @note Assumes that the first pin that is invalid (PIN_COUNT) means all
+ *       following pins are invalid. 
+ *       Goes up to 6 bits of resolution. 
+ *       Multiple DACs can be configured, but the user retains responsibility
+ *       for managing the pins data structures.
  */
 void DACInit(DACConfig_t pins) {
-    GPIOConfig_t config = {PIN_B0, PULL_DOWN, true, false, 0, false};
     for (uint8_t i = 0; i < MAX_DAC_PINS; i++) {
-		config.GPIOPin = pins.pinList[i];
-		GPIOInit(config);
+		if (pins.pinList[i] == PIN_COUNT) return;
+        GPIOConfig_t config = {
+            pins.pinList[i],
+            PULL_DOWN,
+            true,
+            false,
+            0,
+            false
+        };
+        GPIOInit(config);
     }
 }
 
@@ -34,10 +44,12 @@ void DACInit(DACConfig_t pins) {
  * DACOut outputs data to the relevant DAC pins set by DACInit.
  * @param pins The list of pins to write data to, in order of LSB to MSB.
  * @param data A value from 0 - 63. Scaled based on how many bits are part of the DAC.
+ * @note Assumes that the first pin that is invalid (PIN_COUNT) means all
+ *       following pins are invalid. 
  */
 void DACOut(DACConfig_t pins, uint8_t data) {
 	for (uint8_t i = 0; i < MAX_DAC_PINS; i++) {
-		uint8_t placeVal = (data>>i) & 0x1;
-		GPIOSetBit(pins.pinList[i], placeVal);
+		if (pins.pinList[i] == PIN_COUNT) return;
+        GPIOSetBitFast(pins.pinList[i], (data>>i) & 0x1);
     }
 }

@@ -4,7 +4,7 @@
  * Description: Low level drivers for SSI communication.
  * Authors: Matthew Yu.
  * Author: Matthew Yu
- * Last Modified: 03/10/21
+ * Last Modified: 03/13/21
  */
 #pragma once
 
@@ -39,6 +39,9 @@ typedef struct SSIConfig {
     /** Determines whether the SSI module is Primary or Secondary. */
     bool isPrimary;
 
+    /** Determines whether the SSI is either transmitting or receiving info. */
+    bool isTransmitting;
+
     /** The size of the SSI. From 4 (0x3) to 16 (0xF) bits. */
     uint8_t dataBitSize;
 } SSIConfig_t;
@@ -47,7 +50,6 @@ typedef struct SSIConfig {
  * SSIInit initializes a given SSI module. 
  * @param SSIConfig Configuration details of a given SSI module.
  * @note Potentially add the following parameters:
- *          - Set whether SSInClk pin is high when no data is transferred (p. 969)
  *          - Set whether SSI loopback mode is enabled (p. 972)
  *          - Add parameter in SSIConfig_t for bit rate and SysClk speed.
  *          Determine appropriate prescaler and bit rate selection in SSICR0.
@@ -66,6 +68,6 @@ uint16_t SPIRead(enum SSISelect ssi);
  * SPIWrite attempts to write data in the internal buffer. Busy
  * waits until the transmit buffer is not full.
  * @param ssi SSI to write into.
- * @param Right justified 16-bit data to write.
+ * @param data Right justified 16-bit data to write.
  */
 void SPIWrite(enum SSISelect ssi, uint16_t data);

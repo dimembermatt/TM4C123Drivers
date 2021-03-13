@@ -4,24 +4,21 @@
  * Description: Low level drivers for SSI communication. Also known as SSI.
  * Authors: Matthew Yu.
  * Author: Matthew Yu
- * Last Modified: 03/10/21
+ * Last Modified: 03/13/21
  */
 
 /** Device specific imports. */
 #include "SSI.h"
 #include <TM4C123Drivers/inc/RegDefs.h>
 #include <TM4C123Drivers/lib/GPIO/GPIO.h>
-#include <TM4C123Drivers/inc/tm4c123gh6pm.h>
 
 
 /**
  * SSIInit initializes a given SSI module. 
  * @param SSIConfig Configuration details of a given SSI module.
  * @note Potentially add the following parameters:
- *          - Set whether SSInClk pin is high when no data is transferred (p. 969)
  *          - Set whether SSI loopback mode is enabled (p. 972)
  *          - Add parameter in SSIConfig_t for bit rate and SysClk speed.
- *          - Set device to Receive or Transmit (but not both).
  *          Determine appropriate prescaler and bit rate selection in SSICR0.
  */
 void SSIInit(SSIConfig_t SSIConfig) {
@@ -75,10 +72,14 @@ void SSIInit(SSIConfig_t SSIConfig) {
         default:
             break;
     }
-    for (uint8_t i = 0; i < 4; i++) {
-        if (i != 2) /* TODO: remove when can select RX/TX mode. For now, hard code. */
-            GPIOInit(configs[i]);
-    }
+    GPIOInit(configs[0]);
+    GPIOInit(configs[1]);
+
+    /* Initialize RX or TX pin depending on whether we're transmitting or not.
+     * If you think you can keep both pins initialized, well, have fun for the
+     * next five hours wondering why your SSI DR is never written into. */ 
+    if (!SSIConfig.isTransmitting) GPIOInit(configs[2]);
+    else GPIOInit(configs[3]);
 
     /* 3. We'll generate the SSI offset to find the correct addresses for each
      * SSI module. */
@@ -97,11 +98,12 @@ void SSIInit(SSIConfig_t SSIConfig) {
      * SysClk. */ 
     GET_REG(SSI_BASE + SSIOffset + SSI_CPSR_OFFSET) = 0x00000008;
 
-    /* 8. Set Frame Format and N-bit data size. */
+    /* 8. Set Frame Format and N-bit data size. Also, force steady high when no
+       data is transferred. */
     GET_REG(SSI_BASE + SSIOffset + SSI_CR0_OFFSET) &= ~(0x0000FFFF);
     GET_REG(SSI_BASE + SSIOffset + SSI_CR0_OFFSET) |= 
         (SSIConfig.frameFormat << 4) | 
-        (0x1 << 6) |
+        (0x1 << 6) | 
         (SSIConfig.dataBitSize-1);
 
     /* 9. Re-enable SSI operation. */
@@ -129,24 +131,21 @@ uint16_t SPIRead(enum SSISelect ssi) {
     return GET_REG(SSI_BASE + SSIOffset + SSI_DR_OFFSET) & 0x00FF;
 }
 
-void EnableInterrupts(void);    // Defined in startup.s
-void DisableInterrupts(void);   // Defined in startup.s
-void WaitForInterrupt(void);    // Defined in startup.s
-
 /**
  * SPIWrite attempts to write data in the internal buffer. Busy
  * waits until the transmit buffer is not full.
  * @param ssi SSI to write into.
- * @param Right justified 16-bit data to write.
+ * @param data Right justified 16-bit data to write.
  */
 void SPIWrite(enum SSISelect ssi, uint16_t data) {
     /* We'll generate the SSI offset to find the correct addresses for each
      * SSI module. */
-	DisableInterrupts();
     uint32_t SSIOffset = 0x1000 * (ssi%4);
 
     /* Poll until Transmit FIFO is not full. */
     while ((GET_REG(SSI_BASE + SSIOffset + SSI_SR_OFFSET) & 0x2) == 0) {}
     GET_REG(SSI_BASE + SSIOffset + SSI_DR_OFFSET) = data;
-	EnableInterrupts();
+    /* TODO: 3/13/21 to future Matthew: add back in DisableInterrupts and
+     * EnableInterrupts here if Lab5 is still broken. We know that SSI must
+     * work... */
 }

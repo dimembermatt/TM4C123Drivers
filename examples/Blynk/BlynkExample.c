@@ -1,18 +1,22 @@
 /**
  * File name: BlynkExample.h
  * Devices: LM4F120; TM4C123
- * Description: Example program to demonstrate outputting audio from a speaker.
+ * Description: Example program to demonstrate setting the ST7735 screen color
+ * remotely from the Blynk application using the ESP8266.
  * Authors: Matthew Yu.
- * Last Modified: 03/04/21
+ * Last Modified: 03/13/21
  */
 
+/** General imports. */
+#include <string.h>
+#include <stdlib.h>
+
 /** Device specific imports. */
-#include <TM4C123Drivers/inc/tm4c123gh6pm.h>
 #include <TM4C123Drivers/inc/PLL.h>
-#include <TM4C123Drivers/inc/esp8266.h>
 #include <TM4C123Drivers/lib/ST7735/ST7735.h>
 #include <TM4C123Drivers/lib/Timers/Timers.h>
 #include <TM4C123Drivers/lib/Blynk/Blynk.h>
+
 
 void EnableInterrupts(void);    // Defined in startup.s
 void DisableInterrupts(void);   // Defined in startup.s
@@ -36,15 +40,17 @@ int main(void) {
     DisableInterrupts();
     ST7735Init();
     ST7735DrawString(0, 0, "EE445L Lab 4D Blynk", ST7735_WHITE, ST7735_BLACK);
-
-    ESP8266_Init();
-    ESP8266_Reset();
-    ESP8266_SetupWiFi();
-
+    BlynkInit();
     ST7735DrawString(0, 10, "Wifi connected.", ST7735_WHITE, ST7735_BLACK);
 
-    TimerInit(TIMER_0A, freqToPeriod(100, MAX_FREQ), retreiveInformation);
-    TimerInit(TIMER_1A, freqToPeriod(2, MAX_FREQ), sendInformation);
+	TimerConfig_t timers[2] = {
+        /* The first timer has keyed arguments notated to show you what each positional argument means. */
+		{.timerID=TIMER_0A, .period=freqToPeriod(100, MAX_FREQ), .isPeriodic=true, .priority=5, .handlerTask=retreiveInformation},
+		{         TIMER_1A,         freqToPeriod(2, MAX_FREQ),               true,           5,              sendInformation    },
+	};
+
+    TimerInit(timers[0]);
+    TimerInit(timers[1]);
 
 	EnableInterrupts();
 

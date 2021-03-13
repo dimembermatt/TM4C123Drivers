@@ -3,7 +3,7 @@
  * Devices: LM4F120; TM4C123
  * Description: Low level drivers for using onboard timers.
  * Authors: Matthew Yu.
- * Last Modified: 03/06/21
+ * Last Modified: 03/13/21
  **/
 
 /** General Imports. */
@@ -12,7 +12,6 @@
 
 /** Device specific imports. */
 #include "Timers.h"
-#include <TM4C123Drivers/inc/tm4c123gh6pm.h>
 #include <TM4C123Drivers/inc/RegDefs.h>
 
 
@@ -70,51 +69,76 @@ struct InterruptSettings interruptSettings[TIMER_COUNT] = {
     // {}, /* WTimer 4B. */
     // {}, /* WTimer 5A. */
     // {}, /* WTimer 5B. */
+
+    {INTA, 0, 0, 0, NULL}, /* SYSTICK. */
 };
 
 
 /**
  * TimerInit initializes an arbitrary timer with a handler function reference.
- * @param timer Enum identifying which timer to initialize.
- * @param period Reload time, in cycles.
- * @param handlerTask Function pointer to what should be called by the TimerXX_Handler.
- * @note Potentially add the following parameters:
+ * @param timer Configuration object for instantiating a new timer.
+ * @note Note that B-side timer functionality is currently broken, and WTimers
+ *       are not yet supported.
+ *       Use freqToPeriod() for frequency conversion.
+ *       Requires the EnableInterrupts() call if edge triggered interrupts are enabled.
+ *       By default the timer is priority 5, below SysTick.
+ * @dev  Potentially add the following parameters:
  *          - clock mode (i.e. 32-bit vs 16-bit config with CFG_R).
  *          - one shot vs periodic timer mode (TAMR, TBMR).
  *          - count down vs count up (TACDIR inside TAMR, TBCDIR inside TBMR).
  *          - Timer priority (NVIC).
- *       Requires the EnableInterrupts() call if edge triggered interrupts are enabled.
- *       By default the timer is priority 2, below SysTick.
  */
-void TimerInit(timer_t timer, uint32_t period, void (*handlerTask)(void)) {
-    /* Early return on invalid timer enum. */
-    if (timer == TIMER_COUNT) return;
+void TimerInit(TimerConfig_t timerConfig) {
+    uint8_t ID = timerConfig.timerID;
+
+    /* Early return on invalid timer enum or invalid priority. */
+    if (ID == TIMER_COUNT || timerConfig.priority > 0x7) return;
+
+	/* Assign the task to the appropriate handler. */
+    interruptSettings[ID].timerHandlerTask = timerConfig.handlerTask;
+	
+    /* Special case for SYSTICK. */
+    if (ID == SYSTICK) {	
+        /* Disable during setup. */
+        GET_REG(PERIPHERALS_BASE + SYSTICK_CTRL_OFFSET) = 0x00000000;
+
+        /* Set reload value. */
+        GET_REG(PERIPHERALS_BASE + SYSTICK_LOAD_OFFSET) = timerConfig.period - 1;
+
+        /* Clear current value. */
+        GET_REG(PERIPHERALS_BASE + SYSTICK_CURR_OFFSET) = 0x00000000;
+
+        /* Set priority. */
+        GET_REG(PERIPHERALS_BASE + SYS_PRI3_OFFSET) &= 0x00FFFFFF;
+        GET_REG(PERIPHERALS_BASE + SYS_PRI3_OFFSET) |= timerConfig.priority << 29;
+
+        /* Re-enable after setup. */
+        GET_REG(PERIPHERALS_BASE + SYSTICK_CTRL_OFFSET) = 0x00000007;
+        return;
+    }
 
     /* We'll generate the timer offset to find the correct addresses for each
      * timer. */
     uint32_t timerOffset = 0;
 
     /* Timers TIMER_0A to WTIMER_1B. */
-    if (timer < WTIMER_2A) timerOffset = 0x1000 * (uint32_t)(timer >> 1);
+    if (ID < WTIMER_2A) timerOffset = 0x1000 * (uint32_t)(ID >> 1);
 
     /* Timers WTIMER_2A to WTIMER_5B. Jump the base to 0x4004.C000. Our magic
      * number, 16, is the enumerated value of WTIMER_2A. */
-    else timerOffset = 0x1000 * (uint32_t)((timer-16) >> 1) + 0x0001C000;
-
-    /* Step 0. Assign the task to the appropriate handler. */
-    interruptSettings[timer].timerHandlerTask = handlerTask;
+    else timerOffset = 0x1000 * (uint32_t)((ID-16) >> 1) + 0x0001C000;
 
     /* Step 1. Activate the timer. */
-    if (timer <= TIMER_5B) { /* 16/32 bit normal timers. */
-        SYSCTL_RCGCTIMER_R |= (0x01 << (uint32_t)(timer >> 1));
+    if (ID <= TIMER_5B) { /* 16/32 bit normal timers. */
+        GET_REG(SYSCTL_BASE + SYSCTL_RCGCTIMER_OFFSET) |= (0x01 << (uint32_t)(ID >> 1));
     } else { /* 32/64 bit wide timers. */
         /* Our magic number 12, is the enumerated value of WTIMER_0A. */
-        SYSCTL_RCGCWTIMER_R |= (0x01 << (uint32_t)((timer-12) >> 1));
+        GET_REG(SYSCTL_BASE + SYSCTL_RCGCWTIMER_OFFSET) |= (0x01 << (uint32_t)((ID-12) >> 1)); 
     }
         
     /* Step 2. Disable timer during setup. */
     GET_REG(GPTM_BASE + timerOffset + GPTMCTL_OFFSET) &=
-        ((timer % 2) == 0) ? 0xFFFFFF00 : 0xFFFFFF00FF;
+        ((ID % 2) == 0) ? 0xFFFFFF00 : 0xFFFFFF00FF;
 
     /* Step 3. Configure for 32-bit mode. */
     GET_REG(GPTM_BASE + timerOffset + GPTMCFG_OFFSET) = 0x00000000;
@@ -122,123 +146,125 @@ void TimerInit(timer_t timer, uint32_t period, void (*handlerTask)(void)) {
     /* Step 4. Configure for periodic mode.
      * Step 5. Set reload value.
      * Step 6. Set prescaler to 1. */
-    if ((timer % 2) == 0) { /* Timer A. */
-        GET_REG(GPTM_BASE + timerOffset + GPTMTAMR_OFFSET)  = 0x00000002;
-        GET_REG(GPTM_BASE + timerOffset + GPTMTAILR_OFFSET) = period - 1;
+    if ((ID % 2) == 0) { /* Timer A. */
+        GET_REG(GPTM_BASE + timerOffset + GPTMTAMR_OFFSET)  = 
+            timerConfig.isPeriodic ? 0x00000002 : 0x00000001;
+        GET_REG(GPTM_BASE + timerOffset + GPTMTAILR_OFFSET) = timerConfig.period - 1;
         GET_REG(GPTM_BASE + timerOffset + GPTMTAPR_OFFSET)  = 0x00000000;
     } else { /* Timer B. */
-        GET_REG(GPTM_BASE + timerOffset + GPTMTBMR_OFFSET)  = 0x00000002;
-        GET_REG(GPTM_BASE + timerOffset + GPTMTBILR_OFFSET) = period - 1;
+        GET_REG(GPTM_BASE + timerOffset + GPTMTBMR_OFFSET)  =
+            timerConfig.isPeriodic ? 0x00000002 : 0x00000001;
+        GET_REG(GPTM_BASE + timerOffset + GPTMTBILR_OFFSET) = timerConfig.period - 1;
         GET_REG(GPTM_BASE + timerOffset + GPTMTBPR_OFFSET)  = 0x00000000;
     }
 
     /* Step 7. Clear timer timeout flag. */
     GET_REG(GPTM_BASE + timerOffset + GPTMICR_OFFSET) |=
-        ((timer % 2) == 0) ? TIMERXA_ICR_TATOCINT: TIMERXB_ICR_TATOCINT;
+        ((ID % 2) == 0) ? TIMERXA_ICR_TATOCINT: TIMERXB_ICR_TATOCINT;
 
     /* Step 8. Arm timeout interrupt. */
     GET_REG(GPTM_BASE + timerOffset + GPTMIMR_OFFSET) |=
-        ((timer % 2) == 0) ? 0x00000001 : 0x00000100;
+        ((ID % 2) == 0) ? 0x00000001 : 0x00000100;
 
-    /* Step 9. Set timer to interrupt priority 2. */
+    /* Step 9. Set timer interrupt priority. */
     uint32_t mask = 0xFFFFFFFF;
-    uint32_t intVal = 0x40;
+    uint32_t intVal = timerConfig.priority << 5;
 
     /* Our magic number is 8 since to shift a hex value one hex position, we do
      * 4 binary shifts. To do it twice; 8 binary shifts. Our output should
      * something like this for priority 2: 0xFF00FFFF, 0x00400000. */
-    mask &= ~(0xFF << (interruptSettings[timer].priorityIdx * 8));
-    intVal = intVal << (interruptSettings[timer].priorityIdx * 8);
-    (*interruptSettings[timer].NVIC_PRI_ADDR) = 
-        ((*interruptSettings[timer].NVIC_PRI_ADDR)&mask)|intVal;
+    mask &= ~(0xFF << (interruptSettings[ID].priorityIdx * 8));
+    intVal = intVal << (interruptSettings[ID].priorityIdx * 8);
+    (*interruptSettings[ID].NVIC_PRI_ADDR) = 
+        ((*interruptSettings[ID].NVIC_PRI_ADDR)&mask)|intVal;
     
     /* Step 10. Enable IRQ X in NVIC. */
-    (*interruptSettings[timer].NVIC_EN_ADDR) = 1 << interruptSettings[timer].IRQ;
+    (*interruptSettings[ID].NVIC_EN_ADDR) = 1 << interruptSettings[ID].IRQ;
 
     /* Step 11. Enable timer after setup. */
     GET_REG(GPTM_BASE + timerOffset + GPTMCTL_OFFSET) |=
-        ((timer % 2) == 0) ? 0x00000001 : 0x00000100;
+        ((ID % 2) == 0) ? 0x00000001 : 0x00000100;
 }
 
 void Timer0A_Handler(void) {
-    TIMER0_ICR_R |= TIMERXA_ICR_TATOCINT;
+    GET_REG(GPTM_BASE + GPTMICR_OFFSET) |= TIMERXA_ICR_TATOCINT;
     if (interruptSettings[0].timerHandlerTask != NULL) {
         interruptSettings[0].timerHandlerTask();
     }
 }
 
 void Timer0B_Handler(void) {
-    TIMER0_ICR_R |= TIMERXB_ICR_TATOCINT;
+    GET_REG(GPTM_BASE + GPTMICR_OFFSET) |= TIMERXB_ICR_TATOCINT;
     if (interruptSettings[1].timerHandlerTask != NULL) {
         interruptSettings[1].timerHandlerTask();
     }
 }
 
 void Timer1A_Handler(void) {
-    TIMER1_ICR_R |= TIMERXA_ICR_TATOCINT;
+    GET_REG(GPTM_BASE + 0x1000 + GPTMICR_OFFSET) |= TIMERXA_ICR_TATOCINT;
     if (interruptSettings[2].timerHandlerTask != NULL) {
         interruptSettings[2].timerHandlerTask();
     }
 }
 
 void Timer1B_Handler(void) {
-    TIMER1_ICR_R |= TIMERXB_ICR_TATOCINT;
+    GET_REG(GPTM_BASE + 0x1000 + GPTMICR_OFFSET) |= TIMERXB_ICR_TATOCINT;
     if (interruptSettings[3].timerHandlerTask != NULL) {
         interruptSettings[3].timerHandlerTask();
     }
 }
 
 void Timer2A_Handler(void) {
-    TIMER2_ICR_R |= TIMERXA_ICR_TATOCINT;
+    GET_REG(GPTM_BASE + 0x2000 + GPTMICR_OFFSET) |= TIMERXA_ICR_TATOCINT;
     if (interruptSettings[4].timerHandlerTask != NULL) {
         interruptSettings[4].timerHandlerTask();
     }
 }
 
 void Timer2B_Handler(void) {
-    TIMER2_ICR_R |= TIMERXB_ICR_TATOCINT;
+    GET_REG(GPTM_BASE + 0x2000 + GPTMICR_OFFSET) |= TIMERXB_ICR_TATOCINT;
     if (interruptSettings[5].timerHandlerTask != NULL) {
         interruptSettings[5].timerHandlerTask();
     }
 }
 
 void Timer3A_Handler(void) {
-    TIMER3_ICR_R |= TIMERXA_ICR_TATOCINT;
+    GET_REG(GPTM_BASE + 0x3000 + GPTMICR_OFFSET) |= TIMERXA_ICR_TATOCINT;
     if (interruptSettings[6].timerHandlerTask != NULL) {
         interruptSettings[6].timerHandlerTask();
     }
 }
 
 void Timer3B_Handler(void) {
-    TIMER3_ICR_R |= TIMERXB_ICR_TATOCINT;
+    GET_REG(GPTM_BASE + 0x3000 + GPTMICR_OFFSET) |= TIMERXB_ICR_TATOCINT;
     if (interruptSettings[7].timerHandlerTask != NULL) {
         interruptSettings[7].timerHandlerTask();
     }
 }
 
 void Timer4A_Handler(void) {
-    TIMER4_ICR_R |= TIMERXA_ICR_TATOCINT;
+    GET_REG(GPTM_BASE + 0x4000 + GPTMICR_OFFSET) |= TIMERXA_ICR_TATOCINT;
     if (interruptSettings[8].timerHandlerTask != NULL) {
         interruptSettings[8].timerHandlerTask();
     }
 }
 
 void Timer4B_Handler(void) {
-    TIMER4_ICR_R |= TIMERXB_ICR_TATOCINT;
+    GET_REG(GPTM_BASE + 0x4000 + GPTMICR_OFFSET) |= TIMERXB_ICR_TATOCINT;
     if (interruptSettings[9].timerHandlerTask != NULL) {
         interruptSettings[9].timerHandlerTask();
     }
 }
 
-// void Timer5A_Handler(void) {
-//     TIMER5_ICR_R |= TIMERXA_ICR_TATOCINT;
-//     if (interruptSettings[10].timerHandlerTask != NULL) {
-//         interruptSettings[10].timerHandlerTask();
-//     }
-// }
+void Timer5A_Handler(void) {
+    GET_REG(GPTM_BASE + 0x5000 + GPTMICR_OFFSET) |= TIMERXA_ICR_TATOCINT;
+    if (interruptSettings[10].timerHandlerTask != NULL) {
+        interruptSettings[10].timerHandlerTask();
+    }
+}
 
 void Timer5B_Handler(void) {
-    TIMER5_ICR_R |= TIMERXB_ICR_TATOCINT;
+    GET_REG(GPTM_BASE + 0x5000 + GPTMICR_OFFSET) |= TIMERXB_ICR_TATOCINT;
     if (interruptSettings[11].timerHandlerTask != NULL) {
         interruptSettings[11].timerHandlerTask();
     }
@@ -256,6 +282,12 @@ void WideTimer4A_Handler(void) {}
 void WideTimer4B_Handler(void) {}
 void WideTimer5A_Handler(void) {}
 void WideTimer5B_Handler(void) {}
+
+void SysTick_Handler(void) {
+    if (interruptSettings[24].timerHandlerTask != NULL) {
+        interruptSettings[24].timerHandlerTask();
+    }
+}
 
 /**
  * freqToPeriod converts a desired frequency into the equivalent period in

@@ -102,3 +102,7 @@ void GPIOSetBit(pin_t pin, bool value);
  * @return value 0 (false) or 1 (true) value of the pin.
  */
 bool GPIOGetBit(pin_t pin);
+
+bool GPIOGetBitFast(pin_t pin);
+
+void GPIOSetBitFast(pin_t pin, bool val);

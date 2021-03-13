@@ -3,18 +3,21 @@
  * Devices: LM4F120; TM4C123
  * Description: Low level drivers for using onboard timers.
  * Authors: Matthew Yu.
- * Last Modified: 03/06/21
+ * Last Modified: 03/13/21
  **/
 #pragma once
 
 /** General imports. */
 #include <stdint.h>
+#include <stdbool.h>
 
 
-#define MAX_FREQ 80000000 // 80 MHz
+#define MAX_FREQ 80000000 /** 80 MHz. */
 
-/** Enumerator defining all possible timers sans SysTick. */
-typedef enum {
+/** Our handler type used by timers. */
+typedef void (*handlerFunctionPtr_t)(void);
+/** Enumerator defining all possible timers, including SysTick. */
+enum TimerID {
     TIMER_0A, TIMER_0B,
     TIMER_1A, TIMER_1B,
     TIMER_2A, TIMER_2B,
@@ -27,21 +30,44 @@ typedef enum {
     WTIMER_3A, WTIMER_3B,
     WTIMER_4A, WTIMER_4B,
     WTIMER_5A, WTIMER_5B,
-    TIMER_COUNT,
-} timer_t;
+    SYSTICK, TIMER_COUNT,
+};
+
+typedef struct TimerConfig {
+    /* Timer to setup. */
+    enum TimerID timerID;
+
+    /* Timer reload time, in cycles. */
+    uint32_t period;
+
+    /* Whether the Timer executes continuously or not. */
+    bool isPeriodic;
+
+    /* Timer priority. From 0 - 7. Lower is higher priority. */
+    uint8_t priority;
+    
+    /* Task executed when Timer interrupts. */
+    void (*handlerTask)(void);
+} TimerConfig_t;
 
 /**
  * TimerInit initializes an arbitrary timer with a handler function reference.
  * @param timer       Enum identifying which timer to initialize.
- * @param period      Reload time, in cycles.
+ * @param period      Reload time, in cycles. 
  * @param handlerTask Function pointer to what should be called by the
  *                    TimerXX_Handler. 
- * @note Note the following potential conflicts:
- *       - The TExaS scope (Texas.c) uses Timer5A.
- *       Note that B-side timer functionality is currently broken, and WTimers
+ * @note Note that B-side timer functionality is currently broken, and WTimers
  *       are not yet supported.
+ *       Use freqToPeriod() for frequency conversion.
+ *       Requires the EnableInterrupts() call if edge triggered interrupts are enabled.
+ *       By default the timer is priority 5, below SysTick.
+ * @dev  Potentially add the following parameters:
+ *          - clock mode (i.e. 32-bit vs 16-bit config with CFG_R).
+ *          - one shot vs periodic timer mode (TAMR, TBMR).
+ *          - count down vs count up (TACDIR inside TAMR, TBCDIR inside TBMR).
+ *          - Timer priority (NVIC).
  */
-void TimerInit(timer_t timer, uint32_t period, void (*handlerTask)(void));
+void TimerInit(TimerConfig_t timerConfig);
 
 /** Handler definitions for normal timers. */
 void Timer0A_Handler(void);
@@ -73,9 +99,10 @@ void WideTimer5B_Handler(void);
 
 /**
  * freqToPeriod converts a desired frequency into the equivalent period in
- * cycles given the base system clock. Rounded up
+ * cycles given the base system clock, rounded up.
  * @param freq Desired frequency.
- * @param maxFreq Base clock frequency. If freq > maxFreq, period = 0 (an error).
+ * @param maxFreq Base clock frequency. 
  * @return Output period, in cycles.
+ * @note If freq > maxFreq, the period 0 is returned (an error).
  */ 
 uint32_t freqToPeriod(uint32_t freq, uint32_t maxFreq);
