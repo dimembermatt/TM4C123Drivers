@@ -106,9 +106,6 @@ void GPIOInit(GPIOConfig_t pinConfig) {
  * @param pin Pin to set. Assumes it's an output.
  * @param value 0 (false) or 1 (true) value to set pin to.
  */
-void EnableInterrupts(void);    // Defined in startup.s
-void DisableInterrupts(void);   // Defined in startup.s
-void WaitForInterrupt(void);    // Defined in startup.s
 void GPIOSetBit(pin_t pin, bool value) {
     /* Early return on invalid pin_t value. */
     if (pin >= PIN_COUNT) return;
@@ -123,6 +120,7 @@ void GPIOSetBit(pin_t pin, bool value) {
     uint8_t pinAddress = pow(2, pin % 8);
 
 	uint8_t val = value ? pow(2, pin % 8) : 0;
+
     GET_REG(GPIO_PORT_BASE + portOffset + (pinAddress << 2)) = val;
 }
 
@@ -154,5 +152,100 @@ bool GPIOGetBit(pin_t pin) {
     /* 2. Determine the pin address. I.E. PF1 (41) % 8 = 1. */
     uint8_t pinAddress = pow(2, pin % 8);
 
-    return GET_REG(GPIO_PORT_BASE + portOffset + (pinAddress << 2));
+    bool val = false;
+    val = GET_REG(GPIO_PORT_BASE + portOffset + (pinAddress << 2));
+    return val;
+}
+
+
+bool GPIOGetBitFast(pin_t pin) {
+    switch (pin) {
+        case PIN_F1:
+            return GET_REG(0x40025008);
+        case PIN_F2:
+            return GET_REG(0x40025010);
+        default:
+            return false;
+    }
+}
+
+void GPIOSetBitFast(pin_t pin, bool val) {
+    switch (pin) {
+		case PIN_A0:
+            GET_REG(0x40004004) = val;
+			break;
+        case PIN_A1:
+            GET_REG(0x40004008) = val << 1;
+            break;
+        case PIN_A2:
+            GET_REG(0x40004010) = val << 2;
+            break;
+		case PIN_A3:
+            GET_REG(0x40004020) = val << 3;
+			break;
+        case PIN_A4:
+            GET_REG(0x40004040) = val << 4;
+            break;
+        case PIN_A5:
+            GET_REG(0x40004080) = val << 5;
+            break;
+        case PIN_A6:
+            GET_REG(0x40004100) = val << 6;
+            break;
+        case PIN_A7:
+            GET_REG(0x40004200) = val << 7;
+            break;
+
+		case PIN_B0:
+            GET_REG(0x40005004) = val;
+			break;
+        case PIN_B1:
+            GET_REG(0x40005008) = val << 1;
+            break;
+        case PIN_B2:
+            GET_REG(0x40005010) = val << 2;
+            break;
+		case PIN_B3:
+            GET_REG(0x40005020) = val << 3;
+			break;
+        case PIN_B4:
+            GET_REG(0x40005040) = val << 4;
+            break;
+        case PIN_B5:
+            GET_REG(0x40005080) = val << 5;
+            break;
+        case PIN_B6:
+            GET_REG(0x40005100) = val << 6;
+            break;
+        case PIN_B7:
+            GET_REG(0x40005200) = val << 7;
+            break;
+		
+		case PIN_F0:
+            GET_REG(0x40025004) = val;
+			break;
+        case PIN_F1:
+            GET_REG(0x40025008) = val << 1;
+            break;
+        case PIN_F2:
+            GET_REG(0x40025010) = val << 2;
+            break;
+		case PIN_F3:
+            GET_REG(0x40025020) = val << 3;
+			break;
+        case PIN_F4:
+            GET_REG(0x40025040) = val << 4;
+            break;
+        case PIN_F5:
+            GET_REG(0x40025080) = val << 5;
+            break;
+        case PIN_F6:
+            GET_REG(0x40025100) = val << 6;
+            break;
+        case PIN_F7:
+            GET_REG(0x40025200) = val << 7;
+            break;
+        default:
+            break;
+    }
 }

@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>Blynk</TargetName>
+      <TargetName>SSI</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>5060960::V5.06 update 7 (build 960)::.\ARMCC</pCCUsed>
@@ -49,7 +49,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\</OutputDirectory>
-          <OutputName>Blynk</OutputName>
+          <OutputName>SSI</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -394,59 +394,29 @@
               <FilePath>..\..\inc\PLL.c</FilePath>
             </File>
             <File>
-              <FileName>Timers.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\lib\Timers\Timers.c</FilePath>
-            </File>
-            <File>
-              <FileName>ST7735.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\lib\ST7735\ST7735.c</FilePath>
-            </File>
-            <File>
-              <FileName>UART0int.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\inc\UART0int.c</FilePath>
-            </File>
-            <File>
-              <FileName>BlynkExample.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\BlynkExample.c</FilePath>
-            </File>
-            <File>
-              <FileName>esp8266.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\inc\esp8266.c</FilePath>
-            </File>
-            <File>
-              <FileName>Font.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\lib\Miscellaneous\Font.c</FilePath>
-            </File>
-            <File>
               <FileName>Misc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\lib\Miscellaneous\Misc.c</FilePath>
             </File>
             <File>
-              <FileName>Blynk.c</FileName>
+              <FileName>Timers.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\lib\Blynk\Blynk.c</FilePath>
+              <FilePath>..\..\lib\Timers\Timers.c</FilePath>
             </File>
             <File>
-              <FileName>DAC.c</FileName>
+              <FileName>SSIExample.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\lib\DAC\DAC.c</FilePath>
-            </File>
-            <File>
-              <FileName>GPIO.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\lib\GPIO\GPIO.c</FilePath>
+              <FilePath>.\SSIExample.c</FilePath>
             </File>
             <File>
               <FileName>SSI.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\lib\SSI\SSI.c</FilePath>
+            </File>
+            <File>
+              <FileName>GPIO.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\lib\GPIO\GPIO.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -463,7 +433,7 @@
       <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.0.2" condition="ARMv6_7_8-M Device">
         <package name="CMSIS" schemaVersion="1.3" url="http://www.keil.com/pack/" vendor="ARM" version="5.2.0"/>
         <targetInfos>
-          <targetInfo name="Blynk"/>
+          <targetInfo name="SSI"/>
         </targetInfos>
       </component>
     </components>

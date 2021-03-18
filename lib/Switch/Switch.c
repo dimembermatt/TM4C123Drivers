@@ -4,7 +4,7 @@
  * Description: Low level drivers for onboard and offboard switches. Performs
  * internal debounceing.
  * Authors: Matthew Yu.
- * Last Modified: 03/10/21
+ * Last Modified: 03/13/21
  * TODO: update interrupts and handlers to use any generic pin provided. Remove
  * tm4c123gh6pm.
  */
@@ -67,7 +67,7 @@ void SwitchInit(pin_t pin, void (*touchTask)(void), void (*releaseTask)(void)) {
     /* 1. Generate the config. */
     GPIOConfig_t pinConfig = {pin, PULL_DOWN, false, false, 0, false};
 
-    /* 2. Enable pull up resistors for PF0 and PF4. */
+    /* 2. Enable pull up resistors for PF0 and PF4 by default. */
     if (pin == PIN_F0 || pin == PIN_F4) pinConfig.GPIOPull = PULL_UP;
 
     /* 3. Initialize the GPIO. */
@@ -115,21 +115,30 @@ void SwitchInit(pin_t pin, void (*touchTask)(void), void (*releaseTask)(void)) {
     switchConfig[pin % 8].releaseTask = releaseTask;
 }
 
+
+/* TODO: implement these. It might make sense to consolidate this into GPIO for
+any sort of pin HW interrupt. */
+void GPIOPortA_Handler(void) {}
+void GPIOPortB_Handler(void) {}
+void GPIOPortC_Handler(void) {}
+void GPIOPortD_Handler(void) {}
+void GPIOPortE_Handler(void) {}
+
 /** Internal handler to manage switch interrupts. Can conflict with duplicate GPIOPortFHandlers. */
 void GPIOPortF_Handler(void) {
-    // Find which pin triggered an interrupt. Could be multiple at once.
+    /* Find which pin triggered an interrupt. Could be multiple at once. */
     for (uint8_t i = 0; i < 8; i++) {
         if (GPIO_PORTF_RIS_R & (0x1 << i)) {
-            // Acknowledge interrupt flag.
+            /* Acknowledge interrupt flag. */
             GPIO_PORTF_ICR_R |= 0x1 << i;
 
-            // Figure out if rising or falling edge by reading the data register.
+            /* Figure out if rising or falling edge by reading the data register. */
             if (SwitchGetValue((pin_t) i) == 1 && switchConfig[i].status == LOWERED) {
-                // Rising edge.
+                /* Rising edge. */
                 switchConfig[i].touchTask();
                 switchConfig[i].status = RAISED;
             } else if (SwitchGetValue((pin_t) i) == 0 && switchConfig[i].status == RAISED){
-                // Falling edge.
+                /* Falling edge. */
                 switchConfig[i].releaseTask();
                 switchConfig[i].status = LOWERED;
             }
@@ -137,12 +146,14 @@ void GPIOPortF_Handler(void) {
     }
 }
 
+
+
+
 /**
  * SwitchGetValue gets the current value of the switch. Useful for 
  * @param pin Pin that switch is tied to.
  * @return False if pressed, True if released.
  */
 uint8_t SwitchGetValue(pin_t pin) {
-    uint8_t pinAddress = pow(2, pin % 8);
-    return (~GPIO_PORTF_DATA_R & pinAddress) >> (pin % 8);
+    return GPIOGetBit(pin);
 }

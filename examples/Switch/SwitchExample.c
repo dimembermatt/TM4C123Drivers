@@ -3,7 +3,7 @@
  * Devices: LM4F120; TM4C123
  * Description: Example program to demonstrate the capabilities of edge triggered switches.
  * Authors: Matthew Yu.
- * Last Modified: 03/03/21
+ * Last Modified: 03/13/21
  */
 
 /** General imports. */
@@ -28,7 +28,6 @@ void dummyTaskFalling(void) {
     ++fallingCounter;
 }
 
-/** Initializes both onboard switches to test triggers. */
 int main(void) {
     PLL_Init(Bus80MHz);
     DisableInterrupts();
@@ -39,8 +38,9 @@ int main(void) {
     EnableInterrupts();
 
     while (1) {
-        // View in debugging mode with risingCounter and fallingCounter added to watch 1.
-        // Press SW2 (right button) to see counter increment.
+        /* View in debugging mode with risingCounter and fallingCounter added to
+         * watch 1. Press SW2 (right button) and SW1 (left button) to see
+         * counters increment. */
         WaitForInterrupt();
     };
 }

@@ -5,21 +5,16 @@
  * the TM4C123 and ESP8266.
  * Authors: Authored by Mark McDermott, Andrew Lynch, Jonathan Valvano, and
  * adapted by Matthew Yu.
- * Last Modified: 03/04/21
+ * Last Modified: 03/13/21
  */
 #pragma once
 
 /** General imports. */
 #include <stdint.h>
-#include <string.h>
-#include <stdlib.h>
 
-/** Device specific imports. */
-#include <TM4C123Drivers/inc/tm4c123gh6pm.h>
-#include <TM4C123Drivers/inc/PLL.h>
-#include <TM4C123Drivers/lib/Timers/Timers.h>
-#include <TM4C123Drivers/inc/UART.h> // TODO: convert into lib later.
-#include <TM4C123Drivers/inc/esp8266.h> // TODO: convert into lib later.
+
+/** Initializes the ESP8266 to communicate with the Blynk application. */
+void BlynkInit(void);
 
 /**
  * TM4CtoBlynk sends data to the Blynk app.

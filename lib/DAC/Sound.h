@@ -17,44 +17,45 @@
 #include <TM4C123Drivers/lib/Timers/Timers.h>
 
 
-#define MAX_SOUND_ELEM 32
+#define MAX_SOUND_ELEM 16
 
-/** Enumerator defining how the output format of the sound should be. */
-enum PlayerSource { R_DAC, SPI_DAC };
 
 /** 
  * Sound configuration specifying the SSI or DAC that needs to be initialized.
  */
-union SoundConfig {
-    /** GPIO pin configuration. See DAC.h for more details. */
-    DACConfig_t pins;
+struct SoundConfig {
+	/** Enumerator defining how the output format of the sound should be. */
+	enum PlayerSource { R_DAC, SPI_DAC } source;
+	
+	union {
+	    /** GPIO pin configuration. See DAC.h for more details. */
+		DACConfig_t pins;
 
-    /** SSI configuration. See SSI.h for more details. */
-    SSIConfig_t ssi;
+		/** SSI configuration. See SSI.h for more details. */
+		SSIConfig_t ssi;
+	} config;
 };
 
+void setCycle(void);
+
 /**
- * initializeSoundPlayer sets up the timer and configures the output. 
- * Utilizes timer 2a for interrupts. Requires calling EnableInterrupts() 
- * after initialization. Maximum 12.5 kHz frequency.
- * @param playerSource The output format of the audio R_DAC (resistor based DAC)
- *                     or SPI_DAC (SPI based DAC).
+ * initializeSoundPlayer sets up the timer and configures the output.
+ * @param soundConfig The output format of the audio. Requires calling 
+ * EnableInterrupts() after initialization.
  */
-void initializeSoundPlayer(enum PlayerSource playerSource);
+void initializeSoundPlayer(struct SoundConfig soundConfig);
 
 /**
  * playSound plays a tone at a specified frequency and envelope for the provided
- * pins. Utilizes Timer 2A for interrupts. Requires calling EnableInterrupts()
- * after initialization.
+ * pins.
  * @param id        Identifier of the sound being played. Up to 5 unique
  *                  identifiers can be played. Useful for playing multiple
- *                  sounds at once.
- * @param freq      Frequency of the sound being played. Up to 12.5 kHz.
- * @param waveform  Reference to a 32 entry waveform where each entry is a value
- *                  from 0 to 4096. Should have the sound envelope pre-applied.
- * @param config    Configuration. Either a DACConfig_t or SSIConfig_t.
+ *                  sounds at once. -1 is an invalid ID.
+ * @param freq      Frequency of the sound being played. Up to 12kHz.
+ * @param waveform  Reference to a 16 entry waveform where each entry is a value
+ *                  from 0 to 4096. Sound envelope.
  */
-void playSound(uint8_t id, uint32_t freq, uint16_t* waveform, union SoundConfig config);
+void playSound(int8_t id, uint32_t freq, uint16_t* waveform);
 
 /**
  * stopSound stops a tone from playing with a given id.

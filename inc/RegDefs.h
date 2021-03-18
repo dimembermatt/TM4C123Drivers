@@ -95,18 +95,23 @@
 #define NVIC_PRI32_OFFSET   0x480
 #define NVIC_PRI33_OFFSET   0x484
 #define NVIC_PRI34_OFFSET   0x488
+#define SYSTICK_CTRL_OFFSET 0x010
+#define SYSTICK_LOAD_OFFSET 0x014
+#define SYSTICK_CURR_OFFSET 0x018
+#define SYS_PRI3_OFFSET     0xD20
 
 /**
  * See Table 5-8. System Control Register Map on p. 232 of the TM4C Datasheet
  * for more details.
  */
-#define SYSCTL_BASE             0x400FE000
-#define SYSCTL_RCGCTIMER_OFFSET 0x604
-#define SYSCTL_RCGCGPIO_OFFSET  0x608
-#define SYSCTL_RCGCSSI_OFFSET   0x61C
-#define SYSCTL_PRTIMER_OFFSET   0xA04
-#define SYSCTL_PRGPIO_OFFSET    0xA08
-#define SYSCTL_PRSSI_OFFSET     0xA1C
+#define SYSCTL_BASE                 0x400FE000
+#define SYSCTL_RCGCTIMER_OFFSET     0x604
+#define SYSCTL_RCGCGPIO_OFFSET      0x608
+#define SYSCTL_RCGCSSI_OFFSET       0x61C
+#define SYSCTL_RCGCWTIMER_OFFSET    0x65C
+#define SYSCTL_PRTIMER_OFFSET       0xA04
+#define SYSCTL_PRGPIO_OFFSET        0xA08
+#define SYSCTL_PRSSI_OFFSET         0xA1C
 
 /** 
  * See Table 10-6. GPIO Register Map on p. 660 of the TM4C Datasheet for more
