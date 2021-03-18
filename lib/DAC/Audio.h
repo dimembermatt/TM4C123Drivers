@@ -16,82 +16,85 @@
 #include "Sound.h"
 
 /** TODO: convert into frequency instead of period. */
-#define C1	19112
-#define Cs1	18040
-#define Df1	18040
-#define D1	17028
-#define Ds1	16072
-#define Ef1	16072
-#define E1	15168
-#define F1	14316
-#define Fs1	13512
-#define Gf1	13512
-#define G1	12756
-#define Gs1	12040
-#define Af1	1204
-#define A1	11364
-#define As1	10724
-#define Bf1	10724
-#define B1	10124
+#define C1	33
+#define Cs1	35
+#define Df1	35
+#define D1	37
+#define Ds1	39
+#define Ef1	39
+#define E1	41
+#define F1	44
+#define Fs1	46
+#define Gf1	46
+#define G1	49
+#define Gs1	52
+#define Af1	52
+#define A1	55
+#define As1	58
+#define Bf1	58
+#define B1	62
 
-#define C2	9556
-#define Cs2	9020
-#define Df2	9020
-#define D2	8514
-#define Ds2	8036
-#define Ef2	8036
-#define E2	7584
-#define F2	7158
-#define Fs2	6756
-#define Gf2	6756
-#define G2	6378
-#define Gs2	6020
-#define Af2	6020
-#define A2	5682
-#define As2	5362
-#define Bf2	5362
-#define B2	5062
+#define C2	65
+#define Cs2	69
+#define Df2	69
+#define D2	73
+#define Ds2	78
+#define Ef2	78
+#define E2	82
+#define F2	87
+#define Fs2	93
+#define Gf2	93
+#define G2	98
+#define Gs2	104
+#define Af2	104
+#define A2	110
+#define As2	117
+#define Bf2	117
+#define B2	123
 
-#define C3	4778
-#define Cs3	4510
-#define Df3	4510
-#define D3	4257
-#define Ds3	4018
-#define Ef3	4018
-#define E3	3792
-#define F3	3579
-#define Fs3	3378
-#define Gf3	3378
-#define G3	3189
-#define Gs3	3010
-#define Af3	3010
-#define A3	2841
-#define As3	2681
-#define Bf3	2681
-#define B3	2531
+#define C3	131
+#define Cs3	139
+#define Df3	139
+#define D3	147
+#define Ds3	156
+#define Ef3	156
+#define E3	165
+#define F3	175
+#define Fs3	185
+#define Gf3	185
+#define G3	196
+#define Gs3	208
+#define Af3	208
+#define A3	220
+#define As3	233
+#define Bf3	233
+#define B3	245
 
-#define C4	262 /* Done for you. */
-#define Cs4	2255
-#define Df4	2255
-#define D4	2129
-#define Ds4	2009
-#define Ef4	2009
-#define E4	1896
-#define F4	1790
-#define Fs4	1689
-#define Gf4	1689
-#define G4	1595
-#define Gs4	1505
-#define Af4	1505
-#define A4	1421
-#define As4	1341
-#define Bf4	1341
-#define B4	1266
+#define C4	262 
+#define Cs4	277
+#define Df4	277
+#define D4	294
+#define Ds4	311
+#define Ef4	311
+#define E4	330
+#define F4	349
+#define Fs4	370
+#define Gf4	370
+#define G4	392
+#define Gs4	415
+#define Af4	415
+#define A4	440
+#define As4	466
+#define Bf4	466
+#define B4	494
 
-#define C5	1195
+#define C5	523
+
+
+
 
 enum NoteLength { 
-    NONE, 
+    REST, 
     sixteenth, 
     eighth, 
     quarter, 
@@ -105,15 +108,17 @@ typedef struct Note {
     enum NoteLength length;
 } Note_t;
 
+
+
 /** 
  * playNote
  */
-void playNote(Note_t t, uint8_t track);
+void playNote(Note_t t, Note_t track[]);
 
 /**
  * trackqueue1 note1 note2 note3
  * trackqueue2 note4
  * trackqueue3 note5
  */
-bool isQueueFull(uint8_t track);
-bool isQueueEmpty(uint8_t track);
+bool isQueueFull(Note_t track[]);
+bool isQueueEmpty(Note_t track[]);

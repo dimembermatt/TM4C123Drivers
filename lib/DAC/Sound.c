@@ -80,7 +80,7 @@ void initializeSoundPlayer(enum PlayerSource playerSource) {
  *                  from 0 to 4096. Sound envelope.
  * @param config    Configuration. Either a DACConfig_t or SSIConfig_t.
  */
-void playSound(int8_t id, uint32_t freq, uint16_t* waveform, union SoundConfig config) {
+void playSound(uint8_t id, uint32_t freq, uint16_t* waveform, union SoundConfig config) {
     /* Exit early if the maximum number of sounds are already configured. */
     if (soundsConfigured == MAX_SOUNDS) return;    
 
