@@ -1,6 +1,8 @@
 # TM4C123Drivers
 
-This repository contains a selection of drivers originally written by Jonathan Valvano and refactored by Matthew Yu for the Spring 2021 EE445L course. Some inspiration taken from IEEE RAS' [RASWare](https://github.com/ut-ras/Rasware).
+This repository contains a selection of drivers originally written by Jonathan Valvano and refactored by Matthew Yu. Some inspiration taken from IEEE RAS' [RASWare](https://github.com/ut-ras/Rasware).
+
+This is meant to be a future replacement for RASWare, with its own CLI build system and higher level drivers for devices such as color sensors, line sensors, and so on.
 
 ---
 
