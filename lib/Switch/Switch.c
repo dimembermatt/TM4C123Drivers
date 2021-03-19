@@ -42,14 +42,14 @@ struct SwitchConfig {
 
 /** Array of potential switch configurations. */
 static struct SwitchConfig switchConfig[] = {
-    PIN_F0, NULL, NULL, LOWERED,
-    PIN_F1, NULL, NULL, LOWERED,
-    PIN_F2, NULL, NULL, LOWERED,
-    PIN_F3, NULL, NULL, LOWERED,
-    PIN_F4, NULL, NULL, LOWERED,
-    PIN_F5, NULL, NULL, LOWERED,
-    PIN_F6, NULL, NULL, LOWERED,
-    PIN_F7, NULL, NULL, LOWERED,
+    {PIN_F0, NULL, NULL, LOWERED},
+    {PIN_F1, NULL, NULL, LOWERED},
+    {PIN_F2, NULL, NULL, LOWERED},
+    {PIN_F3, NULL, NULL, LOWERED},
+    {PIN_F4, NULL, NULL, LOWERED},
+    {PIN_F5, NULL, NULL, LOWERED},
+    {PIN_F6, NULL, NULL, LOWERED},
+    {PIN_F7, NULL, NULL, LOWERED},
 };
 
 /**

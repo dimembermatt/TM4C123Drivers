@@ -404,11 +404,6 @@
               <FilePath>..\..\lib\Timers\Timers.c</FilePath>
             </File>
             <File>
-              <FileName>Texas.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\inc\Texas.c</FilePath>
-            </File>
-            <File>
               <FileName>CortexM.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\inc\CortexM.c</FilePath>
@@ -436,7 +431,7 @@
             <File>
               <FileName>Misc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\lib\Miscellaneous\Misc.c</FilePath>
+              <FilePath>..\..\lib\Misc\Misc.c</FilePath>
             </File>
             <File>
               <FileName>SoundExample.c</FileName>

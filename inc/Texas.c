@@ -28,7 +28,7 @@
 #include <stdint.h>
 #include "../inc/CortexM.h"
 #include "../inc/tm4c123gh6pm.h"
-#include "../inc/TExaS.h"
+#include "../inc/Texas.h"
 #include "../inc/PLL.h"
 
 char volatile LogicData;

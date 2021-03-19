@@ -10,7 +10,7 @@
 #include <TM4C123Drivers/inc/tm4c123gh6pm.h>
 #include <TM4C123Drivers/inc/PLL.h>
 #include <TM4C123Drivers/lib/GPIO/GPIO.h>
-#include <TM4C123Drivers/lib/Miscellaneous/Misc.h>
+#include <TM4C123Drivers/lib/Misc/Misc.h>
 
 void EnableInterrupts(void);    // Defined in startup.s
 void DisableInterrupts(void);   // Defined in startup.s

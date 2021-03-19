@@ -16,8 +16,8 @@
 #include <TM4C123Drivers/inc/RegDefs.h>
 #include <TM4C123Drivers/lib/GPIO/GPIO.h>
 #include <TM4C123Drivers/lib/SSI/SSI.h>
-#include <TM4C123Drivers/lib/Miscellaneous/Font.h>
-#include <TM4C123Drivers/lib/Miscellaneous/Misc.h>
+#include <TM4C123Drivers/lib/Misc/Font.h>
+#include <TM4C123Drivers/lib/Misc/Misc.h>
 
 
 /** List of ST7735 system commands. See page 77 from STT7735_v2.1.pdf. */
@@ -124,9 +124,9 @@ static uint8_t ST7735Rotation;
 /** ST7735 tab color stickers. */
 static enum initRFlags tabColor;
 
-/** 
+/**
  * ST7735 width and height parameters. Values may change based on
- * ST7735Rotation. 
+ * ST7735Rotation.
  */
 static int16_t _width = ST7735_TFT_WIDTH;
 static int16_t _height = ST7735_TFT_HEIGHT;
@@ -136,23 +136,23 @@ static int16_t _height = ST7735_TFT_HEIGHT;
 
 
 /**
- * The Data/Command pin must be valid when the eighth bit is sent. The SSI module has 
+ * The Data/Command pin must be valid when the eighth bit is sent. The SSI module has
  * hardware input and output FIFOs that are 8 locations deep. Based on the
  * observation that the LCD interface tends to send a few commands and then a
  * lot of data, the FIFOs are not used when writing commands, and they are used
  * when writing data. This ensures that the Data/Command pin status matches the
  * byte that is actually being transmitted.
- * 
+ *
  * The write command operation waits until all data has been sent, configures
  * the Data/Command pin for commands, sends the command, and then waits for the
  * transmission to finish.
- * 
+ *
  * The write data operation waits until there is room in the transmit FIFO,
  * configures the Data/Command pin for data, and then adds the data to the
- * transmit FIFO. 
- * 
+ * transmit FIFO.
+ *
  * NOTE: These functions will crash or stall indefinitely if the SSI0 module is
- * not initialized and enabled. 
+ * not initialized and enabled.
  */
 void static writeCommand(uint8_t c) {
     // Wait until SSI0 not busy/transmit FIFO empty.
@@ -160,14 +160,14 @@ void static writeCommand(uint8_t c) {
     TFT_CS = TFT_CS_LOW;
     DC = DC_COMMAND;
     SSI0_DR_R = c; // Data out.
-    
+
     // Wait until SSI0 not busy/transmit FIFO empty.
     while ((SSI0_SR_R & SSI_SR_BSY) == SSI_SR_BSY) {};
 }
 
 void static writeData(uint8_t c) {
     // Wait until transmit FIFO not full.
-    while ((SSI0_SR_R & SSI_SR_TNF) == 0) {};   
+    while ((SSI0_SR_R & SSI_SR_TNF) == 0) {};
     DC = DC_DATA;
     SSI0_DR_R = c; // Data out.
 }
@@ -175,7 +175,7 @@ void static writeData(uint8_t c) {
 void static deselectCS(void) {
     // Wait until SSI0 not busy/transmit FIFO empty.
     while ((SSI0_SR_R & SSI_SR_BSY) == SSI_SR_BSY) {};
-    TFT_CS = TFT_CS_HIGH;    
+    TFT_CS = TFT_CS_HIGH;
 }
 
 
@@ -187,7 +187,7 @@ void static deselectCS(void) {
  * initialization commands and arguments are organized in these tables stored in
  * ROM. The table may look bulky, but that's mostly the formatting --
  * storage-wise this is hundreds of bytes more compact than the equivalent code.
- * Companion function follows. 
+ * Companion function follows.
  */
 #define DELAY 0x80
 static const uint8_t
@@ -297,7 +297,7 @@ static const uint8_t
     ST7735_RASET  , 4      ,  //  2: Row addr set, 4 args, no delay:
       0x00, 0x01,             //     XSTART = 0
       0x00, 0x9F+0x01 };      //     XEND = 159
-      
+
 static const uint8_t
   Rcmd2red[] = {              // Init for 7735R, part 2 (red tab only)
     2,                        //  2 commands in list:
@@ -328,7 +328,7 @@ static const uint8_t
 
 /**
  * commandList reads and issues a series of LCD commands stored in ROM byte
- * array. 
+ * array.
  * @param addr The address to the specific set of instructions to execute.
  */
 void static commandList(const uint8_t *addr) {
@@ -453,9 +453,9 @@ void ST7735Init(void) {
  * setAddrWindow Sets the region of the screen RAM to be modified. Pixel colors
  * are sent left to right, top to bottom (same as Font table is encoded;
  * different from regular bitmap).
- * 
+ *
  * Requires 11 bytes of transmission.
- * 
+ *
  * @param x0 x start
  * @param y0 y start
  * @param x1 x end
@@ -499,8 +499,8 @@ void ST7735Clear(void) {
     ST7735FillScreen(ST7735_BLACK);
 }
 
-/** 
- * ST7735Off Puts the display into a minimum power consumption mode. 
+/**
+ * ST7735Off Puts the display into a minimum power consumption mode.
  * NOTE: Experimental.
  */
 void ST7735Off(void) {
@@ -571,7 +571,7 @@ void ST7735SetRotation(uint8_t m) {
  */
 void ST7735InvertDisplay(int i) {
     if (i) writeCommand(ST7735_INVON);
-    else writeCommand(ST7735_INVOFF); 
+    else writeCommand(ST7735_INVOFF);
     deselectCS();
 }
 
@@ -690,7 +690,7 @@ void ST7735DrawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color) {
 
 /**
  * ST7735FillRect Draws a filled rectangle given coordinates, width, height, and
- * color. 
+ * color.
  * @param x X coordinate of the top left corner of the rectangle.
  * @param y Y coordinate of the top left corner of the rectangle.
  * @param w Width of the rectangle.
@@ -869,7 +869,7 @@ void ST7735DrawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t
 
 /**
  * ST7735DrawBitmap displays a 16-bit color BMP image.
- * 
+ *
  * A bitmap file that is created by a PC image processing program has a header
  * and may be padded with dummy columns so the data have four byte alignment.
  * This function assumes that all of that has been stripped out, and the array
@@ -877,7 +877,7 @@ void ST7735DrawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t
  * (encoded in reverse order, which is standard for bitmap files). An array can
  * be created in this format from a 24-bit-per-pixel .bmp file using the
  * associated converter program.
- * 
+ *
  * (x,y) is the screen location of the lower left corner of BMP image.
  * Requires (11 + 2*w*h) bytes of transmission (assuming image fully on screen).
  * @param x X coordinate of the bottom left corner of the rectangle.
@@ -885,7 +885,7 @@ void ST7735DrawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t
  * @param w Width of the image in pixels.
  * @param h Height of the image in pixels.
  * @param image Reference to the 16-bit color BMP image.
- * 
+ *
  * NOTE: Must be less than or equal to 128 pixels wide by 160 pixels high.
  * TODO: Speed this up.
  */
@@ -962,10 +962,10 @@ void ST7735DrawChar(int16_t x, int16_t y, char c, int16_t textColor, int16_t bgC
         return;
     }
     setAddrWindow(x, y, x + 6*size - 1, y + 8*size - 1);
-     
+
     int32_t col, row, i, j;
     uint8_t line = 0x01; // horizontal row of pixels of character.
-    
+
     // print the rows, starting at the top.
     for (row = 0; row < 8; row++) {
         for (i = 0; i < size; i++) {
@@ -1019,7 +1019,7 @@ uint32_t ST7735DrawString(uint16_t x, uint16_t y, char *pt, int16_t textColor, i
  */
 void ST7735DrawCharAtCursor(char ch) {
     if ((ch == 10) || (ch == 13) || (ch == 27)) {
-        ST7735TextY++; 
+        ST7735TextY++;
         ST7735TextX = 0;
         if (ST7735TextY > 15) ST7735TextY = 0;
         ST7735DrawString(0, ST7735TextY, "                     ", ST7735TextColor, ST7735_BLACK);
@@ -1076,16 +1076,16 @@ void fillDecimalMessage4(uint32_t n){
     if (n >= 1000){
         decimalMessageIdx = 0;
     } else if (n >= 100) {
-        decimalMessage[0] = ' '; 
+        decimalMessage[0] = ' ';
         decimalMessageIdx = 1;
     } else if (n >= 10) {
-        decimalMessage[0] = ' '; 
-        decimalMessage[1] = ' '; 
+        decimalMessage[0] = ' ';
+        decimalMessage[1] = ' ';
         decimalMessageIdx = 2;
     } else {
         decimalMessage[0] = ' ';
-        decimalMessage[1] = ' '; 
-        decimalMessage[2] = ' '; 
+        decimalMessage[1] = ' ';
+        decimalMessage[2] = ' ';
         decimalMessageIdx = 3;
     }
     fillDecimalMessage(n);
@@ -1093,7 +1093,7 @@ void fillDecimalMessage4(uint32_t n){
 
 /**
  * fillDecimalMessage5 converts a five digit decimal number into an ASCII
- * string. 
+ * string.
  * @param n 5 digit decimal number to convert.
  */
 void fillDecimalMessage5(uint32_t n){
@@ -1101,22 +1101,22 @@ void fillDecimalMessage5(uint32_t n){
     if (n >= 10000) {
         decimalMessageIdx = 0;
     } else if (n >= 1000) {
-        decimalMessage[0] = ' '; 
+        decimalMessage[0] = ' ';
         decimalMessageIdx = 1;
     } else if (n >= 100) {
-        decimalMessage[0] = ' '; 
-        decimalMessage[1] = ' '; 
+        decimalMessage[0] = ' ';
+        decimalMessage[1] = ' ';
         decimalMessageIdx = 2;
     } else if (n >= 10) {
         decimalMessage[0] = ' ';
-        decimalMessage[1] = ' '; 
-        decimalMessage[2] = ' '; 
+        decimalMessage[1] = ' ';
+        decimalMessage[2] = ' ';
         decimalMessageIdx = 3;
     } else {
         decimalMessage[0] = ' ';
-        decimalMessage[1] = ' '; 
-        decimalMessage[2] = ' '; 
-        decimalMessage[3] = ' '; 
+        decimalMessage[1] = ' ';
+        decimalMessage[2] = ' ';
+        decimalMessage[3] = ' ';
         decimalMessageIdx = 4;
     }
     fillDecimalMessage(n);
@@ -1190,13 +1190,13 @@ void ST7735OutUDec5(uint32_t n) {
  * ST7735FixedDecOut2 Converts a fixed point number into a set of ASCII values
  * to the display. Range is -99.00 to +99.99.
  * @param n Signed integer as a fixed point value.
- * 
+ *
  * Parameter LCD display output
  *  12345    " **.**"
- *   2345    " 23.45"  
+ *   2345    " 23.45"
  *  -8100    "-81.00"
- *   -102    " -1.02" 
- *     31    "  0.31" 
+ *   -102    " -1.02"
+ *     31    "  0.31"
  * -12345    "-**.**"
  */
 void ST7735FixedDecOut2(int32_t n) {
@@ -1252,7 +1252,7 @@ void ST7735FixedDecOut2(int32_t n) {
  * values to the display with a resolution of 1/64. Output range is 0 to 999.99.
  * @param n Unsigned 32-bit integer part of binary fixed-point number. Valid
  * inputs are 0 to 63999.
- * 
+ *
  * Parameter LCD display output
  *     0    "  0.00"
  *     1    "  0.01"
@@ -1267,8 +1267,8 @@ void ST7735FixedDecOut2(int32_t n) {
  */
 void ST7735UBinOut6(uint32_t n) {
     int t = ((n*100) + 32) >> 6; // divide input by 64
-    
-    if (n >= 64000) { // if input is greater than 63999    
+
+    if (n >= 64000) { // if input is greater than 63999
         ST7735DrawStringAtCursor(" ***.**");   // output "***.**"
     } else {
         if (t < 100) {                 // if the number is less than 1,
@@ -1294,7 +1294,7 @@ void ST7735UBinOut6(uint32_t n) {
             ST7735OutUDec(t%100);      // then print out remaining two digits
         }
     }
-} 
+}
 
 
 /** Plotting and Graphing. */
@@ -1358,11 +1358,11 @@ void ST7735PlotInitWithoutReset(char *title, int32_t minX, int32_t maxX, int32_t
 void ST7735Plot(uint32_t num, int32_t bufX[], int32_t bufY[]) {
 	// Plot each point given their coordinates if the coordinates are valid.
 	for (uint32_t i = 0; i < num; i++) {
-		if (plotBound.minX <= bufX[i] && 
-            bufX[i] <= plotBound.maxX && 
-            plotBound.minY <= bufY[i] && 
+		if (plotBound.minX <= bufX[i] &&
+            bufX[i] <= plotBound.maxX &&
+            plotBound.minY <= bufY[i] &&
             bufY[i] <= plotBound.maxY) {
-			/* Scale ranges. Y is plus 32 since Y-coords start at 32. 
+			/* Scale ranges. Y is plus 32 since Y-coords start at 32.
 			 *(0 - 31 restricted for labels and messages). */
 			ST7735DrawPixel(
                 (127*(bufX[i] - plotBound.minX))/(plotBound.maxX - plotBound.minX),
@@ -1382,17 +1382,17 @@ void ST7735Plot(uint32_t num, int32_t bufX[], int32_t bufY[]) {
 void ST7735DrawLineGraph(uint32_t num, int32_t bufX[], int32_t bufY[], uint16_t color) {
 	// Plot each point given their coordinates if the coordinates are valid.
 	for (uint32_t i = 0; i < num; i++) {
-		if (plotBound.minX <= bufX[i] && 
-            bufX[i] <= plotBound.maxX && 
-            plotBound.minY <= bufY[i] && 
+		if (plotBound.minX <= bufX[i] &&
+            bufX[i] <= plotBound.maxX &&
+            plotBound.minY <= bufY[i] &&
             bufY[i] <= plotBound.maxY) {
 			uint32_t x = (127*(bufX[i] - plotBound.minX))/(plotBound.maxX - plotBound.minX);
 			uint32_t y = 32 + (127*(plotBound.maxY - bufY[i]))/(plotBound.maxY - plotBound.minY);
-			
-			/* Scale ranges. Y is plus 32 since Y-coords start at 32. 
+
+			/* Scale ranges. Y is plus 32 since Y-coords start at 32.
 			 *(0 - 31 restricted for labels and messages). */
 			ST7735DrawPixel(x, y, color);
-			
+
 			// Draw lines
 			if (i < num -1) {
 				uint32_t x2 = (127*(bufX[i + 1] - plotBound.minX))/(plotBound.maxX - plotBound.minX);

@@ -1,6 +1,10 @@
 # TM4C123Drivers
 
-This repository contains a selection of drivers originally written by Jonathan Valvano and refactored by Matthew Yu for the Spring 2021 EE445L course. Some inspiration taken from IEEE RAS' [RASWare](https://github.com/ut-ras/Rasware).
+This repository contains a selection of drivers originally written by Jonathan Valvano and refactored by Matthew Yu. Some inspiration taken from IEEE RAS' [RASWare](https://github.com/ut-ras/Rasware).
+
+This is meant to be a future replacement for RASWare, with its own CLI build system and higher level drivers for devices such as color sensors, line sensors, and so on. I am optimistic that this set of drivers will be rolled out by the Fall 2021 RAS Robotathon competition for students to use.
+
+See [this source](https://renenyffenegger.ch/notes/development/languages/C-C-plus-plus/GCC/create-libraries/index) for figuring out how to hide implementation file details, in case this becomes an issue later.
 
 ---
 

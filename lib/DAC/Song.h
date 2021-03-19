@@ -39,4 +39,20 @@ typedef struct Song {
 
 void playMusic(Song_t song);
 
-void stopMusic();
+void stopMusic(); /* Stop the interrupt handler songHandler, and then call the clearQueues */
+
+song
+    primary [A] B C D]
+    secondary [A] C D]
+
+songHandler {
+    // Do I have any notes left to play?
+    // If yes 
+        // Try to fill the queue for all tracks in the song
+        while (!isQueueFull(primary))
+            playNote(primary, nextNote);
+
+        while (!isQueueFull(secondary))
+            playNote(secondary, nextNote);
+}
+

@@ -1,7 +1,7 @@
 /**
  * File name: Misc.h
  * Devices: LM4F120; TM4C123
- * Description: Miscellaneous functions for general use.
+ * Description: Misc functions for general use.
  * Authors: Jonathan Valvano. Revised by Matthew Yu.
  * Last Modified: 03/04/21
  */

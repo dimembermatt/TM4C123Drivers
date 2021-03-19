@@ -22,11 +22,11 @@ struct SoundStorage {
 };
 
 static struct SoundStorage sounds[] = {
-    -1, 0, 0, NULL, 0,
-    -1, 0, 0, NULL, 0,
-    -1, 0, 0, NULL, 0,
-    -1, 0, 0, NULL, 0,
-    -1, 0, 0, NULL, 0,
+    {-1, 0, 0, NULL, 0},
+    {-1, 0, 0, NULL, 0},
+    {-1, 0, 0, NULL, 0},
+    {-1, 0, 0, NULL, 0},
+    {-1, 0, 0, NULL, 0},
 };
 
 static uint8_t soundsConfigured = 0;
@@ -63,7 +63,14 @@ void iterateCycle(void) {
  */
 void initializeSoundPlayer(struct SoundConfig _soundConfig) {
     /* Player is initialized to 400 kHz (2500 ns). */
-    TimerInit(SYSTICK, freqToPeriod(400000, MAX_FREQ), iterateCycle);
+    TimerConfig_t timerConfig = {
+        SYSTICK,
+        freqToPeriod(400000, MAX_FREQ),
+        true,
+        2,
+        iterateCycle
+    };
+    TimerInit(timerConfig);
     soundConfig = _soundConfig;
 
 	/* Configure the DAC. */
