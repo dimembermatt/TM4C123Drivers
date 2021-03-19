@@ -73,7 +73,6 @@
   __asm (  "pdloop:  subs    r0, #1\n"
       "    bne    pdloop\n");
 }
-
 #else
   //Keil uVision Code
   __asm void
@@ -83,7 +82,6 @@
     bne     Clock_Delay
     bx      lr
   }
-
 #endif
   
 // ------------Clock_Delay1ms------------

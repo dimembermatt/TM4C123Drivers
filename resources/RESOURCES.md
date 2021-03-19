@@ -66,17 +66,7 @@ Those also wanting to make use of the ST7735DrawBitmap function in ST7735.h, sho
 
 Maybe a linux binary will be provided in the future.
 
----
+### Development
 
-## Build System
-
-Currently, all examples have been built and tested using Keil, the software of choice for the EE319K and EE445L classes. A pretty thorough guide on how to install and use it can be found on Valvano's [site](http://users.ece.utexas.edu/~valvano/EE445L/).
-
-Of course, all the files should work with [Code Composer Studio](https://www.ti.com/tool/CCSTUDIO), if you want to work on Linux distros or on macOS. However, I have not tested it personally (yet!) and cannot give feedback or installation help. Please use TI's [dearth](https://software-dl.ti.com/ccs/esd/documents/users_guide/index.html) of resources if you need help!
-
-Finally, I want to migrate over to [Rasware's](https://github.com/ut-ras/Rasware) command line make build system and flash system sometime in the future. Whether this will be achieved is up to debate.
-
-### Keil Bugfixing and Common Errors
-
-- When trying to flash the program, you might get the error `No ULINK2/ME Device found`. Since we're using the Stellaris ICDI to flash, go to `Options for Target '[Project]'` -> `Debug` tab -> `Use: ULINK2/ME Cortex Debugger`. Scroll to `Stellaris ICDI` option and press OK.
-- When compiling the program, errors such as `Lab4.c(14): error:  #5: cannot open source input file "TM4C123Drivers/inc/tm4c123gh6pm.h": No such file or directory` may appear. Go to `Options for Target '[Project]'` -> `C/C++` tab -> `Include Paths` textbox. Include the parent directory path containing `TM4C123Drivers` (i.e., `..;..\..\..;C:\Users\matth\Documents\EE445L`). Press OK after the Compiler control string shows something like the following: `-I C:/Users/matth/Documents/EE445L`.
+For developing applications or firmware that use this project, I recommend using
+the guide in [DEVELOPMENT.md](DEVELOPMENT.md).

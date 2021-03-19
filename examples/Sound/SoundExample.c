@@ -13,7 +13,7 @@
 /** Device specific imports. */
 #include <TM4C123Drivers/inc/PLL.h>
 #include <TM4C123Drivers/lib/DAC/Sound.h>
-#include <TM4C123Drivers/lib/Miscellaneous/Misc.h>
+#include <TM4C123Drivers/lib/Misc/Misc.h>
 
 
 void EnableInterrupts(void);    // Defined in startup.s
@@ -71,7 +71,7 @@ int mainSPI(void) {
 	initializeSoundPlayer(config);
 	EnableInterrupts();
 
-    /* Connect up with a speaker using TLV5616 SPI DAC. Use SSI2 pins 
+    /* Connect up with a speaker using TLV5616 SPI DAC. Use SSI2 pins
      * defined in SSI.h.
      * Listen for increasing pitch wave from 1 - 10kHz frequency. */
 	uint32_t freq = 1;

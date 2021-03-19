@@ -22,11 +22,11 @@ struct SoundStorage {
 };
 
 static struct SoundStorage sounds[] = {
-    -1, 0, 0, NULL, 0,
-    -1, 0, 0, NULL, 0,
-    -1, 0, 0, NULL, 0,
-    -1, 0, 0, NULL, 0,
-    -1, 0, 0, NULL, 0,
+    {-1, 0, 0, NULL, 0},
+    {-1, 0, 0, NULL, 0},
+    {-1, 0, 0, NULL, 0},
+    {-1, 0, 0, NULL, 0},
+    {-1, 0, 0, NULL, 0},
 };
 
 static uint8_t soundsConfigured = 0;
@@ -63,7 +63,14 @@ void iterateCycle(void) {
  */
 void initializeSoundPlayer(struct SoundConfig _soundConfig) {
     /* Player is initialized to 400 kHz (2500 ns). */
-    TimerInit(SYSTICK, freqToPeriod(400000, MAX_FREQ), iterateCycle);
+    TimerConfig_t timerConfig = {
+        SYSTICK,
+        freqToPeriod(400000, MAX_FREQ),
+        true,
+        2,
+        iterateCycle
+    };
+    TimerInit(timerConfig);
     soundConfig = _soundConfig;
 
 	/* Configure the DAC. */
@@ -81,11 +88,7 @@ void initializeSoundPlayer(struct SoundConfig _soundConfig) {
  * @param waveform  Reference to a 32 entry waveform where each entry is a value
  *                  from 0 to 4096. Sound envelope.
  */
-<<<<<<< HEAD
-void playSound(uint8_t id, uint32_t freq, uint16_t* waveform, union SoundConfig config) {
-=======
 void playSound(int8_t id, uint32_t freq, uint16_t* waveform) {
->>>>>>> 040d38de493e1dcce89fe302e1b1cc5c2211ad35
     /* Exit early if the maximum number of sounds are already configured. */
     if (soundsConfigured == MAX_SOUNDS) return;    
 

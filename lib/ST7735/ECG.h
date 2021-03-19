@@ -11,6 +11,8 @@
 /** General imports. */
 #include <stdint.h>
 
+/** Device specific imports. */
+#include "ST7735.h"
 
 // full scaled defined as 3V
 // Input is 0 to 511, 0 => 159 and 511 => 32

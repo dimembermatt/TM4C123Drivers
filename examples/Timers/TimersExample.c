@@ -1,15 +1,15 @@
 /**
- * File name: TimersExample.h 
- * Devices: LM4F120; TM4C123 
+ * File name: TimersExample.h
+ * Devices: LM4F120; TM4C123
  * Description: Example program to demonstrate the capabilities of normal and
  * wide timers. Includes SysTick.
- * Authors: Matthew Yu. 
+ * Authors: Matthew Yu.
  * Last Modified: 03/13/21
  */
 
 /** Device specific imports. */
 #include <TM4C123Drivers/inc/PLL.h>
-#include <TM4C123Drivers/lib/Miscellaneous/Misc.h>
+#include <TM4C123Drivers/lib/Misc/Misc.h>
 #include <TM4C123Drivers/lib/Timers/Timers.h>
 
 
@@ -49,7 +49,7 @@ int main(void) {
 		{         TIMER_1A,         freqToPeriod(200, MAX_FREQ),             true,           5,              dummyTask2},
 		{         TIMER_2A,         freqToPeriod(400, MAX_FREQ),             true,           5,              dummyTask3},
 	};
-	
+
     TimerInit(timers[0]);
     TimerInit(timers[1]);
     TimerInit(timers[2]);
@@ -60,11 +60,11 @@ int main(void) {
     while (1) {
         /* View in debugging mode with counter0A, counter0B, counter1A, and
          * counter2A added to watch 1. Run for a while, then check register
-         * value ratios. Should be 1 : 0 : 2 : 4. 
-         * Note that you can't run both A side and B side timers at once. 
+         * value ratios. Should be 1 : 0 : 2 : 4.
+         * Note that you can't run both A side and B side timers at once.
          * Try it again with isPeriod set to false for single trigger mode,
          * or with different priorities on the timers. What do you see?
-         * 
+         *
          * NOTE: As of (03/13/21) B-side timers do not activate properly. */
         WaitForInterrupt();
     };

@@ -125,7 +125,7 @@ dkms.conf
 *.sfd
 *.sfr
 
-# Miscellaneous
+# Misc
 *.tra
 *.bin
 *.fed
@@ -133,3 +133,5 @@ dkms.conf
 *.l2p
 *.iex
 
+# Output from the build folder.
+build/*

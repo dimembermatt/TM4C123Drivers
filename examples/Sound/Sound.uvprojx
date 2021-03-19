@@ -436,7 +436,7 @@
             <File>
               <FileName>Misc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\lib\Miscellaneous\Misc.c</FilePath>
+              <FilePath>..\..\lib\Misc\Misc.c</FilePath>
             </File>
             <File>
               <FileName>SoundExample.c</FileName>

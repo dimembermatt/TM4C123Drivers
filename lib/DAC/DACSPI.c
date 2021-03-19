@@ -5,10 +5,10 @@
  * Authors: Matthew Yu.
  * Last Modified: 03/13/21
  */
-#pragma once
 
 /** Device specific imports. */
 #include "DACSPI.h"
+
 
 /**
  * DACSPIInit initializes a given SSI port.
