@@ -46,3 +46,25 @@ Drivers that need to be developed/refactored:
 General improvements
 - Gradually remove dependencies on tm4c123gh6pm.h. 
     - The rationale for this is that a lot of initialization code can be generalized to improve user API, at the expense of extra initial cycles to do register address calculation using defines in RegDefs.h. tm4c123gh6pm becomes redundant in this case, with defines for hardcoded events (not to mention, 12870 lines of it).
+
+
+Exploration Guide:
+```
+    GPIO --------.--------.    
+      |          |        |
+    Switch      DAC      SSI -------.-------.
+                          |         |       |
+                        ST7735    Blynk   DACSPI
+                          |
+                         ECG
+
+    Timers  DAC   DACSPI
+      |______|______|
+             |
+           Sound
+             |
+           Audio
+             |
+            Song
+
+```
