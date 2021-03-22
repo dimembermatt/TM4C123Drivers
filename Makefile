@@ -102,7 +102,24 @@ clean: | $(BUILD_DIR)
 	$(PROGRAM_PATH)find $(BUILD_DIR) -maxdepth 2 -type f -delete
 
 # Attempt to flash the program to the TM4C using openOCD.
-# Should fail if the bin doesn't exist.
+# The command should fail if the bin doesn't exist.
+# Flash procedure ripped from our friend Rahul's ninja script
+# https://github.com/rrbutani/tm4c-llvm-toolchain/blob/master/common.ninja
+# His code lives on in future RASWare, in another form...
+# Anyways, this command may need to be executed at least three times in order to
+# flash successfully.
+# $(PATH)$(BUILD_DIR)/$(PROJECT_NAME).bin
 .PHONY: flash
 flash: | $(BUILD_DIR) $(BUILD_DIR)/$(PROJECT_NAME).bin
-	$(PROGRAM_PATH)openocd -f $(BOARD) -c "program $(PATH)$(BUILD_DIR)/$(PROJECT_NAME).bin reset exit"
+	$(PROGRAM_PATH)openocd \
+		-f $(BOARD) \
+		-c "init" \
+		-c "halt" \
+		-c "reset init" \
+		-c "sleep 100" \
+		-c "flash probe 0" \
+		-c "flash write_image erase $(PATH)examples/GPIO/GPIO.bin" \
+		-c "sleep 100" \
+		-c "verify_image $(PATH)examples/GPIO/GPIO.bin" \
+		-c "halt" \
+		-c "shutdown"
