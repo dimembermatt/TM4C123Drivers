@@ -138,7 +138,9 @@ build/*
 
 # CCS files.
 Debug/
+Release/
 .jxbrowser-data/
 examples/.gitignore
 RemoteSystemsTempFiles/
 .settings/
+.launches/
