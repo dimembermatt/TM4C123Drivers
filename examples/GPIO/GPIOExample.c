@@ -3,7 +3,7 @@
  * Devices: LM4F120; TM4C123
  * Description: Example program to demonstrate the low level GPIO driver.
  * Authors: Matthew Yu.
- * Last Modified: 03/10/21
+ * Last Modified: 03/24/21
  */
 
 /** Device specific imports. */
@@ -28,7 +28,7 @@ int main(void) {
     GPIOSetBit(PIN_F1, 1);
     GPIOSetBit(PIN_F2, 0);
     while (1) {
-        delayMillisec(100);
+        delayMillisec(1000);
         // See when running that a blue and red light flash alternately.
         GPIOSetBit(PIN_F1, !GPIOGetBit(PIN_F1));
         GPIOSetBit(PIN_F2, !GPIOGetBit(PIN_F2));
