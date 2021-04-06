@@ -4,7 +4,7 @@
  * Description: Example program to demonstrate the capabilities of normal and
  * wide timers. Includes SysTick.
  * Authors: Matthew Yu.
- * Last Modified: 03/13/21
+ * Last Modified: 04/04/21
  */
 
 /** Device specific imports. */
@@ -32,6 +32,15 @@ void dummyTask2(void) {
 
 void dummyTask3(void) {
 	++counter2A;
+	
+	if (counter2A == 100) {
+		/* Place a breakpoint at L38! Notice that at counter2A = 100, counter0A ~= 25, counter1A ~= 50. */
+		TimerUpdatePeriod(TIMER_2A, freqToPeriod(100, MAX_FREQ)); 
+	}
+	if (counter2A == 105) {
+		/* Place a breakpoint at L42! Notice here that when counter2A = 105, counter0A ~= 30, counter1A ~= 60. */
+		uint8_t i = 0;
+	}
 }
 
 void dummyTask4(void) {

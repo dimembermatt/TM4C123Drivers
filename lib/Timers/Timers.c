@@ -186,6 +186,58 @@ void TimerInit(TimerConfig_t timerConfig) {
         ((ID % 2) == 0) ? 0x00000001 : 0x00000100;
 }
 
+/**
+ * TimerUpdatePeriod adjust the timer period. Does not check if the timer was
+ * previously initialized.
+ * 
+ * @param timerID Timer to adjust.
+ * @param period New period of the timer.
+ */
+void TimerUpdatePeriod(enum TimerID timerID, uint32_t period) {
+    uint8_t ID = timerID;
+
+    /* Early return on invalid timer enum or invalid priority. */
+    if (ID == TIMER_COUNT) return;
+	
+    /* Special case for SYSTICK. */
+    if (ID == SYSTICK) {	
+        /* Disable during setup. */
+        GET_REG(PERIPHERALS_BASE + SYSTICK_CTRL_OFFSET) = 0x00000000;
+
+        /* Set reload value. */
+        GET_REG(PERIPHERALS_BASE + SYSTICK_LOAD_OFFSET) = period - 1;
+
+        /* Clear current value. */
+        GET_REG(PERIPHERALS_BASE + SYSTICK_CURR_OFFSET) = 0x00000000;
+
+        /* Re-enable after setup. */
+        GET_REG(PERIPHERALS_BASE + SYSTICK_CTRL_OFFSET) = 0x00000007;
+        return;
+    }
+
+    /* We'll generate the timer offset to find the correct addresses for each
+     * timer. */
+    uint32_t timerOffset = 0;
+
+    /* Timers TIMER_0A to WTIMER_1B. */
+    if (ID < WTIMER_2A) timerOffset = 0x1000 * (uint32_t)(ID >> 1);
+
+    /* Timers WTIMER_2A to WTIMER_5B. Jump the base to 0x4004.C000. Our magic
+     * number, 16, is the enumerated value of WTIMER_2A. */
+    else timerOffset = 0x1000 * (uint32_t)((ID-16) >> 1) + 0x0001C000;
+
+    /* Step 2. Disable timer during setup. */
+    GET_REG(GPTM_BASE + timerOffset + GPTMCTL_OFFSET) &=
+        ((ID % 2) == 0) ? 0xFFFFFF00 : 0xFFFFFF00FF;
+
+    GET_REG(GPTM_BASE + timerOffset + GPTMTAILR_OFFSET) = period - 1;
+
+    /* Step 11. Enable timer after setup. */
+    GET_REG(GPTM_BASE + timerOffset + GPTMCTL_OFFSET) |=
+        ((ID % 2) == 0) ? 0x00000001 : 0x00000100;
+    return;
+}
+
 void Timer0A_Handler(void) {
     GET_REG(GPTM_BASE + GPTMICR_OFFSET) |= TIMERXA_ICR_TATOCINT;
     if (interruptSettings[0].timerHandlerTask != NULL) {

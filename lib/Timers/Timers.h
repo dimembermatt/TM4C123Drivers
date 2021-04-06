@@ -69,6 +69,15 @@ typedef struct TimerConfig {
  */
 void TimerInit(TimerConfig_t timerConfig);
 
+/**
+ * TimerUpdatePeriod adjust the timer period. Does not check if the timer was
+ * previously initialized.
+ * 
+ * @param timerID Timer to adjust.
+ * @param period New period of the timer.
+ */
+void TimerUpdatePeriod(enum TimerID timerID, uint32_t period);
+
 /** Handler definitions for normal timers. */
 void Timer0A_Handler(void);
 void Timer0B_Handler(void);
