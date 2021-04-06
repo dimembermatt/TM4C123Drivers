@@ -84,9 +84,7 @@ static struct InterruptSettings interruptSettings[TIMER_COUNT] = {
  *       By default the timer is priority 5, below SysTick.
  * @dev  Potentially add the following parameters:
  *          - clock mode (i.e. 32-bit vs 16-bit config with CFG_R).
- *          - one shot vs periodic timer mode (TAMR, TBMR).
  *          - count down vs count up (TACDIR inside TAMR, TBCDIR inside TBMR).
- *          - Timer priority (NVIC).
  */
 void TimerInit(TimerConfig_t timerConfig) {
     uint8_t ID = timerConfig.timerID;
