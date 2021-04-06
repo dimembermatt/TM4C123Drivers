@@ -94,32 +94,32 @@
 
 
 enum NoteLength { 
-    REST, 
-    sixteenth, 
-    eighth, 
-    quarter, 
-    half, 
-    whole
+	REST, 
+	sixteenth, 
+	eighth, 
+	quarter, 
+	half, 
+	whole
 };
 
 typedef struct Note {
-    uint32_t frequency;
-    uint16_t waveform;
-    enum NoteLength length;
+	uint32_t frequency;
+	uint16_t waveform;
+	enum NoteLength length;
 } Note_t;
 
 
 /* .c file */
 struct AudioStorage {
-    // array of notes with array of size SIZE
-    // remaining time (say sixteenth =1, eighth =2, quarter =4, and so on)
-    // track ID
+	// array of notes with array of size SIZE
+	// remaining time (say sixteenth =1, eighth =2, quarter =4, and so on)
+	// track ID
 };
 
 static struct AudioStorage audioTracks[] = {
-    { [], ID = 0 },
-    { [], ID = 1 },
-    { [], ID = 2 }
+	{ [], ID = 0 },
+	{ [], ID = 1 },
+	{ [], ID = 2 }
 };
 
 
@@ -134,11 +134,11 @@ static struct AudioStorage audioTracks[] = {
  * 
  * void InitAudio(TimerConfig_t tConfig, minPeriod) { setup timer, give it a handler }
  * void timerHandler(void) {
- *  timer activates every 16th note, which is the length of minPeriod
- *  when it activates, take the first note in each of the queues, and check how long they have left
- *      if remaining time in timer iterations is 0
- *          pop from queue, play next note in queue with playSound, set remaining time to time of the note
- *      decrement remaining time of all notes
+ *	timer activates every 16th note, which is the length of minPeriod
+ *	when it activates, take the first note in each of the queues, and check how long they have left
+ *		if remaining time in timer iterations is 0
+ *			pop from queue, play next note in queue with playSound, set remaining time to time of the note
+ *		decrement remaining time of all notes
  * }
  * void playNote(int id, Note_t t) { add note t to queue with ID - only if there is space }
  * bool isQueueFull(int id) { check if queue with ID cannot fit any more notes }

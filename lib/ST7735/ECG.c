@@ -18,15 +18,15 @@
  * @param max Maximum range of the ECG.
  */
 void ECGClear(int32_t min, int32_t max) {
-    ST7735Clear();
-    if (max > min) {
-        yMax = max;
-        yMin = min;
-    } else {
-        yMax = min;
-        yMin = max;
-    }
-    xPos = 0;
+	ST7735Clear();
+	if (max > min) {
+		yMax = max;
+		yMin = min;
+	} else {
+		yMax = min;
+		yMin = max;
+	}
+	xPos = 0;
 }
 
 /**
@@ -34,17 +34,17 @@ void ECGClear(int32_t min, int32_t max) {
  * @param y Y coordinate of the point plotted.
  */
 void ECGPlotPoint(int32_t y) {
-    if (y < yMin) y = yMin;
-    if (y > yMax) y = yMax;
+	if (y < yMin) y = yMin;
+	if (y > yMax) y = yMax;
 
-    int32_t j = 32 + (127*(yMax - y))/(yMax - yMin);
-    if (j < 32) j = 32;
-    if (j > 159) j = 159;
+	int32_t j = 32 + (127*(yMax - y))/(yMax - yMin);
+	if (j < 32) j = 32;
+	if (j > 159) j = 159;
 
-    ST7735DrawPixel(xPos,      j,      ST7735_BLUE);
-    ST7735DrawPixel(xPos + 1,  j,      ST7735_BLUE);
-    ST7735DrawPixel(xPos,      j + 1,  ST7735_BLUE);
-    ST7735DrawPixel(xPos + 1,  j + 1,  ST7735_BLUE);
+	ST7735DrawPixel(xPos,	   j,	   ST7735_BLUE);
+	ST7735DrawPixel(xPos + 1,  j,	   ST7735_BLUE);
+	ST7735DrawPixel(xPos,	   j + 1,  ST7735_BLUE);
+	ST7735DrawPixel(xPos + 1,  j + 1,  ST7735_BLUE);
 }
 
 /**
@@ -52,33 +52,33 @@ void ECGPlotPoint(int32_t y) {
  * @param y Y coordinate of new point.
  */
 void ECGPlotLine(int32_t y) {
-    static int32_t lastj = 0;
-    int32_t i, j;
+	static int32_t lastj = 0;
+	int32_t i, j;
 
-    if (y < yMin) y = yMin;
-    if (y > yMax) y = yMax;
-    
-    j = 32 + (127*(yMax - y))/(yMax - yMin);
-    if (j < 32) j = 32;
-    if (j > 159) j = 159;
-    if (lastj < 32) lastj = j;
-    if (lastj > 159) lastj = j;
+	if (y < yMin) y = yMin;
+	if (y > yMax) y = yMax;
+	
+	j = 32 + (127*(yMax - y))/(yMax - yMin);
+	if (j < 32) j = 32;
+	if (j > 159) j = 159;
+	if (lastj < 32) lastj = j;
+	if (lastj > 159) lastj = j;
 
-    if (lastj < j) {
-        for (i = lastj + 1; i <= j ; i++) {
-            ST7735DrawPixel(xPos,      i,  ST7735_BLUE);
-            ST7735DrawPixel(xPos + 1,  i,  ST7735_BLUE);
-        }
-    } else if(lastj > j) {
-        for (i = j; i < lastj ; i++) {
-            ST7735DrawPixel(xPos,      i,  ST7735_BLUE);
-            ST7735DrawPixel(xPos + 1,  i,  ST7735_BLUE);
-        }
-    } else {
-        ST7735DrawPixel(xPos,      j,  ST7735_BLUE);
-        ST7735DrawPixel(xPos + 1,  j,  ST7735_BLUE);
-    }
-    lastj = j;
+	if (lastj < j) {
+		for (i = lastj + 1; i <= j ; i++) {
+			ST7735DrawPixel(xPos,	   i,  ST7735_BLUE);
+			ST7735DrawPixel(xPos + 1,  i,  ST7735_BLUE);
+		}
+	} else if(lastj > j) {
+		for (i = j; i < lastj ; i++) {
+			ST7735DrawPixel(xPos,	   i,  ST7735_BLUE);
+			ST7735DrawPixel(xPos + 1,  i,  ST7735_BLUE);
+		}
+	} else {
+		ST7735DrawPixel(xPos,	   j,  ST7735_BLUE);
+		ST7735DrawPixel(xPos + 1,  j,  ST7735_BLUE);
+	}
+	lastj = j;
 }
 
 /**
@@ -87,21 +87,21 @@ void ECGPlotLine(int32_t y) {
  * @param y2 Y coordinate of the second point plotted.
  */
 void ECGPlotTwoPoints(int32_t y1,int32_t y2) { 
-    if (y1 < yMin) y1 = yMin;
-    if (y1 > yMax) y1 = yMax;
+	if (y1 < yMin) y1 = yMin;
+	if (y1 > yMax) y1 = yMax;
 
-    int32_t j = 32 + (127*(yMax - y1))/(yMax - yMin);
-    if (j < 32) j = 32;
-    if (j > 159) j = 159;
-    ST7735DrawPixel(xPos, j, ST7735_BLUE);
-    
-    if (y2 < yMin) y2 = yMin;
-    if (y2 > yMax) y2 = yMax;
+	int32_t j = 32 + (127*(yMax - y1))/(yMax - yMin);
+	if (j < 32) j = 32;
+	if (j > 159) j = 159;
+	ST7735DrawPixel(xPos, j, ST7735_BLUE);
+	
+	if (y2 < yMin) y2 = yMin;
+	if (y2 > yMax) y2 = yMax;
 
-    j = 32 + (127*(yMax - y2))/(yMax - yMin);
-    if (j < 32) j = 32;
-    if (j > 159) j = 159;
-    ST7735DrawPixel(xPos, j, ST7735_BLACK);
+	j = 32 + (127*(yMax - y2))/(yMax - yMin);
+	if (j < 32) j = 32;
+	if (j > 159) j = 159;
+	ST7735DrawPixel(xPos, j, ST7735_BLACK);
 }
 
 /**
@@ -109,11 +109,11 @@ void ECGPlotTwoPoints(int32_t y1,int32_t y2) {
  * @param y Y coordinate to plot bar.
  */
 void ECGPlotBar(int32_t y) {
-    if (y < yMin) y = yMin;
-    if (y > yMax) y = yMax;
+	if (y < yMin) y = yMin;
+	if (y > yMax) y = yMax;
 
-    int32_t j = 32 + (127*(yMax - y))/(yMax - yMin);
-    ST7735DrawFastVLine(xPos, j, 159 - j, ST7735_BLACK);
+	int32_t j = 32 + (127*(yMax - y))/(yMax - yMin);
+	ST7735DrawFastVLine(xPos, j, 159 - j, ST7735_BLACK);
 }
 
 /**
@@ -122,11 +122,11 @@ void ECGPlotBar(int32_t y) {
  * @param y ADC value of the bar plotted.
  */
 void ST7735_PlotdBfs(int32_t y) {
-    y /= 2; // 0 to 2047
-    if (y < 0) y = 0;
-    if (y > 511) y = 511;
-    int32_t j = dBfs[y];
-    ST7735DrawFastVLine(xPos, j, 159 - j, ST7735_BLACK);
+	y /= 2; // 0 to 2047
+	if (y < 0) y = 0;
+	if (y > 511) y = 511;
+	int32_t j = dBfs[y];
+	ST7735DrawFastVLine(xPos, j, 159 - j, ST7735_BLACK);
 }
 
 /**
@@ -140,8 +140,8 @@ void ECGStepX(void) { xPos = (xPos + 1) % 127; }
  * the screen. Also blanks the next spot automatically.
  */
 void ECGStepXAndClear(void) {
-    xPos = (xPos + 1) % 127;
-    ST7735DrawFastVLine(xPos, 32, 128, ST7735Color565(228, 228, 228));
+	xPos = (xPos + 1) % 127;
+	ST7735DrawFastVLine(xPos, 32, 128, ST7735Color565(228, 228, 228));
 }
 
 /**
@@ -149,7 +149,7 @@ void ECGStepXAndClear(void) {
  * @param newX New X coordinate to graph on.
  */
 void ECGSetX(int32_t newX) {
-    if(newX > 127) xPos = 127;
-    else if (newX < 0) xPos = 0;
-    else xPos = newX;
+	if(newX > 127) xPos = 127;
+	else if (newX < 0) xPos = 0;
+	else xPos = newX;
 }

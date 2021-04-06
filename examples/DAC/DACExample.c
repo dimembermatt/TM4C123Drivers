@@ -14,25 +14,25 @@
 
 
 DACConfig_t config = {
-    {PIN_B0, PIN_COUNT, PIN_COUNT, PIN_COUNT, PIN_COUNT, PIN_COUNT},
-    1
+	{PIN_B0, PIN_COUNT, PIN_COUNT, PIN_COUNT, PIN_COUNT, PIN_COUNT},
+	1
 };
 
 /** Initializes both onboard switches to test triggers. */
 int main(void) {
-    PLL_Init(Bus80MHz);
-    DACInit(config);
+	PLL_Init(Bus80MHz);
+	DACInit(config);
 
-    // View in debugging mode with GPIO_PORTB_DATA_R added to watch 1.
-    // Step through program to see pins change.
-    DACOut(config, 0); // GPIO_PORTB_DATA_R should be 0x00.
-    DACOut(config, 1); // GPIO_PORTB_DATA_R should be 0x01.
-    DACOut(config, 2); // GPIO_PORTB_DATA_R should be 0x00.
+	// View in debugging mode with GPIO_PORTB_DATA_R added to watch 1.
+	// Step through program to see pins change.
+	DACOut(config, 0); // GPIO_PORTB_DATA_R should be 0x00.
+	DACOut(config, 1); // GPIO_PORTB_DATA_R should be 0x01.
+	DACOut(config, 2); // GPIO_PORTB_DATA_R should be 0x00.
 
-    config.pinList[1] = PIN_B2;
-    DACInit(config);
-    DACOut(config, 2); // GPIO_PORTB_DATA_R should be 0x04.
-    DACOut(config, 3); // GPIO_PORTB_DATA_R should be 0x05.
+	config.pinList[1] = PIN_B2;
+	DACInit(config);
+	DACOut(config, 2); // GPIO_PORTB_DATA_R should be 0x04.
+	DACOut(config, 3); // GPIO_PORTB_DATA_R should be 0x05.
 	
 	while(1) {}
 }

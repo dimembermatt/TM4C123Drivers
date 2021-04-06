@@ -16,25 +16,25 @@
 
 
 enum Volume {
-    NONE,
-    LOW,
-    MEDIUM,
-    HIGH
+	NONE,
+	LOW,
+	MEDIUM,
+	HIGH
 };
 
 enum Speed {
-    PAUSE,
-    SLOW,
-    NORMAL, // 120 BPM
-    FAST
+	PAUSE,
+	SLOW,
+	NORMAL, // 120 BPM
+	FAST
 };
 
 typedef struct Song {
-    char *name;
-    Note_t *melody;
-    Note_t *harmony;
-    enum Volume volume;
-    enum Speed speed;
+	char *name;
+	Note_t *melody;
+	Note_t *harmony;
+	enum Volume volume;
+	enum Speed speed;
 } Song_t;
 
 void playMusic(Song_t song);
@@ -42,17 +42,17 @@ void playMusic(Song_t song);
 void stopMusic(); /* Stop the interrupt handler songHandler, and then call the clearQueues */
 
 song
-    primary [A] B C D]
-    secondary [A] C D]
+	primary [A] B C D]
+	secondary [A] C D]
 
 songHandler {
-    // Do I have any notes left to play?
-    // If yes 
-        // Try to fill the queue for all tracks in the song
-        while (!isQueueFull(primary))
-            playNote(primary, nextNote);
+	// Do I have any notes left to play?
+	// If yes 
+		// Try to fill the queue for all tracks in the song
+		while (!isQueueFull(primary))
+			playNote(primary, nextNote);
 
-        while (!isQueueFull(secondary))
-            playNote(secondary, nextNote);
+		while (!isQueueFull(secondary))
+			playNote(secondary, nextNote);
 }
 

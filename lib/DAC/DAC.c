@@ -20,24 +20,24 @@
  * DACInit initializes an N-bit DAC on Port B.
  * @param pins A list of pins to initialize, in order of LSB to MSB.
  * @note Assumes that the first pin that is invalid (PIN_COUNT) means all
- *       following pins are invalid. 
- *       Goes up to 6 bits of resolution. 
- *       Multiple DACs can be configured, but the user retains responsibility
- *       for managing the pins data structures.
+ *		 following pins are invalid. 
+ *		 Goes up to 6 bits of resolution. 
+ *		 Multiple DACs can be configured, but the user retains responsibility
+ *		 for managing the pins data structures.
  */
 void DACInit(DACConfig_t pins) {
-    for (uint8_t i = 0; i < MAX_DAC_PINS; i++) {
+	for (uint8_t i = 0; i < MAX_DAC_PINS; i++) {
 		if (pins.pinList[i] == PIN_COUNT) return;
-        GPIOConfig_t config = {
-            pins.pinList[i],
-            PULL_DOWN,
-            true,
-            false,
-            0,
-            false
-        };
-        GPIOInit(config);
-    }
+		GPIOConfig_t config = {
+			pins.pinList[i],
+			PULL_DOWN,
+			true,
+			false,
+			0,
+			false
+		};
+		GPIOInit(config);
+	}
 }
 
 /**
@@ -45,11 +45,11 @@ void DACInit(DACConfig_t pins) {
  * @param pins The list of pins to write data to, in order of LSB to MSB.
  * @param data A value from 0 - 255. Scaled based on how many bits are part of the DAC.
  * @note Assumes that the first pin that is invalid (PIN_COUNT) means all
- *       following pins are invalid. 
+ *		 following pins are invalid. 
  */
 void DACOut(DACConfig_t pins, uint8_t data) {
 	for (uint8_t i = 0; i < MAX_DAC_PINS; i++) {
 		if (pins.pinList[i] == PIN_COUNT) return;
-        GPIOSetBit(pins.pinList[i], (data>>i) & 0x1);
-    }
+		GPIOSetBit(pins.pinList[i], (data>>i) & 0x1);
+	}
 }

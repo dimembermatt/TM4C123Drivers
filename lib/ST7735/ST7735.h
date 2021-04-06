@@ -25,7 +25,7 @@ enum initRFlags{
 /** Color definitions. */
 #define ST7735_BLACK   0x0000
 #define ST7735_BLUE    0xF800
-#define ST7735_RED     0x001F
+#define ST7735_RED	   0x001F
 #define ST7735_GREEN   0x07E0
 #define ST7735_CYAN    0xFFE0
 #define ST7735_MAGENTA 0xF81F
@@ -101,7 +101,7 @@ void ST7735SetTextColor(uint16_t color);
  * ST7735FillScreen fills the screen with a given color.
  * Requires 40, 971 bytes of transmission.
  * @param color 16-bit color to display for the pixel. Can be produced by
- *              ST7735_Color565().
+ *				ST7735_Color565().
  */
 void ST7735FillScreen(uint16_t color);
 
@@ -128,12 +128,12 @@ uint16_t ST7735SwapRedBlue(uint16_t x);
 
 /**
  * ST7735DrawPixel draws a pixel at the given coordinates with the given color.
- * @param x     X coordinate of the pixel starting from the left side with
- *              domain [0, 128).
- * @param y     Y coordinate of the pixel starting from the top edge with range
- *              [0, 160).
+ * @param x 	X coordinate of the pixel starting from the left side with
+ *				domain [0, 128).
+ * @param y 	Y coordinate of the pixel starting from the top edge with range
+ *				[0, 160).
  * @param color 16-bit color to display for the pixel. Can be produced by
- *              ST7735_Color565().
+ *				ST7735_Color565().
  */
 void ST7735DrawPixel(int16_t x, int16_t y, uint16_t color);
 
@@ -145,7 +145,7 @@ void ST7735DrawPixel(int16_t x, int16_t y, uint16_t color);
  * @param y Y coordinate of the start of the line, from the top edge.
  * @param h Vertical height of the line going downwards from (X, Y).
  * @param color 16-bit color to display for the pixel. Can be produced by
- *              ST7735_Color565().
+ *				ST7735_Color565().
  */
 void ST7735DrawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
 
@@ -157,7 +157,7 @@ void ST7735DrawFastVLine(int16_t x, int16_t y, int16_t h, uint16_t color);
  * @param y Y coordinate of the line.
  * @param h Vertical height of the line going downwards from (X, Y).
  * @param color 16-bit color to display for the pixel. Can be produced by
- *              ST7735_Color565().
+ *				ST7735_Color565().
  */
 void ST7735DrawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
 
@@ -169,7 +169,7 @@ void ST7735DrawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color);
  * @param w Width of the rectangle.
  * @param h Height of the rectangle.
  * @param color 16-bit color to display for the pixel. Can be produced by
- *              ST7735_Color565().
+ *				ST7735_Color565().
  */
 void ST7735FillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
 
@@ -179,7 +179,7 @@ void ST7735FillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
  * @param x X coordinate of the top left corner of the circle.
  * @param y Y coordinate of the top left corner of the circle.
  * @param color 16-bit color to display for the pixel. Can be produced by
- *              ST7735_Color565().
+ *				ST7735_Color565().
  */
 void ST7735DrawSmallCircle(int16_t x, int16_t y, uint16_t color);
 
@@ -190,7 +190,7 @@ void ST7735DrawSmallCircle(int16_t x, int16_t y, uint16_t color);
  * @param x X coordinate of the top left corner of the circle.
  * @param y Y coordinate of the top left corner of the circle.
  * @param color 16-bit color to display for the pixel. Can be produced by
- *              ST7735_Color565().
+ *				ST7735_Color565().
  */
 void ST7735DrawCircle(int16_t x, int16_t y, uint16_t color);
 
@@ -201,7 +201,7 @@ void ST7735DrawCircle(int16_t x, int16_t y, uint16_t color);
  * @param x2 Ending X coordinate.
  * @param y2 Ending Y coordinate.
  * @param color 16-bit color to display for the pixel. Can be produced by
- *              ST7735_Color565().
+ *				ST7735_Color565().
  */
 void ST7735DrawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color);
 
@@ -246,7 +246,7 @@ void ST7735DrawBitmap(int16_t x, int16_t y, int16_t w, int16_t h, const uint16_t
  * @param textColor Character RGB color.
  * @param bgColor Background RGB color.
  * @param size Number of pixels per character pixel. Scales the character across
- *             multiple rows and columns.
+ *			   multiple rows and columns.
  */
 void ST7735DrawChar(int16_t x, int16_t y, char c, int16_t textColor, int16_t bgColor, uint8_t size);
 
@@ -309,12 +309,12 @@ void ST7735OutUDec5(uint32_t n);
  * @param n Signed integer as a fixed point value.
  * 
  * Parameter LCD display output
- *  12345    " **.**"
- *   2345    " 23.45"  
- *  -8100    "-81.00"
- *   -102    " -1.02" 
- *     31    "  0.31" 
- * -12345    "-**.**"
+ *	12345	 " **.**"
+ *	 2345	 " 23.45"  
+ *	-8100	 "-81.00"
+ *	 -102	 " -1.02" 
+ *	   31	 "	0.31" 
+ * -12345	 "-**.**"
  */
 void ST7735FixedDecOut2(int32_t n);
 
@@ -325,16 +325,16 @@ void ST7735FixedDecOut2(int32_t n);
  * inputs are 0 to 63999.
  * 
  * Parameter LCD display output
- *     0    "  0.00"
- *     1    "  0.01"
- *    16    "  0.25"
- *    25    "  0.39"
- *   125    "  1.95"
- *   128    "  2.00"
- *  1250    " 19.53"
- *  7500    "117.19"
- * 63999    "999.99"
- * 64000    "***.**"
+ *	   0	"  0.00"
+ *	   1	"  0.01"
+ *	  16	"  0.25"
+ *	  25	"  0.39"
+ *	 125	"  1.95"
+ *	 128	"  2.00"
+ *	1250	" 19.53"
+ *	7500	"117.19"
+ * 63999	"999.99"
+ * 64000	"***.**"
  */
 void ST7735UBinOut6(uint32_t n); 
 

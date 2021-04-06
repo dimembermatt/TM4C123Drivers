@@ -14,11 +14,11 @@
  * DACSPIInit initializes a given SSI port.
  * @param SSIConfig Struct defining relevant SSI module details for output.
  * @note Multiple DACs can be configured, but the user retains responsibility
- *       for managing the SSI data structures.
+ *		 for managing the SSI data structures.
  */
 void DACSPIInit(SSIConfig_t SSIConfig) {
-    /* TODO: can do a little bit more abstraction on input to SSISelect. */
-    SSIInit(SSIConfig);
+	/* TODO: can do a little bit more abstraction on input to SSISelect. */
+	SSIInit(SSIConfig);
 }
 
 /**
@@ -27,6 +27,6 @@ void DACSPIInit(SSIConfig_t SSIConfig) {
  * @param data A value from 0 - 4096.
  */
 void DACSPIOut(enum SSISelect ssi, uint16_t data) {
-    /* Fast mode, normal operation. */
-    SPIWrite(ssi, (data & 0x0FFF) | 0x4000);
+	/* Fast mode, normal operation. */
+	SPIWrite(ssi, (data & 0x0FFF) | 0x4000);
 }

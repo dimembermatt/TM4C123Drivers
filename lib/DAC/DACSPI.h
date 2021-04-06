@@ -18,7 +18,7 @@
  * DACSPIInit initializes a given SSI port.
  * @param SSIConfig Struct defining relevant SSI module details for output.
  * @note Multiple DACs can be configured, but the user retains responsibility
- *       for managing the SSI data structures.
+ *		 for managing the SSI data structures.
  */
 void DACSPIInit(SSIConfig_t SSIConfig);
 
