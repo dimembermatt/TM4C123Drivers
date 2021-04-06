@@ -298,7 +298,7 @@ void GPIOGeneric_Handler(pin_t pin) {
 			GET_REG(GPIO_PORT_BASE + portOffset + GPIO_ICR_OFFSET) |= 0x1 << i;
 			
 			/* Get pin number. */
-			pin_t pinIdx = pin + i;
+			pin_t pinIdx = (pin_t)(pin + i);
 
 			if (GPIOIntConfig[pinIdx].touchTask != NULL && GPIOIntConfig[pinIdx].releaseTask != NULL) {
 				/* Both edge triggered. */

@@ -3,7 +3,7 @@
  * Devices: LM4F120; TM4C123
  * Description: Middle level drivers for generating square waves.
  * Authors: Matthew Yu.
- * Last Modified: 03/31/21
+ * Last Modified: 04/06/21
  * 
  * This driver will support both the TM4C's existing PWM modules as well as a
  * GPIO + Timer configuration. 
@@ -15,12 +15,12 @@
 #include <stdint.h>
 
 /** Device Specific imports. */
-#include "GPIO.h"	/* GPIO pin to configure. */
-#include "Timer.h"	/* Clock for toggling the GPIO pin. */
+#include <lib/GPIO/GPIO.h>
+#include <lib/Timers/Timers.h>
 
 
 /** Enumerator defining all possible PWMs that can be initialized. */
-enum PWMSelect {
+enum PWMPin {
 	M0_PB6,
 	M0_PB7,
 	M0_PB4,
@@ -52,24 +52,38 @@ struct PWMConfig {
 	enum PWMSource { DEFAULT, TIMER } source;
 
 	/** Pin and PWM configuration. */
-	union config {
-		enum PWMSelect configDefault;
-		pin_t configTimer;
-	};
+	union {
+		/** Configuration used with a DEFAULT source. */
+		struct {
+			/** Pin to output PWM with. */
+			enum PWMPin pwmPin;
 
-	/** Timer used for the PWM if source is TIMER. */
-	enum TimerID timerID;
-}
+			/** Enum determining which comparator on the PWMpin is being used. */
+			enum Comparator { PWMA, PWMB } comparator;
+		} pwmSelect;
+
+		/** Configuration used with a TIMER source. */
+		struct {
+			/** Pin to output PWM with. */
+			pin_t pin;
+
+			/** Timer to execute the PWM on. */
+			enum TimerID timerID;
+		} timerSelect;
+	} config;
+};
 
 /**
  * PWMInit initializes a PWM configuration with a given frequency and duty
  * cycle.
  * 
  * @param pwmConfig The PWM configuration that should be started.
- * @param frequency The frequency of one cycle of the PWM.
- * @param dutyCycle The duty cycle of one cycle of the PWM.
+ * @param period The period of one cycle of the PWM.
+ * @param dutyCycle The duty cycle of one cycle of the PWM, from 0 to 100.
+ * @note Calling a Timer based PWM requires calling EnableInterrupts() after
+ * initialization. Only one Timer based PWM can be on at a time.
  */
-void PWMInit(struct PWMConfig pwmConfig, uint32_t frequency, uint32_t dutyCycle);
+void PWMInit(struct PWMConfig pwmConfig, uint32_t period, uint32_t dutyCycle);
 
 /**
  * PWMStop disables a PWM configuration.

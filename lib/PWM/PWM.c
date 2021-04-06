@@ -32,9 +32,36 @@ void PWMTimerHandler(void) {
 	idx = (idx + 1) % 100;
 }
 
-static pin_t pinMap[PWM_COUNT] = {
-	PIN_B6, PIN_B7, PIN_B4, PIN_B5, PIN_E4, PIN_E5, PIN_C4, PIN_D0, PIN_C5, PIN_D1,
-	PIN_D0, PIN_D1, PIN_A6, PIN_E4, PIN_A7, PIN_E5, PIN_F0, PIN_F1, PIN_F2, PIN_F3
+struct PWMSettings {
+	/** Pin associated with the PWM enum. */
+	pin_t pin;
+
+	/** PWM generator associated with the PWM enum. */
+	uint8_t generator;
+};
+
+static struct PWMSettings pwmSettings[PWM_COUNT] = {
+	{PIN_B6, 0},
+	{PIN_B7, 1},
+	{PIN_B4, 2},
+	{PIN_B5, 3},
+	{PIN_E4, 4},
+	{PIN_E5, 5},
+	{PIN_C4, 6},
+	{PIN_D0, 6},
+	{PIN_C5, 7},
+	{PIN_D1, 7},
+
+	{PIN_D0, 0},
+	{PIN_D1, 1},
+	{PIN_A6, 2},
+	{PIN_E4, 2},
+	{PIN_A7, 3},
+	{PIN_E5, 3},
+	{PIN_F0, 4},
+	{PIN_F1, 5},
+	{PIN_F2, 6},
+	{PIN_F3, 7},
 };
 
 /**
@@ -42,51 +69,76 @@ static pin_t pinMap[PWM_COUNT] = {
  * cycle.
  * 
  * @param pwmConfig The PWM configuration that should be started.
- * @param frequency The frequency of one cycle of the PWM.
- * @param dutyCycle The duty cycle of one cycle of the PWM.
+ * @param period The period of one cycle of the PWM.
+ * @param dutyCycle The duty cycle of one cycle of the PWM, from 0 to 100.
+ * @note Calling a Timer based PWM requires calling EnableInterrupts() after
+ * initialization. Only one Timer based PWM can be on at a time.
  */
-void PWMInit(struct PWMConfig pwmConfig, uint32_t frequency, uint32_t dutyCycle) {
+void PWMInit(struct PWMConfig pwmConfig, uint32_t period, uint32_t dutyCycle) {
 	if (pwmConfig.source == DEFAULT) {
+		enum PWMPin pwmPin = pwmConfig.config.pwmSelect.pwmPin;
+
 		/* In-built TM4C PWM. */
-		if (pwmConfig.config.configDefault == PWM_COUNT) return;
+		if (pwmPin == PWM_COUNT) return;
 
 		/* 1. Enable PWM clock. */
 		GET_REG(SYSCTL_BASE + SYSCTL_RCGCPWM_OFFSET) =
-			0x1 * (pwmConfig.config.configDefault <= M0_PD1) |
-			0x2 * (pwmConfig.config.configDefault > M0_PD1 );
+			0x1 * (pwmPin <= M0_PD1) |
+			0x2 * (pwmPin > M0_PD1 );
 
 		/* 2. Enable appropriate GPIO. */
 		GPIOConfig_t gpioConfig = {
-			pinMap[pwmConfig.config.configDefault],
+			pwmSettings[pwmPin].pin,
 			NONE,
 			true,
 			true,
-			4 * (pwmConfig.config.configDefault <= M0_PD1) + 
-			5 * (pwmConfig.config.configDefault > M0_PD1),
+			4 * (pwmPin <= M0_PD1) + 
+			5 * (pwmPin > M0_PD1),
 			false
 		};
 		GPIOInit(gpioConfig);
 
-		/* 4. Configure RCC to set the PWM divider to divider by 2. */
+		/* 4. We don't perform this step, but you could modify RCC_R to base the
+		   PWM clock on the PWM clock divider, and adjust its divisor. */
+		GET_REG(SYSCTL_BASE + SYSCTL_RCC_OFFSET) &= ~0x00100000;
 
-		/* 5. Configure PWM for countdown mode. */
+		/* 5. Select the PWM base based on the PWM pin. */
+		uint32_t PWMBase = 
+			PWM0_BASE * (pwmPin <= M0_PD1) + 
+			PWM1_BASE * (pwmPin > M0_PD1);
 
-		/* 6. Set the period. PWM clock source is MAX_FREQ/2. */
+		uint32_t generatorOffset = (pwmSettings[pwmPin].generator >> 1) + 1;
 
-		/* 7. Set the pulse width. */
+		/* 5. Configure PWM for countdown mode. By default, both PWMA and PWMB
+		   signal generation are initialized to count down. */
+		GET_REG(PWMBase + PWM_CTL_OFFSET * generatorOffset) = 0;
+		GET_REG(PWMBase + PWM_GENA_OFFSET * generatorOffset) = 0x0000008C;
+		GET_REG(PWMBase + PWM_GENB_OFFSET * generatorOffset) = 0x0000080C;
+
+		/* 6. Set the period. PWM clock source is SYSCLK. */
+		GET_REG(PWMBase + PWM_LOAD_OFFSET * generatorOffset) = period-1;
+			
+		/* 7. Set the pulse width. The offset is dependent on which comparator is
+		   selected. Each module can have two comparators running. */
+		GET_REG(PWMBase +
+			(PWM_CMPA_OFFSET * (pwmConfig.config.pwmSelect.comparator == PWMA) +
+			 PWM_CMPB_OFFSET * (pwmConfig.config.pwmSelect.comparator == PWMB)) *
+				generatorOffset) = (period*dutyCycle/100)-1;
 
 		/* 8. Start the timers. */
+		GET_REG(PWMBase + PWM_CTL_OFFSET * generatorOffset) = 1;
 
 		/* 9. Enable the PWM outputs. */
+		GET_REG(PWMBase + PWM_ENABLE_OFFSET) |= 1 << pwmSettings[pwmPin].generator;
 
 	} else {
 		/* Timer based PWM. */
-		PWMTimerSettings.dutyCycle = dutyCycle;
-		PWMTimerSettings.pin = pwmConfig.config.configTimer;
+		PWMTimerSetting.dutyCycle = dutyCycle;
+		PWMTimerSetting.pin = pwmConfig.config.timerSelect.pin;
 
 		TimerConfig_t timerConfig = {
-			pwmConfig.timerID,
-			freqToPeriod(frequency * 100, MAX_FREQ),
+			pwmConfig.config.timerSelect.timerID,
+			period,
 			true,
 			3,
 			PWMTimerHandler
