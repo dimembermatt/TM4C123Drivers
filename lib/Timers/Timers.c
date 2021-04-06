@@ -11,8 +11,8 @@
 #include <math.h>
 
 /** Device specific imports. */
-#include "Timers.h"
-#include <TM4C123Drivers/inc/RegDefs.h>
+#include <inc/RegDefs.h>
+#include <lib/Timers/Timers.h>
 
 
 /** Our handler type used by timers. */
@@ -43,7 +43,7 @@ struct InterruptSettings {
 };
 
 /** Configuration info for all timers. */
-struct InterruptSettings interruptSettings[TIMER_COUNT] = {
+static struct InterruptSettings interruptSettings[TIMER_COUNT] = {
     {INTD, (uint32_t *)(PERIPHERALS_BASE + NVIC_PRI4_OFFSET),  (uint32_t *)(PERIPHERALS_BASE + NVIC_EN0_OFFSET), 19,    NULL}, /* Timer 0A. */
     {INTA, (uint32_t *)(PERIPHERALS_BASE + NVIC_PRI5_OFFSET),  (uint32_t *)(PERIPHERALS_BASE + NVIC_EN0_OFFSET), 20,    NULL}, /* Timer 0B. */
     {INTB, (uint32_t *)(PERIPHERALS_BASE + NVIC_PRI5_OFFSET),  (uint32_t *)(PERIPHERALS_BASE + NVIC_EN0_OFFSET), 21,    NULL}, /* Timer 1A. */

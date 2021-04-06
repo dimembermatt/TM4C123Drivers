@@ -7,7 +7,8 @@
  */
 
 /** Device specific imports. */
-#include "BMP.h"
+#include <lib/BMP/BMP.h>
+
 
 /** 42x53 Windows XP Bliss wallpaper. */
 const unsigned short Bliss_WinXP[] = {

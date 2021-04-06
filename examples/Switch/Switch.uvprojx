@@ -339,7 +339,7 @@
               <MiscControls>--C99</MiscControls>
               <Define>rvmdk PART_LM4F120H5QR</Define>
               <Undefine></Undefine>
-              <IncludePath>..;..\..\..</IncludePath>
+              <IncludePath>..;..\..\</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -399,11 +399,6 @@
               <FilePath>.\SwitchExample.c</FilePath>
             </File>
             <File>
-              <FileName>Switch.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\lib\Switch\Switch.c</FilePath>
-            </File>
-            <File>
               <FileName>Misc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\lib\Misc\Misc.c</FilePath>
@@ -412,6 +407,11 @@
               <FileName>GPIO.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\lib\GPIO\GPIO.c</FilePath>
+            </File>
+            <File>
+              <FileName>Switch.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\lib\Switch\Switch.c</FilePath>
             </File>
           </Files>
         </Group>

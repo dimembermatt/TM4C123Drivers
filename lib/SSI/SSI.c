@@ -8,9 +8,9 @@
  */
 
 /** Device specific imports. */
-#include "SSI.h"
-#include <TM4C123Drivers/inc/RegDefs.h>
-#include <TM4C123Drivers/lib/GPIO/GPIO.h>
+#include <inc/RegDefs.h>
+#include <lib/SSI/SSI.h>
+#include <lib/GPIO/GPIO.h>
 
 
 /**

@@ -34,19 +34,19 @@ enum TimerID {
 };
 
 typedef struct TimerConfig {
-    /* Timer to setup. */
+    /** Timer to setup. */
     enum TimerID timerID;
 
-    /* Timer reload time, in cycles. */
+    /** Timer reload time, in cycles. */
     uint32_t period;
 
-    /* Whether the Timer executes continuously or not. */
+    /** Whether the Timer executes continuously or not. */
     bool isPeriodic;
 
-    /* Timer priority. From 0 - 7. Lower is higher priority. */
+    /** Timer priority. From 0 - 7. Lower is higher priority. */
     uint8_t priority;
     
-    /* Task executed when Timer interrupts. */
+    /** Task executed when Timer interrupts. */
     void (*handlerTask)(void);
 } TimerConfig_t;
 

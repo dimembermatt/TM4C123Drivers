@@ -8,7 +8,7 @@
  */
 
 /** Device specific imports. */
-#include "ECG.h"
+#include <lib/ST7735/ECG.h>
 
 
 /**

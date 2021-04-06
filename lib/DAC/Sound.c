@@ -17,7 +17,7 @@ struct SoundStorage {
     int8_t id;
     uint32_t periodSteps;
     uint32_t currentPeriodSteps;
-    uint16_t* waveform;
+    uint8_t* waveform;
     uint8_t position;
 };
 
@@ -44,8 +44,8 @@ void iterateCycle(void) {
 				if (soundConfig.source == R_DAC) {
 					DACOut(soundConfig.config.pins, sounds[i].waveform[sounds[i].position]);
 				} else {
-					DACSPIOut(soundConfig.config.ssi.SSI, 0);
-					//DACSPIOut(sounds[i].config.ssi.SSI, sounds[i].waveform[sounds[i].position]);
+					//DACSPIOut(soundConfig.config.ssi.SSI, 10);
+					DACSPIOut(soundConfig.config.ssi.SSI, sounds[i].waveform[sounds[i].position]*200);
 				}	
                 /* TODO: this may not perform superposition of waves properly. */
                 sounds[i].position = (sounds[i].position + 1) % MAX_SOUND_ELEM;
@@ -86,12 +86,13 @@ void initializeSoundPlayer(struct SoundConfig _soundConfig) {
  *                  sounds at once. -1 is an invalid ID.
  * @param freq      Frequency of the sound being played. Up to 2kHz.
  * @param waveform  Reference to a 32 entry waveform where each entry is a value
- *                  from 0 to 4096. Sound envelope.
+ *                  from 0 to 256. Sound envelope.
  */
-void playSound(int8_t id, uint32_t freq, uint16_t* waveform) {
+void playSound(int8_t id, uint32_t freq, uint8_t* waveform) {
     /* Exit early if the maximum number of sounds are already configured. */
     if (soundsConfigured == MAX_SOUNDS) return;    
 
+	DisableInterrupts();
     /*
 		440 hz * 16 subevents = 7040 Hz for each sound subevent.
 		Equivalent to 11363 12.5 ns (80 MHz) iterations.
@@ -110,10 +111,10 @@ void playSound(int8_t id, uint32_t freq, uint16_t* waveform) {
     */
 
     /* Apply the transformation function on the input. */
-    uint32_t period = freq * (1 + freq / 17500);
+    freq = (freq * (1 + freq / 17500))/1.87;
 
     /* Convert freq into period for 1/16 notes. */
-    period = freqToPeriod(freq*MAX_SOUND_ELEM, MAX_FREQ);
+    uint32_t period = freqToPeriod(freq*MAX_SOUND_ELEM, MAX_FREQ);
 
     /* Convert into period steps; i.e. how many 2500 ns events. */
     period /= 200;
@@ -151,6 +152,7 @@ void playSound(int8_t id, uint32_t freq, uint16_t* waveform) {
 	
     /* We didn't find an existing sound matching the ID nor an open spot. Do
      * nothing. */
+	EnableInterrupts();
 }
 
 /**

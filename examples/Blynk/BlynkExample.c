@@ -12,10 +12,10 @@
 #include <stdlib.h>
 
 /** Device specific imports. */
-#include <TM4C123Drivers/inc/PLL.h>
-#include <TM4C123Drivers/lib/ST7735/ST7735.h>
-#include <TM4C123Drivers/lib/Timers/Timers.h>
-#include <TM4C123Drivers/lib/Blynk/Blynk.h>
+#include <inc/PLL.h>
+#include <lib/ST7735/ST7735.h>
+#include <lib/Timers/Timers.h>
+#include <lib/Blynk/Blynk.h>
 
 
 void EnableInterrupts(void);    // Defined in startup.s

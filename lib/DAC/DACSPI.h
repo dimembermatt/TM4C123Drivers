@@ -11,7 +11,8 @@
 #include <stdint.h>
 
 /** Device specific imports. */
-#include <TM4C123Drivers/lib/SSI/SSI.h>
+#include <lib/SSI/SSI.h>
+
 
 /**
  * DACSPIInit initializes a given SSI port.

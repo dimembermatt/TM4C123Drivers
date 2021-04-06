@@ -7,10 +7,10 @@
  */
 
 /** Device specific imports. */
-#include <TM4C123Drivers/inc/tm4c123gh6pm.h>
-#include <TM4C123Drivers/inc/PLL.h>
-#include <TM4C123Drivers/lib/DAC/DAC.h>
-#include <TM4C123Drivers/lib/GPIO/GPIO.h>
+#include <inc/tm4c123gh6pm.h>
+#include <inc/PLL.h>
+#include <lib/DAC/DAC.h>
+#include <lib/GPIO/GPIO.h>
 
 
 DACConfig_t config = {

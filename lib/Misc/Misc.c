@@ -7,7 +7,7 @@
  */
 
 /** Device specific imports. */
-#include "Misc.h"
+#include <lib/Misc/Misc.h>
 
 
 /**

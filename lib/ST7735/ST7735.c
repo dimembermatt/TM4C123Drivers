@@ -7,17 +7,16 @@
  */
 
 /** General imports. */
-#include <stdint.h>
 #include <stdlib.h>
 
 /** Device specific imports. */
-#include "ST7735.h"
-#include <TM4C123Drivers/inc/tm4c123gh6pm.h>
-#include <TM4C123Drivers/inc/RegDefs.h>
-#include <TM4C123Drivers/lib/GPIO/GPIO.h>
-#include <TM4C123Drivers/lib/SSI/SSI.h>
-#include <TM4C123Drivers/lib/Misc/Font.h>
-#include <TM4C123Drivers/lib/Misc/Misc.h>
+#include <inc/tm4c123gh6pm.h>
+#include <inc/RegDefs.h>
+#include <lib/GPIO/GPIO.h>
+#include <lib/Misc/Font.h>
+#include <lib/Misc/Misc.h>
+#include <lib/SSI/SSI.h>
+#include <lib/ST7735/ST7735.h>
 
 
 /** List of ST7735 system commands. See page 77 from STT7735_v2.1.pdf. */

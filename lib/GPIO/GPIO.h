@@ -3,10 +3,14 @@
  * Devices: LM4F120; TM4C123
  * Description: Low level drivers for GPIO initialization.
  * Authors: Matthew Yu.
- * Last Modified: 03/10/21
+ * Last Modified: 04/05/21
  * 
- * By default, this driver does not support slew rate, drive strength, or
- * interrupts.
+ * By default, this driver does not support slew rate or drive strength.
+ * 
+ * Use optional flag `-D__FAST__` or put `#define __FAST__ 1` in your main.c for
+ * compiling with GPIOSetBit(Fast) and GPIOGetBit(Fast). Highly recommended for
+ * programs using interrupts editing GPIO bits. Tradeoff of 100x speed vs 1kb
+ * more lines of DATA. 
  */
 #pragma once
 
@@ -15,6 +19,7 @@
 #include <stdint.h>
 
 
+/** Pin type enumeration. Specifies a pin on the TM4C. */
 typedef enum pin{
     PIN_A0, PIN_A1, PIN_A2, PIN_A3, PIN_A4, PIN_A5, PIN_A6, PIN_A7,
     PIN_B0, PIN_B1, PIN_B2, PIN_B3, PIN_B4, PIN_B5, PIN_B6, PIN_B7,
@@ -25,22 +30,16 @@ typedef enum pin{
     PIN_COUNT, PORT_COUNT = PIN_COUNT / 8,
 } pin_t;
 
-typedef enum pull {
-    PULL_UP,
-    PULL_DOWN,
-    OPEN_DRAIN,
-    NONE
-} pull_t;
-
+/** User defined GPIO pin configuration. */
 typedef struct GPIOConfig {
     /** The GPIO Pin to set. */
     pin_t GPIOPin;
 
-    /** 
+    /**
      * Whether the GPIO activates the internal pullup or pulldown resistor, or
      * is open drain.
      */
-    pull_t GPIOPull;
+	enum pull { PULL_UP, PULL_DOWN, OPEN_DRAIN, NONE } pull;
 
     /** Direction of the pin. 1 for output, 0 for input. */
     bool isOutput;
@@ -62,13 +61,37 @@ typedef struct GPIOConfig {
     bool isAnalog;
 } GPIOConfig_t;
 
+/** User defined GPIO pin interrupt configuration. */
+typedef struct GPIOInterruptConfig {
+    /** GPIO edge interrupt priority. From 0 - 7. Lower is higher priority. */
+    uint8_t priority;
+
+    /** Pointer to function called on rising edge interrupt. */
+    void (*touchTask)(void);
+	
+    /** Pointer to function called on falling edge interrupt. */
+    void (*releaseTask)(void);
+
+    /** Whether an input pin was previously raised or lowered. Used for debouncing. */
+    enum pinStatus {LOWERED, RAISED} pinStatus;
+} GPIOInterruptConfig_t;
+
 /**
  * GPIOInit initializes a GPIO pin given a configuration.
+ * 
  * @param pinConfig Configuration for pin.
- * @note By default, this driver does not support slew rate, drive strength, or
- * interrupts.
+ * @note By default, this driver does not support slew rate or drive strength.
  */
 void GPIOInit(GPIOConfig_t pinConfig);
+
+/**
+ * GPIOIntInit is a version of the initializer that provides interrupt capability. 
+ * 
+ * @param pinConfig Configuration for pin.
+ * @param pinIntConfig Configuration for pin interrupt.
+ * @note Requires the EnableInterrupts() call if edge triggered interrupts are enabled.
+ */
+void GPIOIntInit(GPIOConfig_t pinConfig, GPIOInterruptConfig_t pinIntConfig);
 
 /**
  * GPIOSetBit sets the bit for an (assumed) output GPIO pin.
@@ -83,8 +106,9 @@ void GPIOInit(GPIOConfig_t pinConfig);
  * 
  * @param pin Pin to set. Assumes it's an output.
  * @param value 0 (false) or 1 (true) value to set pin to.
+ * @return Whether the bit was set properly.
  */
-void GPIOSetBit(pin_t pin, bool value);
+bool GPIOSetBit(pin_t pin, bool value);
 
 /**
  * GPIOGetBit returns the value of the bit at the specified GPIO pin.
@@ -102,7 +126,3 @@ void GPIOSetBit(pin_t pin, bool value);
  * @return value 0 (false) or 1 (true) value of the pin.
  */
 bool GPIOGetBit(pin_t pin);
-
-bool GPIOGetBitFast(pin_t pin);
-
-void GPIOSetBitFast(pin_t pin, bool val);

@@ -13,8 +13,8 @@
 #include <stdlib.h>
 
 /** Device specific imports. */
-#include "Blynk.h"
-#include <TM4C123Drivers/inc/esp8266.h> // TODO: convert into lib later.
+#include <inc/esp8266.h> // TODO: convert into lib later.
+#include <lib/Blynk/Blynk.h>
 
 
 /** Initializes the ESP8266 to communicate with the Blynk application. */

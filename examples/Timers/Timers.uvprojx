@@ -339,7 +339,7 @@
               <MiscControls>--C99</MiscControls>
               <Define>rvmdk PART_LM4F120H5QR</Define>
               <Undefine></Undefine>
-              <IncludePath>..;..\..\..</IncludePath>
+              <IncludePath>..;..\..</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>

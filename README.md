@@ -17,8 +17,8 @@ Please see [RESOURCES.md](resources/RESOURCES.md) for additional content that ma
 ## TODO
 
 Drivers that need to be developed/refactored:
-- Complete GPIOSetBitFast/GPIOGetBitFast and figure out how to add compiler flags to select between GPIOGetBit and GPIOGetBitFast and SetBit equivalents.
-    - Unfortunately, dynamic generation of addresses is too slow for high speed ISRs. For applications like audio or SSI, this is not tolerable. Ergo we need a drop in speedy replacement for said applications. GPIOGet/SetBitFast does this with a switch statement (LUTs are slow).
+- GPIO
+    - Interrupt handling with ISR/NVIC
 - Switches
     - Need interrupt generalization for pins not from port F.
     - Potentially move interrupt generation and handling to GPIO.h.
@@ -50,7 +50,8 @@ Drivers that need to be developed/refactored:
 General improvements
 - Gradually remove dependencies on tm4c123gh6pm.h. 
     - The rationale for this is that a lot of initialization code can be generalized to improve user API, at the expense of extra initial cycles to do register address calculation using defines in RegDefs.h. tm4c123gh6pm becomes redundant in this case, with defines for hardcoded events (not to mention, 12870 lines of it).
-
+- Distance sensor application: communicate serially with tm4c hooked up to distance sensor
+    - Show how the distance sensor value matches physical distance according to the graph
 
 Exploration Guide:
 ```

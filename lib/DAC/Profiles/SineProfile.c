@@ -14,10 +14,7 @@
  * Sinusoidal Profile for audio generation. 64 element resolution with 64
  * element domain.
  */
-uint8_t SineProfile[64] = {
-    32,38,44,49,54,58,
-    61,62,63,62,61,58,
-    54,49,44,38,32,26,
-    20,15,10,6,3,2,1,2,
-    2,5,8,12,17,23,29
+uint8_t SineProfile[16] = {
+    0, 1, 3, 6, 9, 12, 14, 15,
+    15, 14, 12, 9, 6, 3, 1, 0,
 };

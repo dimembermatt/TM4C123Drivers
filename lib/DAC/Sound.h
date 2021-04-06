@@ -12,13 +12,16 @@
 #include <stdio.h>
 
 /** Device specific imports. */
-#include "DAC.h"
-#include "DACSPI.h"
-#include <TM4C123Drivers/lib/Timers/Timers.h>
+#include <lib/Timers/Timers.h>
+#include <lib/DAC/DAC.h>
+#include <lib/DAC/DACSPI.h>
 
 
 #define MAX_SOUND_ELEM 16
 
+void EnableInterrupts(void);    // Defined in startup.s
+void DisableInterrupts(void);   // Defined in startup.s
+void WaitForInterrupt(void);    // Defined in startup.s
 
 /** 
  * Sound configuration specifying the SSI or DAC that needs to be initialized.
@@ -53,9 +56,9 @@ void initializeSoundPlayer(struct SoundConfig soundConfig);
  *                  sounds at once. -1 is an invalid ID.
  * @param freq      Frequency of the sound being played. Up to 12kHz.
  * @param waveform  Reference to a 16 entry waveform where each entry is a value
- *                  from 0 to 4096. Sound envelope.
+ *                  from 0 to 256. Sound envelope.
  */
-void playSound(int8_t id, uint32_t freq, uint16_t* waveform);
+void playSound(int8_t id, uint32_t freq, uint8_t* waveform);
 
 /**
  * stopSound stops a tone from playing with a given id.

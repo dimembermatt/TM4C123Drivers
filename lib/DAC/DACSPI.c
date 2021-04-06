@@ -27,7 +27,6 @@ void DACSPIInit(SSIConfig_t SSIConfig) {
  * @param data A value from 0 - 4096.
  */
 void DACSPIOut(enum SSISelect ssi, uint16_t data) {
-    uint16_t newData = data & 0x0FFF;
-    newData |= 0x2000; /* Fast mode, normal operation. */
-    SPIWrite(ssi, data);
+    /* Fast mode, normal operation. */
+    SPIWrite(ssi, (data & 0x0FFF) | 0x4000);
 }

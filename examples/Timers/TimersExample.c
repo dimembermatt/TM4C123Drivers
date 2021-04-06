@@ -8,9 +8,9 @@
  */
 
 /** Device specific imports. */
-#include <TM4C123Drivers/inc/PLL.h>
-#include <TM4C123Drivers/lib/Misc/Misc.h>
-#include <TM4C123Drivers/lib/Timers/Timers.h>
+#include <inc/PLL.h>
+#include <lib/Misc/Misc.h>
+#include <lib/Timers/Timers.h>
 
 
 void EnableInterrupts(void);    // Defined in startup.s

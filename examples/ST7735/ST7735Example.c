@@ -10,9 +10,9 @@
  */
 
 /** Device specific imports. */
-#include <TM4C123Drivers/inc/PLL.h>
-#include <TM4C123Drivers/lib/ST7735/ST7735.h>
-#include <TM4C123Drivers/lib/BMP/BMP.h>
+#include <inc/PLL.h>
+#include <lib/ST7735/ST7735.h>
+#include <lib/BMP/BMP.h>
 
 
 /** Prints hello world to the screen. */

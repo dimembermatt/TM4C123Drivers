@@ -1,7 +1,7 @@
 /**
  * File name: SineProfile.h
  * Devices: LM4F120; TM4C123
- * Description: Sinusoidal wave with 6-bit resolution.
+ * Description: Sinusoidal wave with 8-bit resolution.
  * Authors: Matthew Yu.
  * Last Modified: 03/10/21
  */
@@ -12,7 +12,7 @@
 
 
 /**
- * Sinusoidal Profile for audio generation. 64 element resolution with 64
+ * Sinusoidal Profile for audio generation. 8 element resolution with 16
  * element domain.
  */
-extern uint8_t SineProfile[64];
+extern uint8_t SineProfile[16];

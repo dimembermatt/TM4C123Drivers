@@ -10,8 +10,8 @@
 #include <stdbool.h>
 
 /** Device specific imports. */
-#include "DAC.h"
-#include <TM4C123Drivers/inc/tm4c123gh6pm.h>
+#include <inc/tm4c123gh6pm.h>
+#include <lib/DAC/DAC.h>
 
 
 #define MAX_DAC_PINS 6
@@ -43,13 +43,13 @@ void DACInit(DACConfig_t pins) {
 /**
  * DACOut outputs data to the relevant DAC pins set by DACInit.
  * @param pins The list of pins to write data to, in order of LSB to MSB.
- * @param data A value from 0 - 63. Scaled based on how many bits are part of the DAC.
+ * @param data A value from 0 - 255. Scaled based on how many bits are part of the DAC.
  * @note Assumes that the first pin that is invalid (PIN_COUNT) means all
  *       following pins are invalid. 
  */
 void DACOut(DACConfig_t pins, uint8_t data) {
 	for (uint8_t i = 0; i < MAX_DAC_PINS; i++) {
 		if (pins.pinList[i] == PIN_COUNT) return;
-        GPIOSetBitFast(pins.pinList[i], (data>>i) & 0x1);
+        GPIOSetBit(pins.pinList[i], (data>>i) & 0x1);
     }
 }
