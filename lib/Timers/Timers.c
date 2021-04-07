@@ -386,8 +386,21 @@ void WideTimer4B_Handler(void) {}
 void WideTimer5A_Handler(void) {}
 void WideTimer5B_Handler(void) {}
 
+/** System clock ticks. Used for delay functions. */
+static uint64_t tick = 0;
+
 void SysTick_Handler(void) {
+    ++tick;
+
 	if (interruptSettings[24].timerHandlerTask != NULL) {
 		interruptSettings[24].timerHandlerTask();
 	}
+}
+
+/** 
+ * getTick returns the number of total ticks.
+ * @return Number of ticks
+ */
+uint64_t getTick(void) {
+    return tick;
 }

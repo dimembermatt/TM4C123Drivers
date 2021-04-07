@@ -374,6 +374,9 @@ void static commonInit(const uint8_t *cmdList) {
 		{PIN_A7, PULL_DOWN, true,  false, 0, false}
 	};
 
+	/* Initialize SysTick for delay calls.*/
+	delayInit();
+    
 	/* 1. Initialize GPIO. */
 	for (uint8_t i = 0; i < 5; i++) {
 		GPIOInit(GPIOconfigs[i]);

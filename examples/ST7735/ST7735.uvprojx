@@ -428,6 +428,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\lib\SSI\SSI.c</FilePath>
             </File>
+            <File>
+              <FileName>Timers.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\lib\Timers\Timers.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

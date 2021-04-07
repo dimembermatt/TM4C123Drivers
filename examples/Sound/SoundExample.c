@@ -41,6 +41,9 @@ int mainR(void) {
 	PLL_Init(Bus80MHz);
 	DisableInterrupts();
 
+	/* Initialize SysTick for delay calls.*/
+	delayInit();
+	
 	initializeSoundPlayer(config);
 	EnableInterrupts();
 

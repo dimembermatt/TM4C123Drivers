@@ -20,13 +20,21 @@
 #include <lib/Misc/Misc.h>
 
 
+void EnableInterrupts(void);	// Defined in startup.s
+void DisableInterrupts(void);	// Defined in startup.s
+void WaitForInterrupt(void);	// Defined in startup.s
+
 #if __MAIN__ == 0
 int main(void) {
 	/**
 	 * This program demonstrates initializing a GPIO pin and updating its value.
 	 */
 	PLL_Init(Bus80MHz);
+	DisableInterrupts();
 
+	/* Initialize SysTick for delay calls.*/
+	delayInit();
+	
 	GPIOConfig_t PF1Config = {
 		.GPIOPin=PIN_F1, 
 		.pull=PULL_DOWN, 
@@ -48,6 +56,8 @@ int main(void) {
 	/* Initialize a GPIO LED on PF1 and PF2. */
 	GPIOInit(PF1Config);
 	GPIOInit(PF2Config);
+	
+	EnableInterrupts();
 
 	/* PF1 is default on. */
 	GPIOSetBit(PIN_F1, 1);
@@ -71,7 +81,11 @@ int main(void) {
 	 * interrupt and executing on it.
 	 */
 	PLL_Init(Bus80MHz);
+	DisableInterrupts();
 
+	/* Initialize SysTick for delay calls.*/
+	delayInit();
+	
 	GPIOConfig_t PF1Config = {
 		.GPIOPin=PIN_F1, 
 		.pull=PULL_DOWN, 
@@ -112,6 +126,8 @@ int main(void) {
 
     /* Initialize PF0 (SW2) as an edge triggered switch. */
     GPIOIntInit(PF0Config, PF0IntConfig);
+	
+	EnableInterrupts();
 
 	/* PF1 is default on. */
 	GPIOSetBit(PIN_F1, 1);

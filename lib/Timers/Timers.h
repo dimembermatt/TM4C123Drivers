@@ -126,3 +126,9 @@ void WideTimer5B_Handler(void);
 
 /** Systick handler definition. */
 void SysTick_Handler(void);
+
+/** 
+ * getTick returns the number of total ticks.
+ * @return Number of ticks
+ */
+uint64_t getTick(void);

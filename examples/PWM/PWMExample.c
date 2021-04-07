@@ -34,6 +34,9 @@ int main(void) {
 	PLL_Init(Bus80MHz);
 	DisableInterrupts();
 
+	/* Initialize SysTick for delay calls.*/
+	delayInit();
+	
     struct PWMConfig pwmConfigPF1 = 
 #if __MAIN__ == 0
     {
