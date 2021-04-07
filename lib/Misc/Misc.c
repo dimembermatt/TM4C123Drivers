@@ -24,3 +24,18 @@ void delayMillisec(uint32_t n) {
 		n--;
 	}
 }
+
+/**
+ * delayMicrosec delays the process by 1 us. Tuned to the 80 MHz TM4C clock.
+ * @param n The number of us to delay the process.
+ */
+void delayMicrosec(uint32_t n) {
+	uint32_t volatile time;
+	while(n) {
+		time = 72724*2/91/1000;	// 1msec, tuned at 80 MHz
+		while(time) {
+			time--;
+		}
+		n--;
+	}
+}

@@ -16,3 +16,9 @@
  * @param n The number of ms to delay the process.
  */
 void delayMillisec(uint32_t n);
+
+/**
+ * delayMicrosec delays the process by 1 us. Tuned to the 80 MHz TM4C clock.
+ * @param n The number of us to delay the process.
+ */
+void delayMicrosec(uint32_t n);
