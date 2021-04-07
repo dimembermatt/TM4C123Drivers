@@ -23,16 +23,22 @@ void sendSSI(void) {
 }
 
 int main(void) {
+	/** 
+	 * This program demonstrates the initialization and operation of the SSI
+	 * unit operating as an SPI bus. It writes an incrementing counter to the PB
+	 * lines.
+	 */
 	PLL_Init(Bus80MHz);
 	DisableInterrupts();
 
-	/* Keyed arguments are notated to show what each positional argument means. */
 	SSIConfig_t config = {
 		.SSI=SSI2_PB, 
 		.frameFormat=FREESCALE_SPI, 
 		.isPrimary=true, 
 		.isTransmitting=true,
 		.dataBitSize=16};
+
+	/* Initialize an SPI bus operating on PB. See SSI.h on pins used. */
 	SSIInit(config);
 
 	TimerConfig_t timer = {
@@ -41,6 +47,8 @@ int main(void) {
 		.isPeriodic=true, 
 		.priority=2, 
 		.handlerTask=sendSSI};
+	
+	/* Initialize a timer sending bits across SPI regularly. */
 	TimerInit(timer);
 
 	EnableInterrupts();

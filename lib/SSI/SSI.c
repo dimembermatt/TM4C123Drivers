@@ -28,7 +28,7 @@ void SSIInit(SSIConfig_t SSIConfig) {
 	/* Early return if invalid bit size. */
 	if (SSIConfig.dataBitSize < 0x3 && SSIConfig.dataBitSize > 0xF) return;
 
-	/* 1. Enable the SSI module clock. */
+	/* 1. Enable the SSI module clock and stall until ready. */
 	GET_REG(SYSCTL_BASE + SYSCTL_RCGCSSI_OFFSET) |= (1 << (SSIConfig.SSI%4));
 	while ((GET_REG(SYSCTL_BASE + SYSCTL_PRSSI_OFFSET) & 
 		   (1 << (SSIConfig.SSI%4))) == 0) {};

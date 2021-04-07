@@ -73,15 +73,14 @@ static struct InterruptSettings interruptSettings[TIMER_COUNT] = {
 	{INTA, 0, 0, 0, NULL}, /* SYSTICK. */
 };
 
-
 /**
  * TimerInit initializes an arbitrary timer with a handler function reference.
+ * 
  * @param timer Configuration object for instantiating a new timer.
  * @note Note that B-side timer functionality is currently broken, and WTimers
  *		 are not yet supported.
  *		 Use freqToPeriod() for frequency conversion.
  *		 Requires the EnableInterrupts() call if edge triggered interrupts are enabled.
- *		 By default the timer is priority 5, below SysTick.
  * @dev  Potentially add the following parameters:
  *			- clock mode (i.e. 32-bit vs 16-bit config with CFG_R).
  *			- count down vs count up (TACDIR inside TAMR, TBCDIR inside TBMR).
@@ -126,13 +125,18 @@ void TimerInit(TimerConfig_t timerConfig) {
 	 * number, 16, is the enumerated value of WTIMER_2A. */
 	else timerOffset = 0x1000 * (uint32_t)((ID-16) >> 1) + 0x0001C000;
 
-	/* Step 1. Activate the timer. */
+	/* Step 1. Activate the timer and stall until ready. */
 	if (ID <= TIMER_5B) { /* 16/32 bit normal timers. */
 		GET_REG(SYSCTL_BASE + SYSCTL_RCGCTIMER_OFFSET) |= (0x01 << (uint32_t)(ID >> 1));
+		while ((GET_REG(SYSCTL_BASE + SYSCTL_PRTIMER_OFFSET) & 
+			(0x01 << (uint32_t)(ID >> 1))) == 0) {};
 	} else { /* 32/64 bit wide timers. */
 		/* Our magic number 12, is the enumerated value of WTIMER_0A. */
 		GET_REG(SYSCTL_BASE + SYSCTL_RCGCWTIMER_OFFSET) |= (0x01 << (uint32_t)((ID-12) >> 1)); 
+		while ((GET_REG(SYSCTL_BASE + SYSCTL_PRWTIMER_OFFSET) & 
+			(0x01 << (uint32_t)((ID-12) >> 1))) == 0) {};
 	}
+
 		
 	/* Step 2. Disable timer during setup. */
 	GET_REG(GPTM_BASE + timerOffset + GPTMCTL_OFFSET) &=
@@ -185,7 +189,7 @@ void TimerInit(TimerConfig_t timerConfig) {
 }
 
 /**
- * TimerUpdatePeriod adjust the timer period. Does not check if the timer was
+ * TimerUpdatePeriod adjusts the timer period. Does not check if the timer was
  * previously initialized.
  * 
  * @param timerID Timer to adjust.
@@ -213,7 +217,7 @@ void TimerUpdatePeriod(enum TimerID timerID, uint32_t period) {
 		return;
 	}
 
-	/* We'll generate the timer offset to find the correct addresses for each
+	/* 1. We'll generate the timer offset to find the correct addresses for each
 	 * timer. */
 	uint32_t timerOffset = 0;
 
@@ -228,12 +232,61 @@ void TimerUpdatePeriod(enum TimerID timerID, uint32_t period) {
 	GET_REG(GPTM_BASE + timerOffset + GPTMCTL_OFFSET) &=
 		((ID % 2) == 0) ? 0xFFFFFF00 : 0xFFFFFF00FF;
 
+	/* Step 3. Update the period. */
 	GET_REG(GPTM_BASE + timerOffset + GPTMTAILR_OFFSET) = period - 1;
 
-	/* Step 11. Enable timer after setup. */
+	/* Step 4. Enable timer after setup. */
 	GET_REG(GPTM_BASE + timerOffset + GPTMCTL_OFFSET) |=
 		((ID % 2) == 0) ? 0x00000001 : 0x00000100;
 	return;
+}
+
+/**
+ * TimerStop halts execution of the timer specified.
+ * 
+ * @param timerID Timer to adjust.
+ */
+void TimerStop(enum TimerID timerID) {
+	uint8_t ID = timerID;
+
+	/* Early return on invalid timer enum or invalid priority. */
+	if (ID == TIMER_COUNT) return;
+	
+	/* Special case for SYSTICK. */
+	if (ID == SYSTICK) {	
+		/* Disable during setup. */
+		GET_REG(PERIPHERALS_BASE + SYSTICK_CTRL_OFFSET) = 0x00000000;
+		return;
+	}
+
+	/* 1. We'll generate the timer offset to find the correct addresses for each
+	 * timer. */
+	uint32_t timerOffset = 0;
+
+	/* Timers TIMER_0A to WTIMER_1B. */
+	if (ID < WTIMER_2A) timerOffset = 0x1000 * (uint32_t)(ID >> 1);
+
+	/* Timers WTIMER_2A to WTIMER_5B. Jump the base to 0x4004.C000. Our magic
+	 * number, 16, is the enumerated value of WTIMER_2A. */
+	else timerOffset = 0x1000 * (uint32_t)((ID-16) >> 1) + 0x0001C000;
+
+	/* Step 2. Disable timer during setup. */
+	GET_REG(GPTM_BASE + timerOffset + GPTMCTL_OFFSET) &=
+		((ID % 2) == 0) ? 0xFFFFFF00 : 0xFFFFFF00FF;
+}
+
+/**
+ * freqToPeriod converts a desired frequency into the equivalent period in
+ * cycles given the base system clock.
+ * 
+ * @param freq Desired frequency.
+ * @param maxFreq Base clock frequency. If freq > maxFreq, period = 1 (saturates
+ *				  at max frequency). Rounds up if maxFreq is not easily
+ *				  divisible by freq.
+ * @return Output period, in cycles.
+ */
+uint32_t freqToPeriod(uint32_t freq, uint32_t maxFreq) {
+	return (uint32_t) ceil(maxFreq/freq);
 }
 
 void Timer0A_Handler(void) {
@@ -337,17 +390,4 @@ void SysTick_Handler(void) {
 	if (interruptSettings[24].timerHandlerTask != NULL) {
 		interruptSettings[24].timerHandlerTask();
 	}
-}
-
-/**
- * freqToPeriod converts a desired frequency into the equivalent period in
- * cycles given the base system clock.
- * @param freq Desired frequency.
- * @param maxFreq Base clock frequency. If freq > maxFreq, period = 1 (saturates
- *				  at max frequency). Rounds up if maxFreq is not easily
- *				  divisible by freq.
- * @return Output period, in cycles.
- */
-uint32_t freqToPeriod(uint32_t freq, uint32_t maxFreq) {
-	return (uint32_t) ceil(maxFreq/freq);
 }

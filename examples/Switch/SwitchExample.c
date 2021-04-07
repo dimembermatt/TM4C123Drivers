@@ -3,7 +3,7 @@
  * Devices: LM4F120; TM4C123
  * Description: Example program to demonstrate the capabilities of edge triggered switches.
  * Authors: Matthew Yu.
- * Last Modified: 04/05/21
+ * Last Modified: 04/07/21
  */
 
 /** General imports. */
@@ -30,31 +30,36 @@ void dummyTaskFalling(void) {
 	++fallingCounter;
 }
 
-GPIOConfig_t PF1Config = {
-	.GPIOPin=PIN_F1, 
-	.pull=PULL_DOWN, 
-	.isOutput=true, 
-	.isAlternative=false, 
-	.alternateFunction=0, 
-	.isAnalog=false
-};
-
-GPIOConfig_t PF2Config = {
-	PIN_F2, 
-	PULL_DOWN, 
-	true, 
-	false, 
-	0, 
-	false
-};
-
 int main(void) {
+	/**
+	 * This program demonstrates initializing the onboard switches as
+	 * edge-triggered GPIO and using them to toggle onboard LEDs. This is
+	 * similar to GPIOExample main #2.
+	 */
 	PLL_Init(Bus80MHz);
 	DisableInterrupts();
 	
 	/* Initialize PF0 (SW2) and PF4 (SW1) as edge triggered interrupt switches. */
 	SwitchInit(PIN_F0, dummyTaskRising, NULL);
 	SwitchInit(PIN_F4, NULL, dummyTaskFalling);
+
+	GPIOConfig_t PF1Config = {
+		.GPIOPin=PIN_F1, 
+		.pull=PULL_DOWN, 
+		.isOutput=true, 
+		.isAlternative=false, 
+		.alternateFunction=0, 
+		.isAnalog=false
+	};
+
+	GPIOConfig_t PF2Config = {
+		PIN_F2, 
+		PULL_DOWN, 
+		true, 
+		false, 
+		0, 
+		false
+	};
 
 	/* Initialize PF1, PF2 as a normal GPIO LED. */
 	GPIOInit(PF1Config);
@@ -63,7 +68,6 @@ int main(void) {
 	GPIOSetBit(PIN_F1, 0);
 	GPIOSetBit(PIN_F2, 0);
 	EnableInterrupts();
-
 	while (1) {
 		/* View in debugging mode with risingCounter and fallingCounter added to
 		 * watch 1. Press SW2 (right button) and SW1 (left button) to see

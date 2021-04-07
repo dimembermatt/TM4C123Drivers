@@ -81,10 +81,11 @@ void PWMInit(struct PWMConfig pwmConfig, uint32_t period, uint32_t dutyCycle) {
 		/* In-built TM4C PWM. */
 		if (pwmPin == PWM_COUNT) return;
 
-		/* 1. Enable PWM clock. */
+		/* 1. Enable PWM clock and stall until ready. */
 		GET_REG(SYSCTL_BASE + SYSCTL_RCGCPWM_OFFSET) =
-			0x1 * (pwmPin <= M0_PD1) |
-			0x2 * (pwmPin > M0_PD1 );
+			0x1 * (pwmPin <= M0_PD1) | 0x2 * (pwmPin > M0_PD1);
+        while ((GET_REG(SYSCTL_BASE + SYSCTL_PRPWM_OFFSET) & 
+            (0x1 * (pwmPin <= M0_PD1) | 0x2 * (pwmPin > M0_PD1))) == 0) {};
 
 		/* 2. Enable appropriate GPIO. */
 		GPIOConfig_t gpioConfig = {
@@ -98,11 +99,11 @@ void PWMInit(struct PWMConfig pwmConfig, uint32_t period, uint32_t dutyCycle) {
 		};
 		GPIOInit(gpioConfig);
 
-		/* 4. We don't perform this step, but you could modify RCC_R to base the
+		/* 3. We don't perform this step, but you could modify RCC_R to base the
 		   PWM clock on the PWM clock divider, and adjust its divisor. */
 		GET_REG(SYSCTL_BASE + SYSCTL_RCC_OFFSET) &= ~0x00100000;
 
-		/* 5. Select the PWM base based on the PWM pin. */
+		/* 4. Select the PWM base based on the PWM pin. */
 		uint32_t PWMBase = 
 			PWM0_BASE * (pwmPin <= M0_PD1) + 
 			PWM1_BASE * (pwmPin > M0_PD1);
@@ -111,6 +112,7 @@ void PWMInit(struct PWMConfig pwmConfig, uint32_t period, uint32_t dutyCycle) {
 
 		/* 5. Configure PWM for countdown mode. By default, both PWMA and PWMB
 		   signal generation are initialized to count down. */
+		uint32_t address = PWMBase + PWM_CTL_OFFSET * generatorOffset;
 		GET_REG(PWMBase + PWM_CTL_OFFSET * generatorOffset) = 0;
 		GET_REG(PWMBase + PWM_GENA_OFFSET * generatorOffset) = 0x0000008C;
 		GET_REG(PWMBase + PWM_GENB_OFFSET * generatorOffset) = 0x0000080C;
@@ -136,14 +138,69 @@ void PWMInit(struct PWMConfig pwmConfig, uint32_t period, uint32_t dutyCycle) {
 		PWMTimerSetting.dutyCycle = dutyCycle;
 		PWMTimerSetting.pin = pwmConfig.config.timerSelect.pin;
 
+        GPIOConfig_t pinConfig = {
+            PWMTimerSetting.pin, 
+            NONE,
+            true, 
+            false, 
+            0,
+            false
+        };
+        GPIOInit(pinConfig);
+
 		TimerConfig_t timerConfig = {
 			pwmConfig.config.timerSelect.timerID,
-			period,
+			period/100, /* Execute handler at 100 x the frequency. */
 			true,
 			3,
 			PWMTimerHandler
 		};
 		TimerInit(timerConfig);
+	}
+}
+
+/**
+ * PWMUpdateConfig updates the PWM period and duty cycle. 
+ * Does not check if the PWM was previously initialized.
+ * 
+ * @param pwmConfig The PWM configuration that should be started.
+ * @param period The period of one cycle of the PWM.
+ * @param dutyCycle The duty cycle of one cycle of the PWM, from 0 to 100.
+ * @note Only one Timer based PWM can be on at a time.
+ */
+void PWMUpdateConfig(struct PWMConfig pwmConfig, uint32_t period, uint32_t dutyCycle) {
+	if (pwmConfig.source == DEFAULT) {
+		enum PWMPin pwmPin = pwmConfig.config.pwmSelect.pwmPin;
+
+		/* In-built TM4C PWM. */
+		if (pwmPin == PWM_COUNT) return;
+
+		/* 0. Select the PWM base based on the PWM pin. */
+		uint32_t PWMBase = 
+			PWM0_BASE * (pwmPin <= M0_PD1) + 
+			PWM1_BASE * (pwmPin > M0_PD1);
+
+		uint32_t generatorOffset = (pwmSettings[pwmPin].generator >> 1) + 1;
+
+		/* 1. Disable the timers. */
+		GET_REG(PWMBase + PWM_CTL_OFFSET * generatorOffset) = 0;
+
+		/* 2. Set the period. PWM clock source is SYSCLK. */
+		GET_REG(PWMBase + PWM_LOAD_OFFSET * generatorOffset) = period-1;
+			
+		/* 3. Set the pulse width. The offset is dependent on which comparator is
+		   selected. Each module can have two comparators running. */
+		GET_REG(PWMBase +
+			(PWM_CMPA_OFFSET * (pwmConfig.config.pwmSelect.comparator == PWMA) +
+			 PWM_CMPB_OFFSET * (pwmConfig.config.pwmSelect.comparator == PWMB)) *
+				generatorOffset) = (period*dutyCycle/100)-1;
+
+		/* 4. Start the timers. */
+		GET_REG(PWMBase + PWM_CTL_OFFSET * generatorOffset) = 1;
+	} else {
+		/* Timer based PWM. */
+		PWMTimerSetting.dutyCycle = dutyCycle;
+		TimerUpdatePeriod(pwmConfig.config.timerSelect.timerID, period/100);
 	}
 }
 
@@ -155,9 +212,23 @@ void PWMInit(struct PWMConfig pwmConfig, uint32_t period, uint32_t dutyCycle) {
 void PWMStop(struct PWMConfig pwmConfig) {
 	if (pwmConfig.source == DEFAULT) {
 		/* In-built TM4C PWM. */
+		enum PWMPin pwmPin = pwmConfig.config.pwmSelect.pwmPin;
+
+		/* In-built TM4C PWM. */
+		if (pwmPin == PWM_COUNT) return;
+
+		/* 0. Select the PWM base based on the PWM pin. */
+		uint32_t PWMBase = 
+			PWM0_BASE * (pwmPin <= M0_PD1) + 
+			PWM1_BASE * (pwmPin > M0_PD1);
+
+		uint32_t generatorOffset = (pwmSettings[pwmPin].generator >> 1) + 1;
+
+		/* 1. Disable the timers. */
+		GET_REG(PWMBase + PWM_CTL_OFFSET * generatorOffset) = 0;
 
 	} else {
 		/* Timer based PWM. */
-		/* TODO: add TimerStop support in Timer.h. */
+		TimerStop(pwmConfig.config.timerSelect.timerID);
 	}
 }

@@ -86,6 +86,17 @@ struct PWMConfig {
 void PWMInit(struct PWMConfig pwmConfig, uint32_t period, uint32_t dutyCycle);
 
 /**
+ * PWMUpdateConfig updates the PWM period and duty cycle. 
+ * Does not check if the PWM was previously initialized.
+ * 
+ * @param pwmConfig The PWM configuration that should be started.
+ * @param period The period of one cycle of the PWM.
+ * @param dutyCycle The duty cycle of one cycle of the PWM, from 0 to 100.
+ * @note Only one Timer based PWM can be on at a time.
+ */
+void PWMUpdateConfig(struct PWMConfig pwmConfig, uint32_t period, uint32_t dutyCycle);
+
+/**
  * PWMStop disables a PWM configuration.
  * 
  * @param pwmConfig The PWM that should be halted.

@@ -3,7 +3,7 @@
  * Devices: LM4F120; TM4C123
  * Description: Low level drivers for using onboard timers.
  * Authors: Matthew Yu.
- * Last Modified: 03/13/21
+ * Last Modified: 04/07/21
  **/
 #pragma once
 
@@ -16,6 +16,7 @@
 
 /** Our handler type used by timers. */
 typedef void (*handlerFunctionPtr_t)(void);
+
 /** Enumerator defining all possible timers, including SysTick. */
 enum TimerID {
 	TIMER_0A, TIMER_0B,
@@ -52,6 +53,7 @@ typedef struct TimerConfig {
 
 /**
  * TimerInit initializes an arbitrary timer with a handler function reference.
+ * 
  * @param timer 	  Enum identifying which timer to initialize.
  * @param period	  Reload time, in cycles. 
  * @param handlerTask Function pointer to what should be called by the
@@ -68,13 +70,31 @@ typedef struct TimerConfig {
 void TimerInit(TimerConfig_t timerConfig);
 
 /**
- * TimerUpdatePeriod adjust the timer period. Does not check if the timer was
+ * TimerUpdatePeriod adjusts the timer period. Does not check if the timer was
  * previously initialized.
  * 
  * @param timerID Timer to adjust.
  * @param period New period of the timer.
  */
 void TimerUpdatePeriod(enum TimerID timerID, uint32_t period);
+
+/**
+ * TimerStop halts execution of the timer specified.
+ * 
+ * @param timerID Timer to adjust.
+ */
+void TimerStop(enum TimerID timerID);
+
+/**
+ * freqToPeriod converts a desired frequency into the equivalent period in
+ * cycles given the base system clock, rounded up.
+ * 
+ * @param freq Desired frequency.
+ * @param maxFreq Base clock frequency. 
+ * @return Output period, in cycles.
+ * @note If freq > maxFreq, the period 0 is returned (an error).
+ */ 
+uint32_t freqToPeriod(uint32_t freq, uint32_t maxFreq);
 
 /** Handler definitions for normal timers. */
 void Timer0A_Handler(void);
@@ -104,12 +124,5 @@ void WideTimer4B_Handler(void);
 void WideTimer5A_Handler(void);
 void WideTimer5B_Handler(void);
 
-/**
- * freqToPeriod converts a desired frequency into the equivalent period in
- * cycles given the base system clock, rounded up.
- * @param freq Desired frequency.
- * @param maxFreq Base clock frequency. 
- * @return Output period, in cycles.
- * @note If freq > maxFreq, the period 0 is returned (an error).
- */ 
-uint32_t freqToPeriod(uint32_t freq, uint32_t maxFreq);
+/** Systick handler definition. */
+void SysTick_Handler(void);
