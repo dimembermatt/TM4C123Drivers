@@ -42,6 +42,15 @@ typedef struct SSIConfig {
 	/** Determines whether the SSI is either transmitting or receiving info. */
 	bool isTransmitting;
 
+	/** Determines whether the clock line is raised high when not executing. */
+	bool isClockDefaultHigh;
+
+	/** 
+	 * Determines whether the data bits are captured on the 1st or 2nd edge. 
+	 * True is 2nd edge, False is 1st edge.
+	 */ 
+	bool polarity;
+
 	/** The size of the SSI. From 4 (0x3) to 16 (0xF) bits. */
 	uint8_t dataBitSize;
 } SSIConfig_t;

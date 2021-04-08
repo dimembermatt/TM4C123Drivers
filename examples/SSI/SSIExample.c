@@ -36,6 +36,8 @@ int main(void) {
 		.frameFormat=FREESCALE_SPI, 
 		.isPrimary=true, 
 		.isTransmitting=true,
+        .isClockDefaultHigh=true,
+        .polarity=false,
 		.dataBitSize=16};
 
 	/* Initialize an SPI bus operating on PB. See SSI.h on pins used. */

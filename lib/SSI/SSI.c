@@ -103,7 +103,8 @@ void SSIInit(SSIConfig_t SSIConfig) {
 	GET_REG(SSI_BASE + SSIOffset + SSI_CR0_OFFSET) &= ~(0x0000FFFF);
 	GET_REG(SSI_BASE + SSIOffset + SSI_CR0_OFFSET) |= 
 		(SSIConfig.frameFormat << 4) | 
-		(0x1 << 6) | 
+		(SSIConfig.isClockDefaultHigh << 6) | 
+		(SSIConfig.polarity << 7) |
 		(SSIConfig.dataBitSize-1);
 
 	/* 9. Re-enable SSI operation. */
@@ -128,7 +129,7 @@ uint16_t SPIRead(enum SSISelect ssi) {
 
 	/* Poll until Receive FIFO is not empty. */
 	while ((GET_REG(SSI_BASE + SSIOffset + SSI_SR_OFFSET) & 0x4) == 0) {}
-	return GET_REG(SSI_BASE + SSIOffset + SSI_DR_OFFSET) & 0x00FF;
+	return GET_REG(SSI_BASE + SSIOffset + SSI_DR_OFFSET) & 0xFFFF;
 }
 
 /**
