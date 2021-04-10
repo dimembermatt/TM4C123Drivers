@@ -733,4 +733,3 @@ bool GPIOGetBit(pin_t pin) {
 	return GET_REG(GPIO_PORT_BASE + portOffset + (1 << ((pin & 0x07) + 2)));
 }
 #endif
-

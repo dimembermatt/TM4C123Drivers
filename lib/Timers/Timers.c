@@ -202,18 +202,9 @@ void TimerUpdatePeriod(enum TimerID timerID, uint32_t period) {
 	if (ID == TIMER_COUNT) return;
 	
 	/* Special case for SYSTICK. */
-	if (ID == SYSTICK) {	
-		/* Disable during setup. */
-		GET_REG(PERIPHERALS_BASE + SYSTICK_CTRL_OFFSET) = 0x00000000;
-
+	if (ID == SYSTICK) {
 		/* Set reload value. */
 		GET_REG(PERIPHERALS_BASE + SYSTICK_LOAD_OFFSET) = period - 1;
-
-		/* Clear current value. */
-		GET_REG(PERIPHERALS_BASE + SYSTICK_CURR_OFFSET) = 0x00000000;
-
-		/* Re-enable after setup. */
-		GET_REG(PERIPHERALS_BASE + SYSTICK_CTRL_OFFSET) = 0x00000007;
 		return;
 	}
 
@@ -228,16 +219,9 @@ void TimerUpdatePeriod(enum TimerID timerID, uint32_t period) {
 	 * number, 16, is the enumerated value of WTIMER_2A. */
 	else timerOffset = 0x1000 * (uint32_t)((ID-16) >> 1) + 0x0001C000;
 
-	/* Step 2. Disable timer during setup. */
-	GET_REG(GPTM_BASE + timerOffset + GPTMCTL_OFFSET) &=
-		((ID % 2) == 0) ? 0xFFFFFF00 : 0xFFFFFF00FF;
-
 	/* Step 3. Update the period. */
 	GET_REG(GPTM_BASE + timerOffset + GPTMTAILR_OFFSET) = period - 1;
 
-	/* Step 4. Enable timer after setup. */
-	GET_REG(GPTM_BASE + timerOffset + GPTMCTL_OFFSET) |=
-		((ID % 2) == 0) ? 0x00000001 : 0x00000100;
 	return;
 }
 
