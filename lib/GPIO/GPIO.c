@@ -131,6 +131,7 @@ void GPIOInit(GPIOConfig_t pinConfig) {
 		GET_REG(GPIO_PORT_BASE + portOffset + GPIO_DIR_OFFSET) |= pinAddress;
 
 	/* 8. Set alternative function if required. */
+	GET_REG(GPIO_PORT_BASE + portOffset + GPIO_AFSEL_OFFSET) &= ~pinAddress;
 	if (pinConfig.isAlternative) {
 		GET_REG(GPIO_PORT_BASE + portOffset + GPIO_AFSEL_OFFSET) |= pinAddress;
 		uint32_t mask = 0xFFFFFFFF;
