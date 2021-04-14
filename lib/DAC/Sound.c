@@ -34,6 +34,7 @@ static const uint8_t MAX_SOUNDS = 5;
 static struct SoundConfig soundConfig;
 	
 /** Helper function called when we want to play one iteration of the sound. */
+// TODO: write this in assembly for faster speedup.
 void iterateCycle(void) {
 	for (uint8_t i = 0; i < MAX_SOUNDS; ++i) {
 		if (sounds[i].id != -1) {
@@ -55,16 +56,16 @@ void iterateCycle(void) {
 }
 
 /**
- * initializeSoundPlayer sets up the timer and configures the output.
+ * SoundPlayerInit sets up the timer and configures the output.
  * @param soundConfig The output format of the audio. Requires calling 
  *					  EnableInterrupts() after initialization. 
  * @note Only one sound player can be activated at a time (i.e. only one set of
  *		 HW), but multiple channels can be played on the single set of hardware. 
  */
-void initializeSoundPlayer(struct SoundConfig _soundConfig) {
+void SoundPlayerInit(struct SoundConfig _soundConfig) {
 	/* Player is initialized to 400 kHz (2500 ns). */
 	TimerConfig_t timerConfig = {
-		SYSTICK,
+		_soundConfig.timerID,
 		freqToPeriod(400000, MAX_FREQ),
 		true,
 		2,

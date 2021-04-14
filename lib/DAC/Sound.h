@@ -26,7 +26,10 @@ void WaitForInterrupt(void);	// Defined in startup.s
 /** 
  * Sound configuration specifying the SSI or DAC that needs to be initialized.
  */
-struct SoundConfig {
+typedef struct SoundConfig {
+    /** Timer to use for internal interrupts. */
+    enum TimerID timerID;
+
 	/** Enumerator defining how the output format of the sound should be. */
 	enum PlayerSource { R_DAC, SPI_DAC } source;
 	
@@ -37,16 +40,16 @@ struct SoundConfig {
 		/** SSI configuration. See SSI.h for more details. */
 		SSIConfig_t ssi;
 	} config;
-};
+} SoundConfig_t;
 
 void setCycle(void);
 
 /**
- * initializeSoundPlayer sets up the timer and configures the output.
+ * SoundPlayerInit sets up the timer and configures the output.
  * @param soundConfig The output format of the audio. Requires calling 
  * EnableInterrupts() after initialization.
  */
-void initializeSoundPlayer(struct SoundConfig soundConfig);
+void SoundPlayerInit(SoundConfig_t soundConfig);
 
 /**
  * playSound plays a tone at a specified frequency and envelope for the provided

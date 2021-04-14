@@ -47,7 +47,7 @@ enum PWMPin {
 /**
  * PWM configuration specifying the PWM that needs to be initialized.
  */
-struct PWMConfig {
+typedef struct PWMConfig {
 	/** Enumerator defining what type of PWM should be configured. */
 	enum PWMSource { DEFAULT, TIMER } source;
 
@@ -71,7 +71,7 @@ struct PWMConfig {
 			enum TimerID timerID;
 		} timerSelect;
 	} config;
-};
+} PWMConfig_t;
 
 /**
  * PWMInit initializes a PWM configuration with a given frequency and duty
@@ -83,7 +83,7 @@ struct PWMConfig {
  * @note Calling a Timer based PWM requires calling EnableInterrupts() after
  * initialization. Only one Timer based PWM can be on at a time.
  */
-void PWMInit(struct PWMConfig pwmConfig, uint32_t period, uint32_t dutyCycle);
+void PWMInit(PWMConfig_t pwmConfig, uint32_t period, uint32_t dutyCycle);
 
 /**
  * PWMUpdateConfig updates the PWM period and duty cycle. 
@@ -94,11 +94,11 @@ void PWMInit(struct PWMConfig pwmConfig, uint32_t period, uint32_t dutyCycle);
  * @param dutyCycle The duty cycle of one cycle of the PWM, from 0 to 100.
  * @note Only one Timer based PWM can be on at a time.
  */
-void PWMUpdateConfig(struct PWMConfig pwmConfig, uint32_t period, uint32_t dutyCycle);
+void PWMUpdateConfig(PWMConfig_t pwmConfig, uint32_t period, uint32_t dutyCycle);
 
 /**
  * PWMStop disables a PWM configuration.
  * 
  * @param pwmConfig The PWM that should be halted.
  */
-void PWMStop(struct PWMConfig pwmConfig);
+void PWMStop(PWMConfig_t pwmConfig);

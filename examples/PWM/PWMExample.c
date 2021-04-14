@@ -37,7 +37,7 @@ int main(void) {
 	/* Initialize SysTick for delay calls.*/
 	delayInit();
 	
-    struct PWMConfig pwmConfigPF1 = 
+    PWMConfig_t pwmConfigPF1 = 
 #if __MAIN__ == 0
     {
         .source=DEFAULT,
@@ -72,7 +72,7 @@ int main(void) {
 				GPIOSetBit(PIN_F1, 1);
 				break;
 		}
-		delayMillisec(20000);
+		delayMillisec(2000);
 		mode = (mode + 1) % 4;
 	}
 }

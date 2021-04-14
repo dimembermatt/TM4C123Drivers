@@ -33,7 +33,8 @@ GPIOConfig_t PF1Config = {PIN_F1, PULL_DOWN, true, false, 0, false};
 TimerConfig_t timer0AConfig = {TIMER_0A, 0, true, 4, flipPF1};
 
 int mainR(void) {
-	struct SoundConfig config = {
+	SoundConfig_t config = {
+        SYSTICK,
 		R_DAC,
 		{.pins={PIN_B6, PIN_A2, PIN_A3, PIN_A4, PIN_A5, PIN_A6}}
 	};
@@ -44,7 +45,7 @@ int mainR(void) {
 	/* Initialize SysTick for delay calls.*/
 	delayInit();
 	
-	initializeSoundPlayer(config);
+	SoundPlayerInit(config);
 	EnableInterrupts();
 
 	/* Connect up with a speaker using a R_2R or Binary Weighted DAC
@@ -61,6 +62,7 @@ int mainR(void) {
 
 int main(void) {
 	struct SoundConfig config = {
+        SYSTICK,
 		SPI_DAC,
 		{.ssi={SSI2_PB, FREESCALE_SPI, true, true, 16}},
 	};
@@ -73,7 +75,7 @@ int main(void) {
 	timer0AConfig.period = freqToPeriod(2, MAX_FREQ);
 	TimerInit(timer0AConfig);
 
-	initializeSoundPlayer(config);
+	SoundPlayerInit(config);
 	EnableInterrupts();
 
 	/* Connect up with a speaker using TLV5616 SPI DAC. Use SSI2 pins
