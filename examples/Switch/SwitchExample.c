@@ -3,7 +3,7 @@
  * Devices: LM4F120; TM4C123
  * Description: Example program to demonstrate the capabilities of edge triggered switches.
  * Authors: Matthew Yu.
- * Last Modified: 04/07/21
+ * Last Modified: 04/17/21
  */
 
 /** General imports. */

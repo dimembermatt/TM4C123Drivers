@@ -3,36 +3,65 @@
  * Devices: LM4F120; TM4C123
  * Description: Example program to demonstrate digital to analog converters.
  * Authors: Matthew Yu.
- * Last Modified: 03/03/21
+ * Last Modified: 04/17/21
+ * 
+ * Modify __MAIN__ on L12 to determine which main method is executed.
+ * __MAIN__ = 0 - Initialization and use a resistor based DAC.
+ *          = 1 - Initialization and use of a SPI based DAC.
  */
+#define __MAIN__ 0
 
 /** Device specific imports. */
 #include <inc/tm4c123gh6pm.h>
 #include <inc/PLL.h>
 #include <lib/DAC/DAC.h>
+#include <lib/DAC/DACSPI.h>
 #include <lib/GPIO/GPIO.h>
 
-
+#if __MAIN__ == 0
 DACConfig_t config = {
-	{PIN_B0, PIN_COUNT, PIN_COUNT, PIN_COUNT, PIN_COUNT, PIN_COUNT},
-	1
+    .pinList={PIN_B0, PIN_COUNT, PIN_COUNT, PIN_COUNT, PIN_COUNT, PIN_COUNT}
 };
 
 /** Initializes both onboard switches to test triggers. */
 int main(void) {
-	PLL_Init(Bus80MHz);
-	DACInit(config);
+    PLL_Init(Bus80MHz);
+    DACInit(config);
 
-	// View in debugging mode with GPIO_PORTB_DATA_R added to watch 1.
-	// Step through program to see pins change.
-	DACOut(config, 0); // GPIO_PORTB_DATA_R should be 0x00.
-	DACOut(config, 1); // GPIO_PORTB_DATA_R should be 0x01.
-	DACOut(config, 2); // GPIO_PORTB_DATA_R should be 0x00.
+    // View in debugging mode with GPIO_PORTB_DATA_R added to watch 1.
+    // Step through program to see pins change.
+    DACOut(config, 0); // GPIO_PORTB_DATA_R should be 0x00.
+    DACOut(config, 1); // GPIO_PORTB_DATA_R should be 0x01.
+    DACOut(config, 2); // GPIO_PORTB_DATA_R should be 0x00.
 
-	config.pinList[1] = PIN_B2;
-	DACInit(config);
-	DACOut(config, 2); // GPIO_PORTB_DATA_R should be 0x04.
-	DACOut(config, 3); // GPIO_PORTB_DATA_R should be 0x05.
-	
-	while(1) {}
+    config.pinList[1] = PIN_B2;
+    DACInit(config);
+    DACOut(config, 2); // GPIO_PORTB_DATA_R should be 0x04.
+    DACOut(config, 3); // GPIO_PORTB_DATA_R should be 0x05.
+    
+    while(1) {}
 }
+#elif __MAIN__ == 1
+SSIConfig_t config = {
+    .SSI=SSI2_PB, 
+    .frameFormat=FREESCALE_SPI, 
+    .isPrimary=true, 
+    .isTransmitting=true,
+    .isClockDefaultHigh=true,
+    .polarity=false,
+    .dataBitSize=16};
+
+/** Initializes both onboard switches to test triggers. */
+int main(void) {
+    PLL_Init(Bus80MHz);
+    DACSPIInit(SSI2_PB);
+
+    while(1) {
+        /** 
+         * Check the oscilloscope output when this is connected 
+         * to the TLV chip to see the SSI input and output voltage. 
+         */
+        DACSPIOut(SSI2_PB, 0xFF);
+    }
+}
+#endif

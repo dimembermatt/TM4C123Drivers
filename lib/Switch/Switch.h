@@ -4,7 +4,7 @@
  * Description: Low level drivers for onboard and offboard switches. Performs
  * internal debouncing.
  * Authors: Matthew Yu.
- * Last Modified: 04/05/21
+ * Last Modified: 04/17/21
  */
 #pragma once
 
@@ -22,7 +22,7 @@
  * @param touchTask Function executed when switch is pressed (falling edge).
  * @param releaseTask Function executed when switch is released (rising edge).
  * @note Functions must take no explicit parameters and return values.
- *		 Requires the EnableInterrupts() call if edge triggered interrupts are enabled.
+ *       Requires the EnableInterrupts() call if edge triggered interrupts are enabled.
  */
 void SwitchInit(pin_t pin, void (*touchTask)(void), void (*releaseTask)(void));
 

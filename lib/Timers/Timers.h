@@ -3,7 +3,7 @@
  * Devices: LM4F120; TM4C123
  * Description: Low level drivers for using onboard timers.
  * Authors: Matthew Yu.
- * Last Modified: 04/07/21
+ * Last Modified: 04/17/21
  **/
 #pragma once
 
@@ -14,58 +14,55 @@
 
 #define MAX_FREQ 80000000 /** 80 MHz. */
 
-/** Our handler type used by timers. */
-typedef void (*handlerFunctionPtr_t)(void);
-
 /** Enumerator defining all possible timers, including SysTick. */
-enum TimerID {
-	TIMER_0A, TIMER_0B,
-	TIMER_1A, TIMER_1B,
-	TIMER_2A, TIMER_2B,
-	TIMER_3A, TIMER_3B,
-	TIMER_4A, TIMER_4B,
-	TIMER_5A, TIMER_5B,
-	WTIMER_0A, WTIMER_0B,
-	WTIMER_1A, WTIMER_1B,
-	WTIMER_2A, WTIMER_2B,
-	WTIMER_3A, WTIMER_3B,
-	WTIMER_4A, WTIMER_4B,
-	WTIMER_5A, WTIMER_5B,
-	SYSTICK, TIMER_COUNT,
-};
+typedef enum TimerID {
+    TIMER_0A, TIMER_0B,
+    TIMER_1A, TIMER_1B,
+    TIMER_2A, TIMER_2B,
+    TIMER_3A, TIMER_3B,
+    TIMER_4A, TIMER_4B,
+    TIMER_5A, TIMER_5B,
+    WTIMER_0A, WTIMER_0B,
+    WTIMER_1A, WTIMER_1B,
+    WTIMER_2A, WTIMER_2B,
+    WTIMER_3A, WTIMER_3B,
+    WTIMER_4A, WTIMER_4B,
+    WTIMER_5A, WTIMER_5B,
+    SYSTICK, TIMER_COUNT,
+} TimerID_t;
 
 typedef struct TimerConfig {
-	/** Timer to setup. */
-	enum TimerID timerID;
+    /** Timer to setup. */
+    TimerID_t timerID;
 
-	/** Timer reload time, in cycles. */
-	uint32_t period;
+    /** Timer reload time, in cycles. */
+    uint32_t period;
 
-	/** Whether the Timer executes continuously or not. */
-	bool isPeriodic;
+    /** Whether the Timer executes continuously or not. */
+    bool isPeriodic;
 
-	/** Timer priority. From 0 - 7. Lower is higher priority. */
-	uint8_t priority;
-	
-	/** Task executed when Timer interrupts. */
-	void (*handlerTask)(void);
+    /** Timer priority. From 0 - 7. Lower is higher priority. */
+    uint8_t priority;
+    
+    /** Task executed when Timer interrupts. */
+    void (*handlerTask)(void);
 } TimerConfig_t;
 
 /**
  * TimerInit initializes an arbitrary timer with a handler function reference.
  * 
- * @param timer 	  Enum identifying which timer to initialize.
- * @param period	  Reload time, in cycles. 
+ * @param timer       Enum identifying which timer to initialize.
+ * @param period      Reload time, in cycles. 
  * @param handlerTask Function pointer to what should be called by the
- *					  TimerXX_Handler. 
+ *                    TimerXX_Handler. 
  * @note Note that B-side timer functionality is currently broken, and WTimers
- *		 are not yet supported.
- *		 Use freqToPeriod() for frequency conversion.
- *		 Requires the EnableInterrupts() call if edge triggered interrupts are enabled.
- *		 By default the timer is priority 5, below SysTick.
+ *       are not yet supported.
+ *       Use freqToPeriod() for frequency conversion.
+ *       Requires the EnableInterrupts() call if edge triggered interrupts are enabled.
+ *       By default the timer is priority 5, below SysTick.
  * @dev  Potentially add the following parameters:
- *			- clock mode (i.e. 32-bit vs 16-bit config with CFG_R).
- *			- count down vs count up (TACDIR inside TAMR, TBCDIR inside TBMR).
+ *          - clock mode (i.e. 32-bit vs 16-bit config with CFG_R).
+ *          - count down vs count up (TACDIR inside TAMR, TBCDIR inside TBMR).
  */
 void TimerInit(TimerConfig_t timerConfig);
 
@@ -76,14 +73,14 @@ void TimerInit(TimerConfig_t timerConfig);
  * @param timerID Timer to adjust.
  * @param period New period of the timer.
  */
-void TimerUpdatePeriod(enum TimerID timerID, uint32_t period);
+void TimerUpdatePeriod(TimerID_t timerID, uint32_t period);
 
 /**
  * TimerStop halts execution of the timer specified.
  * 
  * @param timerID Timer to adjust.
  */
-void TimerStop(enum TimerID timerID);
+void TimerStop(TimerID_t timerID);
 
 /**
  * freqToPeriod converts a desired frequency into the equivalent period in

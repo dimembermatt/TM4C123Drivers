@@ -3,7 +3,7 @@
  * Devices: LM4F120; TM4C123
  * Description: Low level drivers to configure a resistor ladder DAC output.
  * Authors: Matthew Yu.
- * Last Modified: 03/13/21
+ * Last Modified: 04/17/21
  */
 #pragma once
 
@@ -16,18 +16,17 @@
 
 /** Configuration of a single DAC object. */
 typedef struct DACConfig {
-	pin_t pinList[6];
-	uint8_t numUsedPins;
+    pin_t pinList[6];
 } DACConfig_t;
 
 /**
  * DACInit initializes an N-bit DAC on Port B.
  * @param pins A list of pins to initialize, in order of LSB to MSB.
  * @note Assumes that the first pin that is invalid (PIN_COUNT) means all
- *		 following pins are invalid. 
- *		 Goes up to 6 bits of resolution. 
- *		 Multiple DACs can be configured, but the user retains responsibility
- *		 for managing the pins data structures.
+ *       following pins are invalid. 
+ *       Goes up to 6 bits of resolution. 
+ *       Multiple DACs can be configured, but the user retains responsibility
+ *       for managing the pins data structures.
  */
 void DACInit(DACConfig_t pins);
 
@@ -36,6 +35,6 @@ void DACInit(DACConfig_t pins);
  * @param pins The list of pins to write data to, in order of LSB to MSB.
  * @param data A value from 0 - 255. Scaled based on how many bits are part of the DAC.
  * @note Assumes that the first pin that is invalid (PIN_COUNT) means all
- *		 following pins are invalid. 
+ *       following pins are invalid. 
  */
 void DACOut(DACConfig_t pins, uint8_t data);

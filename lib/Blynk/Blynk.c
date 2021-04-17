@@ -5,7 +5,7 @@
  * the TM4C123 and ESP8266.
  * Authors: Authored by Mark McDermott, Andrew Lynch, Jonathan Valvano, and
  * adapted by Matthew Yu.
- * Last Modified: 03/13/21
+ * Last Modified: 04/17/21
  */
 
 /** General imports. */
@@ -19,9 +19,9 @@
 
 /** Initializes the ESP8266 to communicate with the Blynk application. */
 void BlynkInit(void) {
-	ESP8266_Init();
-	ESP8266_Reset();
-	ESP8266_SetupWiFi();
+    ESP8266_Init();
+    ESP8266_Reset();
+    ESP8266_SetupWiFi();
 }
 
 /**
@@ -32,14 +32,14 @@ void BlynkInit(void) {
  * @param value Value to send.
  */
 void TM4CtoBlynk(uint32_t pin, uint32_t value) {
-	if (pin < 70 || pin > 99) return;
+    if (pin < 70 || pin > 99) return;
 
-	// Format: [VP],[value],0.0\n
-	ESP8266_OutUDec(pin);
-	ESP8266_OutChar(',');
-	ESP8266_OutUDec(value);
-	ESP8266_OutChar(',');
-	ESP8266_OutString("0.0\n");
+    // Format: [VP],[value],0.0\n
+    ESP8266_OutUDec(pin);
+    ESP8266_OutChar(',');
+    ESP8266_OutUDec(value);
+    ESP8266_OutChar(',');
+    ESP8266_OutString("0.0\n");
 }
 
 /**
@@ -52,6 +52,6 @@ void TM4CtoBlynk(uint32_t pin, uint32_t value) {
  * TODO: update ESP8266 methods to return num chars copied.
  */
 uint32_t BlynktoTM4C(char serialBuffer[], uint32_t size) {
-	if (ESP8266_GetMessage(serialBuffer)) return 1;
-	return 0;
+    if (ESP8266_GetMessage(serialBuffer)) return 1;
+    return 0;
 }

@@ -399,11 +399,6 @@
               <FilePath>.\SwitchExample.c</FilePath>
             </File>
             <File>
-              <FileName>Misc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\lib\Misc\Misc.c</FilePath>
-            </File>
-            <File>
               <FileName>GPIO.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\lib\GPIO\GPIO.c</FilePath>

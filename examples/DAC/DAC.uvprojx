@@ -408,6 +408,16 @@
               <FileType>1</FileType>
               <FilePath>..\..\lib\GPIO\GPIO.c</FilePath>
             </File>
+            <File>
+              <FileName>DACSPI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\lib\DAC\DACSPI.c</FilePath>
+            </File>
+            <File>
+              <FileName>SSI.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\lib\SSI\SSI.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

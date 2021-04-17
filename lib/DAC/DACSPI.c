@@ -3,22 +3,31 @@
  * Devices: LM4F120; TM4C123
  * Description: Low level drivers for the TLV5616CP SPI DAC chip.
  * Authors: Matthew Yu.
- * Last Modified: 03/13/21
+ * Last Modified: 04/17/21
  */
 
 /** Device specific imports. */
-#include "DACSPI.h"
+#include <lib/DAC/DACSPI.h>
 
 
 /**
  * DACSPIInit initializes a given SSI port.
  * @param SSIConfig Struct defining relevant SSI module details for output.
  * @note Multiple DACs can be configured, but the user retains responsibility
- *		 for managing the SSI data structures.
+ *       for managing the SSI data structures.
  */
-void DACSPIInit(SSIConfig_t SSIConfig) {
-	/* TODO: can do a little bit more abstraction on input to SSISelect. */
-	SSIInit(SSIConfig);
+void DACSPIInit(SSISelect_t ssi) {
+    SSIConfig_t config = {
+        .SSI=ssi, 
+        .frameFormat=FREESCALE_SPI, 
+        .isPrimary=true, 
+        .isTransmitting=true,
+        .isClockDefaultHigh=true,
+        .polarity=true,
+        .dataBitSize=16
+    };
+
+    SSIInit(config);
 }
 
 /**
@@ -26,7 +35,7 @@ void DACSPIInit(SSIConfig_t SSIConfig) {
  * @param ssi Enum determining which SSI port to output to.
  * @param data A value from 0 - 4096.
  */
-void DACSPIOut(enum SSISelect ssi, uint16_t data) {
-	/* Fast mode, normal operation. */
-	SPIWrite(ssi, (data & 0x0FFF) | 0x4000);
+void DACSPIOut(SSISelect_t ssi, uint16_t data) {
+    /* Fast mode, normal operation. */
+    SPIWrite(ssi, (data & 0x0FFF) | 0x4000);
 }
