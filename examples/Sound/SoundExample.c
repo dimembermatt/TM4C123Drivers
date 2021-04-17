@@ -59,12 +59,20 @@ int mainR(void) {
 	}
 }
 
-int main(void) {
-	struct SoundConfig config = {
-		SPI_DAC,
-		{.ssi={SSI2_PB, FREESCALE_SPI, true, true, 16}},
-	};
 
+uint8_t soundWave[16] = {
+	0, 1, 3, 6, 9, 12, 14, 15,
+	15, 14, 12, 9, 6, 3, 1, 0,
+};
+uint8_t multiplier = 4095/15;
+void output(void) {
+	static uint8_t idx = 0;
+	DACSPIOut(SSI1_PD, soundWave[idx] * multiplier);
+	idx = (idx + 1)%16;
+}
+
+#define FREQ 0
+int main(void) {
 	PLL_Init(Bus80MHz);
 	DisableInterrupts();
 
@@ -73,16 +81,49 @@ int main(void) {
 	timer0AConfig.period = freqToPeriod(2, MAX_FREQ);
 	TimerInit(timer0AConfig);
 
-	initializeSoundPlayer(config);
-	EnableInterrupts();
+	/* Initialize delay SYSTICK. */
+	delayInit();
+	
+	/* Initialize the SPI for the DAC. */
+	SSIConfig_t ssi = {
+		.SSI=SSI1_PD,
+		.frameFormat=FREESCALE_SPI,
+		.isPrimary=true,
+		.isTransmitting=true,
+		.isClockDefaultHigh=true,
+		.polarity=true,
+		.dataBitSize=16
+	};
+	DACSPIInit(ssi);
+	
+	/* Initialize a timer to output to DAC at a provided frequency. */
+	TimerConfig_t timer1AConfig = {
+		TIMER_1A, 
+		freqToPeriod(FREQ * 16, MAX_FREQ), 
+		true, 
+		4, 
+		output
+	};
+	TimerInit(timer1AConfig);
 
-	/* Connect up with a speaker using TLV5616 SPI DAC. Use SSI2 pins
-	 * defined in SSI.h.
-	 * Listen for increasing pitch wave from 1 - 10kHz frequency. */
-	uint32_t freq = 100;
-	playSound(0, freq, Test);
+	EnableInterrupts();
+	uint32_t freq = FREQ;
 	while (1) {
-		delayMillisec(100);
-		//freq = (freq + 1) % 10000;
+		delayMillisec(200);
+		TimerUpdatePeriod(TIMER_1A, freqToPeriod(freq * 16, MAX_FREQ));
+		freq = (freq + 1) % 1000;
 	}
+	
+//	initializeSoundPlayer(config);
+//	EnableInterrupts();
+
+//	/* Connect up with a speaker using TLV5616 SPI DAC. Use SSI2 pins
+//	 * defined in SSI.h.
+//	 * Listen for increasing pitch wave from 1 - 10kHz frequency. */
+//	uint32_t freq = 100;
+//	playSound(0, freq, Test);
+//	while (1) {
+//		delayMillisec(100);
+//		//freq = (freq + 1) % 10000;
+//	}
 }

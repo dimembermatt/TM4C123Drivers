@@ -17,11 +17,6 @@ Please see [RESOURCES.md](resources/RESOURCES.md) for additional content that ma
 ## TODO
 
 Drivers that need to be developed/refactored:
-- GPIO
-    - Interrupt handling with ISR/NVIC
-- Switches
-    - Need interrupt generalization for pins not from port F.
-    - Potentially move interrupt generation and handling to GPIO.h.
 - Timers
     - Bug: B timers not working.
     - Feature: Wide Timer implementation.
