@@ -53,15 +53,9 @@ typedef struct PWMConfig {
 
     /** Pin and PWM configuration. */
     union {
-        /** Configuration used with a DEFAULT source. */
-        struct {
-            /** Pin to output PWM with. */
-            PWMPin_t pwmPin;
-
-            /** Enum determining which comparator on the PWMpin is being used. */
-            enum Comparator { PWMA, PWMB } comparator;
-        } pwmSelect;
-
+        /** Pin to output PWM with. */
+        PWMPin_t pwmPin;
+        
         /** Configuration used with a TIMER source. */
         struct {
             /** Pin to output PWM with. */
@@ -81,7 +75,11 @@ typedef struct PWMConfig {
  * @param period The period of one cycle of the PWM.
  * @param dutyCycle The duty cycle of one cycle of the PWM, from 0 to 100.
  * @note Calling a Timer based PWM requires calling EnableInterrupts() after
- * initialization. Only one Timer based PWM can be on at a time.
+ * 		 initialization. Only one Timer based PWM can be on at a time.
+ *       It is highly recommended that a timer based PWM is used when the period
+ *		 is a value larger than 0xFFFF. The PWM load register saturates at this 
+ *	     period. This may mean different cutoff frequencies depending on the system
+ *		 clock.
  */
 void PWMInit(PWMConfig_t pwmConfig, uint32_t period, uint32_t dutyCycle);
 

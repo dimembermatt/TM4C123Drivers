@@ -186,6 +186,7 @@
  */
 #define PWM0_BASE           0x40028000
 #define PWM1_BASE           0x40029000
+#define PWM_OFFSET          0x040
 #define PWM_ENABLE_OFFSET   0x008
 #define PWM_CTL_OFFSET      0x040
 #define PWM_LOAD_OFFSET     0x050
