@@ -17,7 +17,7 @@
 
 // full scaled defined as 3V
 // Input is 0 to 511, 0 => 159 and 511 => 32
-uint8_t const dBfs[512]={
+static uint8_t const dBfs[512]={
     159, 159, 145, 137, 131, 126, 123, 119, 117, 114, 112, 110, 108, 107, 105, 104, 103, 101,
     100, 99, 98, 97, 96, 95, 94, 93, 93, 92, 91, 90, 90, 89, 88, 88, 87, 87, 86, 85, 85, 84,
     84, 83, 83, 82, 82, 81, 81, 81, 80, 80, 79, 79, 79, 78, 78, 77, 77, 77, 76, 76, 76, 75,
@@ -45,10 +45,10 @@ uint8_t const dBfs[512]={
 };
 
 /** The maximum and minimum range of the ECG. */
-int32_t yMax, yMin;
+static int32_t yMax, yMin;
 
 /** The current X position on the screen for the most recent value. */
-int32_t xPos;
+static int32_t xPos;
 
 /**
  * ECGClear clears the existing plot and wipes the screen.
@@ -103,7 +103,7 @@ void ECGStepX(void);
 void ECGStepXAndClear(void);
 
 /**
- * ECGSepX sets the next X coordinate.
+ * ECGSetX sets the next X coordinate.
  * @param newX New X coordinate to graph on.
  */
 void ECGSetX(int32_t newX);
