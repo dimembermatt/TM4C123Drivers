@@ -41,11 +41,11 @@ int main(void) {
     PWMConfig_t pwmConfigPF1 = {
         .source=TIMER,
         .config={
-			.timerSelect={
-				.pin=PIN_F1,
-				.timerID=TIMER_0A
-			}
-		}
+            .timerSelect={
+                .pin=PIN_F1,
+                .timerID=TIMER_0A
+            }
+        }
     };
 
     EnableInterrupts();
@@ -90,22 +90,22 @@ int main(void) {
     PWMConfig_t pwmConfigPF1 = {
         .source=DEFAULT,
         .config={
-			.pwmPin=M1_PF1
-		}
+            .pwmPin=M1_PF1
+        }
     };
     EnableInterrupts();
-	PWMInit(pwmConfigPF1, freqToPeriod(2000, MAX_FREQ), 0);
-	uint8_t dutyCycle = 0;
+    PWMInit(pwmConfigPF1, freqToPeriod(2000, MAX_FREQ), 0);
+    uint8_t dutyCycle = 0;
     while(1) {
         delayMillisec(100);
-		/**
-		 * Run this on an oscilloscope to check if the waveform matches 2 kHz.
-		 * What if you change the frequency? Duty cycle?
-		 * At what minimum frequency/period can you load onto the pin and still
-		 * have an accurate waveform?
-		 */
-		PWMUpdateConfig(pwmConfigPF1, freqToPeriod(2000, MAX_FREQ), dutyCycle);
-		dutyCycle = (dutyCycle + 1)%100;
+        /**
+         * Run this on an oscilloscope to check if the waveform matches 2 kHz.
+         * What if you change the frequency? Duty cycle?
+         * At what minimum frequency/period can you load onto the pin and still
+         * have an accurate waveform?
+         */
+        PWMUpdateConfig(pwmConfigPF1, freqToPeriod(2000, MAX_FREQ), dutyCycle);
+        dutyCycle = (dutyCycle + 1)%100;
     }
 }
 #endif
