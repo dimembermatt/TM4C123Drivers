@@ -399,7 +399,7 @@ void static commonInit(const uint8_t *cmdList) {
      *    front and just manipulating PA5 doesn't work, probably because SSI0 is
      *    enabled.*/
     SSIConfig_t SSI0Config = {
-        SSI0_PA, FREESCALE_SPI, true, 0x8
+        SSI0_PA, FREESCALE_SPI, true, true, true, true, 0x8
     };
     SSIInit(SSI0Config);
 
