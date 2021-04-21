@@ -145,7 +145,7 @@ void ECGStepXAndClear(void) {
 }
 
 /**
- * ECGSepX sets the next X coordinate.
+ * ECGSetX sets the next X coordinate.
  * @param newX New X coordinate to graph on.
  */
 void ECGSetX(int32_t newX) {
