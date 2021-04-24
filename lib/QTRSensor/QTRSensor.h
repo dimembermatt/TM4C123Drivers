@@ -27,7 +27,7 @@
 #include <stdint.h>
 
 /* Analog pins that are available for the sensor 
- * When initializing sensor, type in a port name (such as PE3 or PB2) as the input argument */
+ * When initializing sensor, type in a port name (such as PE3 or PB5) as the input argument */
 typedef enum{
 	PE3 = 0,
 	PE2 = 1,
@@ -41,7 +41,7 @@ typedef enum{
 	PB5 = 11
 }SensorPin_t;
 
-/* initializes sensor and pin on desired and eligible pin */
+/* initializes sensor on desired and eligible pin */
 void QTRSensorInit(SensorPin_t pin);
 
 //reads value (0-4095) from the sensor

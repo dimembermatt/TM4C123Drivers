@@ -1,12 +1,12 @@
 /**
  * File name: main.c
  * Devices: TM4C123
- * Description: Program that demostrates use of QTR reflectance sensor
+ * Description: Program that demostrates a simple use of the QTR reflectance sensor
  * Authors: Dario Jimenez
  * Last Modified: 04/23/2021
  * 
  * Brief Summary of program: 
- * Built-in turns blue is sensor value is more than 2047 and red if less then 2047.
+ * Built-in LED turns blue if sensor value is more than 2047 and red if less then 2047.
  * Range of values for the sensor are 0-4095.
  * In order to get the sensor to detect an object, you need to place object VERY close to the sensor.
  * DO NOT remove/disable interrupts or else sensor won't work
