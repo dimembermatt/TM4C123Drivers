@@ -9,7 +9,7 @@
  * __MAIN__ = 0 - Initialization and management of a timer acting as a PWM for low freq.
  *          = 1 - Initialization and management of a PWM module for high freq.
  */
-#define __MAIN__ 0
+#define __MAIN__ 1
 
 /** General imports. */
 #include <stdlib.h>
@@ -93,8 +93,9 @@ int main(void) {
             .pwmPin=M1_PF1
         }
     };
-    EnableInterrupts();
     PWMInit(pwmConfigPF1, freqToPeriod(2000, MAX_FREQ), 0);
+
+    EnableInterrupts();
     uint8_t dutyCycle = 0;
     while(1) {
         delayMillisec(100);
