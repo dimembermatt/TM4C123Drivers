@@ -23,3 +23,21 @@ void QTRSensorInit(SensorPin_t pin){
 uint32_t readQTRSensor(void){
 	return retADCVal();
 }
+
+
+Error_t LineSensor_Init(LineSensorData_t lineSensor, uint8_t numPins){
+	if(numPins <= 0 || numPins > 8) return ERROR;
+
+	// initialiazes each pin as an analog input
+	for(int i = 0; i < numPins; i++){
+		ADC0_InitTimer0ATriggerSeq3(lineSensor.pins[i], 8000000);
+	}
+
+	return NO_ERROR;
+}
+
+void Read_LineSensor(LineSensorData_t* lineSensor){
+	for(int i=0; i<lineSensor->numPins; i++){
+		lineSensor->SensorValues[i] = 
+	}
+}

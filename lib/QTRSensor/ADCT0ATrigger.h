@@ -46,3 +46,5 @@
 void ADC0_InitTimer0ATriggerSeq3(uint8_t channelNum, uint32_t period);
 
 uint32_t retADCVal(void);
+
+uint32_t readADCVal()
