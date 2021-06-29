@@ -394,24 +394,9 @@
               <FilePath>..\..\inc\PLL.c</FilePath>
             </File>
             <File>
-              <FileName>Misc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\lib\Misc\Misc.c</FilePath>
-            </File>
-            <File>
               <FileName>GPIO.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\lib\GPIO\GPIO.c</FilePath>
-            </File>
-            <File>
-              <FileName>Timers.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\lib\Timers\Timers.c</FilePath>
-            </File>
-            <File>
-              <FileName>ADCT0ATrigger.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\ADCT0ATrigger.c</FilePath>
             </File>
             <File>
               <FileName>main.c</FileName>
@@ -419,9 +404,14 @@
               <FilePath>.\main.c</FilePath>
             </File>
             <File>
-              <FileName>QRTSensor.c</FileName>
+              <FileName>ADC.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\QRTSensor.c</FilePath>
+              <FilePath>.\ADC.c</FilePath>
+            </File>
+            <File>
+              <FileName>LineSensor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\LineSensor.c</FilePath>
             </File>
           </Files>
         </Group>

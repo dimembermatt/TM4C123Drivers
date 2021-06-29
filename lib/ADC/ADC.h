@@ -1,11 +1,23 @@
+/**
+ * ADC.h
+ * Devices: TM4C123
+ * Description: Low-level drivers for ADC (Analog-to-digital converter) and analog ports
+ * Authors: Dario Jimenez
+ * Last Modified: 06/28/2021
+ * 
+ * This driver allows you to initialize ADC0 in the TM4C123 
+ * microcontroller and utilize its 9 available analog ports/pins. 
+ */
+
 #ifndef QTRSensor_H
 #define QTRSensor_H
 
+/* libraries/imports used for this driver */
+#include <stdint.h>
 
+/* Macros or constant values */
 #define MAX_ANALOG_PORTS 9
-#define NUM_CONVERTERS 2
 
-int ADC0 = 0;
 
 /* Available ports for ADC */
 typedef enum{
@@ -26,36 +38,44 @@ typedef enum{
     UNINIT //port uninitialized
 }AnalogPortStatus_t;
 
-/* Array containing the status of each analog port */
-AnalogPortStatus_t ports[MAX_ANALOG_PORTS] = {UNINIT, UNINIT, UNINIT, UNINIT, UNINIT, UNINIT, UNINIT, UNINIT};
 
-
-/* type that indicates whether there was an error or not */
+/* indicates whether there was an error or not */
 typedef enum{
     ERROR = 1,
     NO_ERROR = 0
 }Error_t;
 
-/* Initializes ADC0 */
+/**
+ * Initializes ADC0 
+ * 
+ * Inputs: no inputs
+ * 
+ * Outputs: no outputs
+ * 
+ * Call while interrupts are disabled
+ */
+
 void ADC_Init(void);
 
 /**
- *  Initialize Analog port
+ *  Initializes an Analog port/pin
  * 
- * Input: Port name
+ * Input: name of the desired port/pin
  * 
  * Output: Error (1) if cannot initialize port due to ADC0 not being initialized before
- *  */
+ *         NO_ERROR (0) if analog port was initialized correctly
+ */
 
 Error_t AnalogPort_Init(AnalogPort_t port);
 
 /**
- * Read the data of an analog port
+ * Reads the data from an analog port
  * 
- * Inputs: desired analog port, pointer to variable you want the data to be stored in
+ * Inputs: desired analog port
+ *         pointer to variable you want the data to be stored in
  * 
- * Output: Error if port or ADC0 not initialized, NO_ERROR if everything worked as intented 
- *          In case of error, no data is passed into the "data parameter"         
+ * Output: ERROR (1) if port or ADC0 not initialized, which in case no valuable data is read
+ *         NO_ERROR if everything worked as intented      
  * */
 
 Error_t ReadAnalogPort(AnalogPort_t port, uint16_t* data);
