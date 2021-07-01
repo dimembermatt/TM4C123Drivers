@@ -406,12 +406,22 @@
             <File>
               <FileName>ADC.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\ADC.c</FilePath>
+              <FilePath>.\Library Files\ADC.c</FilePath>
             </File>
             <File>
               <FileName>LineSensor.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\LineSensor.c</FilePath>
+              <FilePath>.\Library Files\LineSensor.c</FilePath>
+            </File>
+            <File>
+              <FileName>Misc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library Files\Misc.c</FilePath>
+            </File>
+            <File>
+              <FileName>Timers.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library Files\Timers.c</FilePath>
             </File>
           </Files>
         </Group>

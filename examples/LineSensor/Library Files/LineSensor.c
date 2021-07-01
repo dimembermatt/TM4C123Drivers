@@ -53,9 +53,10 @@ Error_t LineSensor_Init(LineSensorData_t *lineSensor, uint8_t numPins){
     ADC_Init();
 
 	// initializes each pin as an analog input
+	/*
 	for(int i = 0; i < lineSensor->numPins; i++){
 		AnalogPort_Init(lineSensor->pins[i]);
-	}
+	}*/
 
 	return NO_ERROR;
 }

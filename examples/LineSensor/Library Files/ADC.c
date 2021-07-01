@@ -35,12 +35,6 @@ static AnalogPortStatus_t ports[MAX_ANALOG_PORTS] = {UNINIT, UNINIT, UNINIT, UNI
  */
 
 void ADC_Init(void){
-SYSCTL_RCGCGPIO_R |= 0x08;      // 1) activate clock for Port D 
-  while((SYSCTL_PRGPIO_R&0x08) == 0){};
-  GPIO_PORTD_DIR_R &= ~0x04;      // 2) make PD2 input
-  GPIO_PORTD_AFSEL_R |= 0x04;     // 3) enable alternate fun on PD2
-  GPIO_PORTD_DEN_R &= ~0x04;      // 4) disable digital I/O on PD2
-  GPIO_PORTD_AMSEL_R |= 0x04;     // 5) enable analog fun on PD2
 	volatile unsigned long delay;
   SYSCTL_RCGCADC_R |= 0x01;       // 6) activate ADC0 
   delay = SYSCTL_RCGCADC_R;       // extra time to stabilize

@@ -21,9 +21,6 @@
 /* Indicates status of ADCO; for driver use ONLY. DO NOT modify this value or you may experience errors */
 static int ADC0 = 0;
 
-/* Array containing the status of each analog port; for driver use ONLY. DO NOT modify or you could experience errors */
-static AnalogPortStatus_t ports[MAX_ANALOG_PORTS] = {UNINIT, UNINIT, UNINIT, UNINIT, UNINIT, UNINIT, UNINIT, UNINIT};
-
 /**
  * Initializes ADC0 
  * 
@@ -35,12 +32,6 @@ static AnalogPortStatus_t ports[MAX_ANALOG_PORTS] = {UNINIT, UNINIT, UNINIT, UNI
  */
 
 void ADC_Init(void){
-SYSCTL_RCGCGPIO_R |= 0x08;      // 1) activate clock for Port D 
-  while((SYSCTL_PRGPIO_R&0x08) == 0){};
-  GPIO_PORTD_DIR_R &= ~0x04;      // 2) make PD2 input
-  GPIO_PORTD_AFSEL_R |= 0x04;     // 3) enable alternate fun on PD2
-  GPIO_PORTD_DEN_R &= ~0x04;      // 4) disable digital I/O on PD2
-  GPIO_PORTD_AMSEL_R |= 0x04;     // 5) enable analog fun on PD2
 	volatile unsigned long delay;
   SYSCTL_RCGCADC_R |= 0x01;       // 6) activate ADC0 
   delay = SYSCTL_RCGCADC_R;       // extra time to stabilize
@@ -60,114 +51,22 @@ SYSCTL_RCGCGPIO_R |= 0x08;      // 1) activate clock for Port D
 
 
 /**
- *  Initializes an Analog port/pin
+ * Reads the data from an analog port
  * 
- * Input: name of the desired port/pin
+ * Inputs: desired analog port
+ *         pointer to variable you want the data to be stored in
  * 
- * Output: Error (1) if cannot initialize port due to ADC0 not being initialized before
- *         NO_ERROR (0) if analog port was initialized correctly
- */
-
-Error_t AnalogPort_Init(AnalogPort_t port){
-
-    //Do not proceed if ADC0 is not initialized
-    if(ADC0 == 0) return ERROR; 
-
-    switch(port){
-
-        case(PE3):
-            SYSCTL_RCGCGPIO_R |= 0x10;      // 1) activate clock for Port E
-            while((SYSCTL_PRGPIO_R&0x10) == 0){}; //wait for clock to stabilize
-            GPIO_PORTE_DIR_R &= ~0x08;      // 2) make pin input
-            GPIO_PORTE_AFSEL_R |= 0x08;     // 3) enable alternate function 
-            GPIO_PORTE_DEN_R &= ~0x08;      // 4) disable digital I/O 
-            GPIO_PORTE_AMSEL_R |= 0x08;     // 5) enable analog for pin
-            break;
-        
-        case(PE2):
-            SYSCTL_RCGCGPIO_R |= 0x10;      // 1) activate clock for Port E 
-            while((SYSCTL_PRGPIO_R&0x10) == 0){}; //wait for clock to stabilize
-            GPIO_PORTE_DIR_R &= ~0x04;      // 2) make pin input
-            GPIO_PORTE_AFSEL_R |= 0x04;     // 3) enable alternate function 
-            GPIO_PORTE_DEN_R &= ~0x04;      // 4) disable digital I/O 
-            GPIO_PORTE_AMSEL_R |= 0x04;     // 5) enable analog for pin
-            break;
-
-        case(PE1):
-            SYSCTL_RCGCGPIO_R |= 0x10;      // 1) activate clock for Port E 
-            while((SYSCTL_PRGPIO_R&0x10) == 0){}; //wait for clock to stabilize
-            GPIO_PORTE_DIR_R &= ~0x02;      // 2) make pin input
-            GPIO_PORTE_AFSEL_R |= 0x02;     // 3) enable alternate function 
-            GPIO_PORTE_DEN_R &= ~0x02;      // 4) disable digital I/O 
-            GPIO_PORTE_AMSEL_R |= 0x02;     // 5) enable analog for pin
-            break;
-
-        case(PE0):
-            SYSCTL_RCGCGPIO_R |= 0x10;      // 1) activate clock for Port E 
-            while((SYSCTL_PRGPIO_R&0x10) == 0){}; //wait for clock to stabilize
-            GPIO_PORTE_DIR_R &= ~0x01;      // 2) make pin input
-            GPIO_PORTE_AFSEL_R |= 0x01;     // 3) enable alternate function 
-            GPIO_PORTE_DEN_R &= ~0x01;      // 4) disable digital I/O 
-            GPIO_PORTE_AMSEL_R |= 0x01;     // 5) enable analog for pin
-            break;
-
-        case(PD3):
-             SYSCTL_RCGCGPIO_R |= 0x08;      // 1) activate clock for Port D 
-            while((SYSCTL_PRGPIO_R&0x08) == 0){}; //wait for clock to stabilize
-            GPIO_PORTD_DIR_R &= ~0x08;      // 2) make pin input
-            GPIO_PORTD_AFSEL_R |= 0x08;     // 3) enable alternate function 
-            GPIO_PORTD_DEN_R &= ~0x08;      // 4) disable digital I/O 
-            GPIO_PORTD_AMSEL_R |= 0x08;     // 5) enable analog for pin
-            break;
-
-        case(PD2):
-            SYSCTL_RCGCGPIO_R |= 0x08;      // 1) activate clock for Port D 
-            while((SYSCTL_PRGPIO_R&0x08) == 0){}; //wait for clock to stabilize
-            GPIO_PORTD_DIR_R &= ~0x04;      // 2) make pin input
-            GPIO_PORTD_AFSEL_R |= 0x04;     // 3) enable alternate function 
-            GPIO_PORTD_DEN_R &= ~0x04;      // 4) disable digital I/O 
-            GPIO_PORTD_AMSEL_R |= 0x04;     // 5) enable analog for pin
-            break;
-
-        case(PD1):
-            SYSCTL_RCGCGPIO_R |= 0x08;      // 1) activate clock for Port D 
-            while((SYSCTL_PRGPIO_R&0x08) == 0){}; //wait for clock to stabilize
-            GPIO_PORTD_DIR_R &= ~0x02;      // 2) make pin input
-            GPIO_PORTD_AFSEL_R |= 0x02;     // 3) enable alternate function 
-            GPIO_PORTD_DEN_R &= ~0x02;      // 4) disable digital I/O
-            GPIO_PORTD_AMSEL_R |= 0x02;     // 5) enable analog for pin
-            break;
-
-        case(PD0):
-            SYSCTL_RCGCGPIO_R |= 0x08;      // 1) activate clock for Port D 
-            while((SYSCTL_PRGPIO_R&0x08) == 0){}; //wait for clock to stabilize
-            GPIO_PORTD_DIR_R &= ~0x01;      // 2) make pin input
-            GPIO_PORTD_AFSEL_R |= 0x01;     // 3) enable alternate function 
-            GPIO_PORTD_DEN_R &= ~0x01;      // 4) disable digital I/O 
-            GPIO_PORTD_AMSEL_R |= 0x01;     // 5) enable analog for pin
-            break;
-
-        case(PE5):
-            SYSCTL_RCGCGPIO_R |= 0x10;      // 1) activate clock for Port E 
-            while((SYSCTL_PRGPIO_R&0x10) == 0){}; //wait for clock to stabilize
-            GPIO_PORTE_DIR_R &= ~0x20;      // 2) make pin input
-            GPIO_PORTE_AFSEL_R |= 0x20;     // 3) enable alternate function 
-            GPIO_PORTE_DEN_R &= ~0x20;      // 4) disable digital I/O 
-            GPIO_PORTE_AMSEL_R |= 0x20;     // 5) enable analog for pin
-            break;
-    }
-
-    ports[port] = INIT; //set port to intialized
-    return NO_ERROR;
-}
+ * Output: ERROR (1) if port or ADC0 not initialized, which in case no valuable data is read
+ *         NO_ERROR if everything worked as intented     
+ * 
+ * Note: if a pin that is not initialized to analog is read, erroneous data will be read
+ *  
+ **/
 
 Error_t ReadAnalogPort(AnalogPort_t port, uint16_t* data){
 
     //Error if ADC0 not initialized
     if(ADC0 == 0) return ERROR;
-
-    //Error if port not initialized
-    if(ports[port] == UNINIT) return ERROR;
 
     ADC0_SSMUX3_R = (ADC0_SSMUX3_R&0xFFFFFFF0)+port; //set the ADC0 channel to the desired port
     ADC0_PSSI_R = 0x0008; //start ADC
