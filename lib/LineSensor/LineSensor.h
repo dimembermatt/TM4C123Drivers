@@ -67,19 +67,23 @@ Error_t LineSensor_Init(LineSensorData_t *lineSensor, uint8_t numPins);
 /** 
  * Read an array if 16-bit integer sensor values from the selected pins of the QTR Reflectance Sensor
  * 
+ * Line Sensor must be initialized first.
+ * 
  * Inputs: 1) lineSensor: lineSensor struct for the desired sensor passed as a pointer (by reference)
  * 
  * Output: no output, the read values are stored in the SensorValues array of the struct passed as a parameter
  * 
- * Note: LineSensor must be initialized.
- * 		 the sensor values will be stored in the same index as their respsective pins
+ * Note: the sensor values will be stored in the same index as their respsective pins
  * 		 i.e: value from PD2 will be stored in SensorValues[5] because PD2 is stores in pins[5]
+ * 		 Recommended to be used alongside timer functions to run inside an interrupt service routine
  */
 
 void LineSensor_GetIntegerArray(LineSensorData_t *lineSensor);
 
 /**
  * Read an array of boolean sensor values from the selected pins of the QTR Reflectance Sensor Array
+ * 
+ * Line Sensor must be initialized first.
  * 
  * Inputs: 1) threshold: an integer value between 0 and 4095 to determine boolean values
  * 		   2) lineSensor: the lineSensor structfor the desired sensor passed as a pointer (by reference)
@@ -88,9 +92,11 @@ void LineSensor_GetIntegerArray(LineSensorData_t *lineSensor);
  * 		   1) 1 will be stored if sensor data from pin is greater than of equal to the set threshold
  * 		   2) 0 will be stores if sensor data from pin is less than the set threshold
  * 
- * Note: LineSensor must be initialized.
+ * Note: This mehtod can be useful if a filter needs to be added  for preprocessing after the data.
  * 		 the sensor values will be stored in the same index as their respsective pins
  * 		 i.e: value from PD2 will be stored in SensorValues[5] because PD2 is stores in pins[5]
+ * 		 Recommended to be used alongside timer functions to run inside an interrupt service routine
+ * 
  */
 
 void LineSensor_GetBoolArray(uint16_t threshold, LineSensorData_t *lineSensor);
