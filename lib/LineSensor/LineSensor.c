@@ -1,5 +1,5 @@
 /**
- * LineSensor.c 
+ * LineSensor.c
  * Devices: TM4C123
  * Description: Low level driver for QTR Reflectance Sensor
  * Authors: Dario Jimenez
@@ -9,6 +9,10 @@
  * This sensor detects the reflectance of an object.
  * For instance: white reflects a high amount of light, hence the sensor will detect a white object as high reflectance.
  * In the other hand, black reflects low amount of light, hence sensor will detect a black/dark object as low reflectance.
+ * 
+ * Available TM4C123 pins for QTR sensor: PE5, PE3, PE2, PE1, PE0, PD3, PD2, PD1, PD0
+ * 
+ * Note: Pins must be initialized as GPIO input, analog on, and alternate function 8 (ADC).
  * 
  * Power Specifications:
  * Connect VCC to 3.3V or 5V (VDD)

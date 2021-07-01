@@ -10,6 +10,10 @@
  * For instance: white reflects a high amount of light, hence the sensor will detect a white object as high reflectance.
  * In the other hand, black reflects low amount of light, hence sensor will detect a black/dark object as low reflectance.
  * 
+ * Available TM4C123 pins for QTR sensor: PE5, PE3, PE2, PE1, PE0, PD3, PD2, PD1, PD0
+ * 
+ * Note: Pins must be initialized as GPIO input, analog on, and alternate function 8 (ADC).
+ * 
  * Power Specifications:
  * Connect VCC to 3.3V or 5V (VDD)
  * 100 mA input
@@ -40,6 +44,7 @@
 
 /* number of total pins in QTR-3A Reflectance Sensor array */
 #define MAX_PINS_QTR_3 3
+
 
 
 /* Data Structure that holds an array of the pins being used and their corresponding values */
