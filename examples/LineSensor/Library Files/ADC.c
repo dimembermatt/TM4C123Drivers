@@ -21,9 +21,6 @@
 /* Indicates status of ADCO; for driver use ONLY. DO NOT modify this value or you may experience errors */
 static int ADC0 = 0;
 
-/* Array containing the status of each analog port; for driver use ONLY. DO NOT modify or you could experience errors */
-static AnalogPortStatus_t ports[MAX_ANALOG_PORTS] = {UNINIT, UNINIT, UNINIT, UNINIT, UNINIT, UNINIT, UNINIT, UNINIT};
-
 /**
  * Initializes ADC0 
  * 
@@ -151,7 +148,6 @@ Error_t AnalogPort_Init(AnalogPort_t port){
             break;
     }
 
-    ports[port] = INIT; //set port to intialized
     return NO_ERROR;
 }
 
@@ -159,9 +155,6 @@ Error_t ReadAnalogPort(AnalogPort_t port, uint16_t* data){
 
     //Error if ADC0 not initialized
     if(ADC0 == 0) return ERROR;
-
-    //Error if port not initialized
-    if(ports[port] == UNINIT) return ERROR;
 
     ADC0_SSMUX3_R = (ADC0_SSMUX3_R&0xFFFFFFF0)+port; //set the ADC0 channel to the desired port
     ADC0_PSSI_R = 0x0008; //start ADC

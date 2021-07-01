@@ -22,7 +22,7 @@
 #include <lib/LineSensor/LineSensor.h>
 #include <lib/GPIO/GPIO.h>
 #include <lib/Misc/Misc.h>
-
+#include <lib/ADC/ADC.h>
 
 
 void EnableInterrupts(void);    // Defined in startup.s
@@ -92,6 +92,9 @@ int main(void) {
         0, 
         false
     };
+
+	/* Initialzation of ADC */
+	ADC_Init();
 
 	/* Initialization of GPIO pins */
 	GPIOInit(PD3Config);
@@ -205,6 +208,10 @@ int main(void) {
         false
     };
 
+
+	/* Initialzation of ADC */
+	ADC_Init();
+	
 	/* Initialization of GPIO pins */
 	GPIOInit(PD3Config);
 	GPIOInit(PD2Config);
