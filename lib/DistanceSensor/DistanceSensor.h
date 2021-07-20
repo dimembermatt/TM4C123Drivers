@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <lib/ADC/ADC.h>
+<<<<<<< HEAD
 #include <lib/GPIO/GPIO.h>
 #include <lib/Timers/Timers.h>
 
@@ -30,8 +31,16 @@ void DistanceSensor_Init(DistanceSensor_t* sensor, AnalogPort_t pin, GPIOConfig_
 void DistanceSensor_Enable(DistanceSensor_t* sensor);
 
 void DistanceSensor_Disable(DistanceSensor_t* sensor);
+=======
 
-SensorStatus_t DistanceSensor_ShowStatus(DistanceSensor_t sensor);
+typedef struct DistanceSensor{
+    AnalogPort_t pin;
+    uint16_t data;
+}DistanceSensor_t;
+
+>>>>>>> parent of 31f778b (Added/modified methods)
+
+void DistanceSensor_Init(DistanceSensor_t* sensor, AnalogPort_t pin);
 
 void DistanceSensor_Read(DistanceSensor_t* sensor);
 

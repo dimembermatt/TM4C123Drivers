@@ -79,5 +79,3 @@ Error_t AnalogPort_Init(AnalogPort_t port);
  * */
 
 Error_t ReadAnalogPort(AnalogPort_t port, uint16_t* data);
-
-#endif

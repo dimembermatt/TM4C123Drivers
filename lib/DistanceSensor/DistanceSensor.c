@@ -2,8 +2,8 @@
 #include <stdint.h>
 #include <lib/DistanceSensor/DistanceSensor.h>
 #include <lib/Timers/Timers.h>
-#include <lib/GPIO/GPIO.h>
 
+<<<<<<< HEAD
 //TODO: ADD a "initialized" field to DistanceSensor_t to check if not initialize (Maybe)
 
 DistanceSensor_t* interruptSensors[MAX_ANALOG_PORTS];
@@ -242,6 +242,14 @@ void DistanceSensor_SetInterrupt(DistanceSensor_t* sensor, uint16_t freq, uint8_
             break;
         }
     }
+=======
+void DistanceSensor_Init(DistanceSensor_t* sensor, AnalogPort_t pin){
+    sensor->pin = pin;
+}
+
+void DistanceSensor_Read(DistanceSensor_t* sensor){
+    ReadAnalogPort(sensor->pin, &(sensor->data));
+>>>>>>> parent of 31f778b (Added/modified methods)
 }
 
 void DistanceSensor_DisableInterrupt(DistanceSensor_t* sensor){
