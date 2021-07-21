@@ -4,12 +4,16 @@
 #include <stdint.h>
 #include <lib/ADC/ADC.h>
 #include <lib/GPIO/GPIO.h>
+#include <lib/Timers/Timers.h>
 
 
 typedef struct DistanceSensor{
     AnalogPort_t OUT;
     GPIOConfig_t EN; //enable pin
     int8_t isEnabled;
+    uint8_t isInterrupt;
+    uint8_t interruptNum;
+    TimerConfig_t* interruptConfig;
     uint16_t data;
 }DistanceSensor_t;
 
@@ -31,6 +35,8 @@ SensorStatus_t DistanceSensor_ShowStatus(DistanceSensor_t sensor);
 
 void DistanceSensor_Read(DistanceSensor_t* sensor);
 
-void DistanceSensor_SetInterrupt(uint16_t period, uint16_t* data);
+void DistanceSensor_SetInterrupt(DistanceSensor_t* sensor, uint32_t frequency, TimerID_t timer, uint8_t priority);
+
+void DistanceSensor_DisableInterrupt(DistanceSensor_t* sensor);
 
 #endif
