@@ -13,6 +13,10 @@ static TimerConfig_t interruptConfig[MAX_ANALOG_PORTS];
 /* Indicates if an interrupt is active (1) or not active (0). There's a total of 9 possible interrupts */
 static uint8_t InterruptsActive[MAX_ANALOG_PORTS] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
+volatile int count1 = 0;
+
+volatile int count2 = 0;
+
 void DistanceSensor_Init(DistanceSensor_t* sensor, AnalogPort_t OUT_pin, GPIOConfig_t EN_pin){
     sensor->OUT = OUT_pin;
     sensor->EN = EN_pin;
@@ -51,8 +55,42 @@ void DistanceSensor_Read(DistanceSensor_t* sensor){
     ReadAnalogPort(sensor->OUT, &(sensor->data));
 }
 
+    /* Interrupt Handlers */
+
 void DistanceSensor_Handler0(){
     DistanceSensor_Read(interruptSensors[0]);
+}
+
+void DistanceSensor_Handler1(){
+    DistanceSensor_Read(interruptSensors[1]);
+}
+
+void DistanceSensor_Handler2(){
+    DistanceSensor_Read(interruptSensors[2]);
+}
+
+void DistanceSensor_Handler3(){
+    DistanceSensor_Read(interruptSensors[3]);
+}
+
+void DistanceSensor_Handler4(){
+    DistanceSensor_Read(interruptSensors[4]);
+}
+
+void DistanceSensor_Handler5(){
+    DistanceSensor_Read(interruptSensors[5]);
+}
+
+void DistanceSensor_Handler6(){
+    DistanceSensor_Read(interruptSensors[6]);
+}
+
+void DistanceSensor_Handler7(){
+    DistanceSensor_Read(interruptSensors[7]);
+}
+
+void DistanceSensor_Handler8(){
+    DistanceSensor_Read(interruptSensors[8]);
 }
 
 void DistanceSensor_SetInterrupt(DistanceSensor_t* sensor, uint32_t frequency, TimerID_t timer, uint8_t priority){
@@ -70,9 +108,6 @@ void DistanceSensor_SetInterrupt(DistanceSensor_t* sensor, uint32_t frequency, T
         switch (interruptIndex)
         {
         case 0:
-
-           //TimerConfig_t interrupt = {timer, freqToPeriod(frequency, MAX_FREQ), true, priority, DistanceSensor_Handler0};
-
             
             interruptConfig[interruptIndex].timerID = timer;
             interruptConfig[interruptIndex].period = freqToPeriod(frequency, MAX_FREQ);
@@ -85,10 +120,159 @@ void DistanceSensor_SetInterrupt(DistanceSensor_t* sensor, uint32_t frequency, T
             sensor->interruptConfig = &interruptConfig[interruptIndex];
             
             interruptSensors[interruptIndex] = sensor;
-            /*
-            interruptSensors[interruptIndex]->isInterrupt = 1;
-            interruptSensors[interruptIndex]->interruptNum = interruptIndex;
-            interruptSensors[interruptIndex]->interruptConfig = interruptConfig[interruptIndex];*/
+            
+
+            InterruptsActive[interruptIndex] = 1;
+            TimerInit(interruptConfig[interruptIndex]);
+            break;
+
+        case 1:
+            
+            interruptConfig[interruptIndex].timerID = timer;
+            interruptConfig[interruptIndex].period = freqToPeriod(frequency, MAX_FREQ);
+            interruptConfig[interruptIndex].isPeriodic = true;
+            interruptConfig[interruptIndex].priority = priority;
+            interruptConfig[interruptIndex].handlerTask = DistanceSensor_Handler1;
+
+            sensor->isInterrupt = 1;
+            sensor->interruptNum = interruptIndex;
+            sensor->interruptConfig = &interruptConfig[interruptIndex];
+            
+            interruptSensors[interruptIndex] = sensor;
+            
+
+            InterruptsActive[interruptIndex] = 1;
+            TimerInit(interruptConfig[interruptIndex]);
+            break;
+
+        case 2:
+
+            interruptConfig[interruptIndex].timerID = timer;
+            interruptConfig[interruptIndex].period = freqToPeriod(frequency, MAX_FREQ);
+            interruptConfig[interruptIndex].isPeriodic = true;
+            interruptConfig[interruptIndex].priority = priority;
+            interruptConfig[interruptIndex].handlerTask = DistanceSensor_Handler2;
+
+            sensor->isInterrupt = 1;
+            sensor->interruptNum = interruptIndex;
+            sensor->interruptConfig = &interruptConfig[interruptIndex];
+            
+            interruptSensors[interruptIndex] = sensor;
+            
+
+            InterruptsActive[interruptIndex] = 1;
+            TimerInit(interruptConfig[interruptIndex]);
+            break;
+
+        case 3: 
+
+            interruptConfig[interruptIndex].timerID = timer;
+            interruptConfig[interruptIndex].period = freqToPeriod(frequency, MAX_FREQ);
+            interruptConfig[interruptIndex].isPeriodic = true;
+            interruptConfig[interruptIndex].priority = priority;
+            interruptConfig[interruptIndex].handlerTask = DistanceSensor_Handler0;
+
+            sensor->isInterrupt = 1;
+            sensor->interruptNum = interruptIndex;
+            sensor->interruptConfig = &interruptConfig[interruptIndex];
+            
+            interruptSensors[interruptIndex] = sensor;
+            
+
+            InterruptsActive[interruptIndex] = 1;
+            TimerInit(interruptConfig[interruptIndex]);
+            break;
+
+        case 4:
+
+            interruptConfig[interruptIndex].timerID = timer;
+            interruptConfig[interruptIndex].period = freqToPeriod(frequency, MAX_FREQ);
+            interruptConfig[interruptIndex].isPeriodic = true;
+            interruptConfig[interruptIndex].priority = priority;
+            interruptConfig[interruptIndex].handlerTask = DistanceSensor_Handler0;
+
+            sensor->isInterrupt = 1;
+            sensor->interruptNum = interruptIndex;
+            sensor->interruptConfig = &interruptConfig[interruptIndex];
+            
+            interruptSensors[interruptIndex] = sensor;
+            
+
+            InterruptsActive[interruptIndex] = 1;
+            TimerInit(interruptConfig[interruptIndex]);
+            break;
+
+        case 5:
+
+            interruptConfig[interruptIndex].timerID = timer;
+            interruptConfig[interruptIndex].period = freqToPeriod(frequency, MAX_FREQ);
+            interruptConfig[interruptIndex].isPeriodic = true;
+            interruptConfig[interruptIndex].priority = priority;
+            interruptConfig[interruptIndex].handlerTask = DistanceSensor_Handler0;
+
+            sensor->isInterrupt = 1;
+            sensor->interruptNum = interruptIndex;
+            sensor->interruptConfig = &interruptConfig[interruptIndex];
+            
+            interruptSensors[interruptIndex] = sensor;
+            
+
+            InterruptsActive[interruptIndex] = 1;
+            TimerInit(interruptConfig[interruptIndex]);
+            break;
+
+        case 6:
+
+            interruptConfig[interruptIndex].timerID = timer;
+            interruptConfig[interruptIndex].period = freqToPeriod(frequency, MAX_FREQ);
+            interruptConfig[interruptIndex].isPeriodic = true;
+            interruptConfig[interruptIndex].priority = priority;
+            interruptConfig[interruptIndex].handlerTask = DistanceSensor_Handler0;
+
+            sensor->isInterrupt = 1;
+            sensor->interruptNum = interruptIndex;
+            sensor->interruptConfig = &interruptConfig[interruptIndex];
+            
+            interruptSensors[interruptIndex] = sensor;
+            
+
+            InterruptsActive[interruptIndex] = 1;
+            TimerInit(interruptConfig[interruptIndex]);
+            break;
+
+        case 7:
+
+            interruptConfig[interruptIndex].timerID = timer;
+            interruptConfig[interruptIndex].period = freqToPeriod(frequency, MAX_FREQ);
+            interruptConfig[interruptIndex].isPeriodic = true;
+            interruptConfig[interruptIndex].priority = priority;
+            interruptConfig[interruptIndex].handlerTask = DistanceSensor_Handler0;
+
+            sensor->isInterrupt = 1;
+            sensor->interruptNum = interruptIndex;
+            sensor->interruptConfig = &interruptConfig[interruptIndex];
+            
+            interruptSensors[interruptIndex] = sensor;
+            
+
+            InterruptsActive[interruptIndex] = 1;
+            TimerInit(interruptConfig[interruptIndex]);
+            break;
+
+        case 8:
+
+            interruptConfig[interruptIndex].timerID = timer;
+            interruptConfig[interruptIndex].period = freqToPeriod(frequency, MAX_FREQ);
+            interruptConfig[interruptIndex].isPeriodic = true;
+            interruptConfig[interruptIndex].priority = priority;
+            interruptConfig[interruptIndex].handlerTask = DistanceSensor_Handler0;
+
+            sensor->isInterrupt = 1;
+            sensor->interruptNum = interruptIndex;
+            sensor->interruptConfig = &interruptConfig[interruptIndex];
+            
+            interruptSensors[interruptIndex] = sensor;
+            
 
             InterruptsActive[interruptIndex] = 1;
             TimerInit(interruptConfig[interruptIndex]);
@@ -106,6 +290,7 @@ void DistanceSensor_DisableInterrupt(DistanceSensor_t* sensor){
 
     sensor->isInterrupt = 0;
     sensor->interruptConfig = 0;
+		InterruptsActive[sensor->interruptNum] = 0;
 
 
 }
