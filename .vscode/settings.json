@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "distancesensor.h": "c"
+        "distancesensor.h": "c",
+        "timers.h": "c",
+        "stdint.h": "c",
+        "adc.h": "c"
     }
 }
