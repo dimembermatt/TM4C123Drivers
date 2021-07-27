@@ -60,17 +60,20 @@ static uint8_t InterruptsActive[MAX_ANALOG_PORTS] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
  * Out
  **/
 
-//void DistanceSensor_Init(DistanceSensor_t* sensor, AnalogPort_t OUT_pin){
+void DistanceSensor_Init(DistanceSensor_t* sensor, AnalogPort_t OUT_pin){
 
     /* stores the analog pin in struct */
-    //sensor->OUT = OUT_pin;
+    sensor->OUT = OUT_pin;
 
     /* Sets the Enable pin as high (3.3V or 1) to enable the sensor */
-    //GPIOSetBit(sensor->EN.GPIOPin, 1);
+    GPIOSetBit(sensor->EN.GPIOPin, 1);
 
     /* store the current status of the sensor in struct */
-   // sensor->isEnabled = 1;
-//}
+    sensor->isEnabled = 1;
+
+    /* Indicate that Enable pin is not being used */
+    sensor->isUsingEN = 0;
+}
 
 /**
  * Initialize a Distance Sensor
@@ -83,7 +86,7 @@ static uint8_t InterruptsActive[MAX_ANALOG_PORTS] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
  * 
  * Output: no outputs
  **/
-void DistanceSensor_Init(DistanceSensor_t* sensor, AnalogPort_t OUT_pin, GPIOConfig_t EN_pin){
+void DistanceSensor_ENInit(DistanceSensor_t* sensor, AnalogPort_t OUT_pin, GPIOConfig_t EN_pin){
 
     /* stores the analog pin in struct */
     sensor->OUT = OUT_pin;
@@ -100,6 +103,9 @@ void DistanceSensor_Init(DistanceSensor_t* sensor, AnalogPort_t OUT_pin, GPIOCon
     /* store the current status of the sensor in struct */
     sensor->isEnabled = 1;
 
+    /* Indicate that Enable pin is being used */
+    sensor->isUsingEN = 1;
+
 }
 /**
  * Enable Distance Sensor if disabled
@@ -110,8 +116,8 @@ void DistanceSensor_Init(DistanceSensor_t* sensor, AnalogPort_t OUT_pin, GPIOCon
  **/
 void DistanceSensor_Enable(DistanceSensor_t* sensor){
 
-    /* enable sensor only if it is disabled */
-    if(sensor->isEnabled != 1){
+    /* enable sensor only if it is disabled and EN pin is being used */
+    if(sensor->isEnabled != 1 && sensor->isUsingEN == 1){
     
     /* set the pin output to 1 (high, 3.3v) to enable sensor */
     GPIOSetBit(sensor->EN.GPIOPin, 1);
@@ -130,8 +136,8 @@ void DistanceSensor_Enable(DistanceSensor_t* sensor){
  **/
 void DistanceSensor_Disable(DistanceSensor_t* sensor){
 
-    /* Disable sensoe only if it is enabled */
-    if(sensor->isEnabled != 0){
+    /* Disable sensoe only if it is enabled and EN pin is being used */
+    if(sensor->isEnabled != 0 && sensor->isUsingEN == 1){
 
     /* Disable sensor by setting pin output to 0 (low, 0V) */
     GPIOSetBit(sensor->EN.GPIOPin, 0);

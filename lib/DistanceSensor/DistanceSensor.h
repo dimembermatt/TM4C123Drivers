@@ -91,7 +91,7 @@ typedef enum{
  * Out
  **/
 
-//void DistanceSensor_Init(DistanceSensor_t* sensor, AnalogPort_t OUT_pin);
+void DistanceSensor_Init(DistanceSensor_t* sensor, AnalogPort_t OUT_pin);
 
 /**
  * Initialize a Distance Sensor using the Enable (EN) pin
@@ -107,7 +107,7 @@ typedef enum{
  *       
  * Output: no outputs
  **/
-void DistanceSensor_Init(DistanceSensor_t* sensor, AnalogPort_t OUT_pin, GPIOConfig_t EN_pin);
+void DistanceSensor_ENInit(DistanceSensor_t* sensor, AnalogPort_t OUT_pin, GPIOConfig_t EN_pin);
 
 /**
  * Enable Distance Sensor if disabled
