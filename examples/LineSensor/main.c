@@ -8,7 +8,9 @@
  * Modify the value of "__MAIN__" on line 15 to choose which program to run:
  * 
  * __MAIN__ = 0: demonstrates initialization & LineSensor_GetBoolArray function
+ *							- turn on LEDs depending on boolean values
  * __MAIN__ = 1: demostrates initalization & LineSensor_GetIntegerarray function
+ *							- turn on LEDs depending on analog values
  * 
  **/
 
