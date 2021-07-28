@@ -88,7 +88,7 @@ typedef enum{
  *       You should connect a 10k ohm resistor between the 3.3V power source and the EN pin 
  *       or else the sensor and microcontroller could be damaged.
  * 
- * Out
+ * Output: no output
  **/
 
 void DistanceSensor_Init(DistanceSensor_t* sensor, AnalogPort_t OUT_pin);
@@ -105,7 +105,7 @@ void DistanceSensor_Init(DistanceSensor_t* sensor, AnalogPort_t OUT_pin);
  * Note: a 10k ohm resistor MUST be connected between EN pin and GPIO output pin or you could potentially damage the 
  *       sensor and microcontroller.
  *       
- * Output: no outputs
+ * Output: no output
  **/
 void DistanceSensor_ENInit(DistanceSensor_t* sensor, AnalogPort_t OUT_pin, GPIOConfig_t EN_pin);
 
@@ -132,14 +132,14 @@ void DistanceSensor_Disable(DistanceSensor_t* sensor);
  * 
  * Input: DistanceSensor struct passed by value (not a pointer)
  * 
- * Output: Status of sensor: 1) ENABLED or 2) DISABLED
+ * Output: Status of sensor: 1) DS_ENABLED or 2) DS_DISABLED
  **/
 DistanceSensorStatus_t DistanceSensor_ShowStatus(DistanceSensor_t sensor);
 
 /**
  * Read analog value from Distance Sensor and store it in the data field of DistanceSensor struct
  * 
- * Inputs: DistanceSensor struct of desired sensor
+ * Inputs: DistanceSensor struct of desired sensor passed as a pointer
  * 
  * Output: not output, analog value is stored in the "data" variable of the struct
  * 
@@ -149,7 +149,7 @@ DistanceSensorStatus_t DistanceSensor_ShowStatus(DistanceSensor_t sensor);
 void DistanceSensor_Read(DistanceSensor_t* sensor);
 
 /** 
- * Initializes an interrupt to periodically read analog values from a given sensor at at desired frequency
+ * Initializes an interrupt to periodically read analog values from a given sensor at a desired frequency
  * 
  * 
  * Inputs: 1) DistanceSensor struct of desired sensor passed as a pointer

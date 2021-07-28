@@ -57,7 +57,7 @@ static uint8_t InterruptsActive[MAX_ANALOG_PORTS] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
  * Note: You won't be able to use functions "DistanceSensor_Enable" or "DistanceSensor_Disable" and hence
  *       won't be able to disable or enable the sensor at will; the sensor will always be enabled.
  * 
- * Out
+ * Output: no output
  **/
 
 void DistanceSensor_Init(DistanceSensor_t* sensor, AnalogPort_t OUT_pin){
@@ -84,7 +84,7 @@ void DistanceSensor_Init(DistanceSensor_t* sensor, AnalogPort_t OUT_pin){
  *         3) GPIO output pin for enable pin
  *              - pin must be initialized as digital output, analog off, alternate off, alternate function 0
  * 
- * Output: no outputs
+ * Output: no output
  **/
 void DistanceSensor_ENInit(DistanceSensor_t* sensor, AnalogPort_t OUT_pin, GPIOConfig_t EN_pin){
 
@@ -166,7 +166,7 @@ DistanceSensorStatus_t DistanceSensor_ShowStatus(DistanceSensor_t sensor){
 /**
  * Read analog value from Distance Sensor and store it in the data field of DistanceSensor struct
  * 
- * Inputs: DistanceSensor struct of desired sensor
+ * Inputs: DistanceSensor struct of desired sensor passed as a pointer
  * 
  * Output: not output, analog value is stored in the "data" variable of the struct
  * 
@@ -237,7 +237,7 @@ void DistanceSensor_Handler8(){
 
 
 /** 
- * Initializes an interrupt to periodically read analog values from a given sensor at at desired frequency
+ * Initializes an interrupt to periodically read analog values from a given sensor at a desired frequency
  * 
  * 
  * Inputs: 1) DistanceSensor struct of desired sensor passed as a pointer

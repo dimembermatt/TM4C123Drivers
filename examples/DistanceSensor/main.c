@@ -5,7 +5,7 @@
  * Authors: Dario Jimenez
  * Last Modified: 7/27/2021
  *
- * Modify the value of "__MAIN__" on line 14 to choose which program to run:
+ * Modify the value of "__MAIN__" on line 21 to choose which program to run:
  * 
  * __MAIN__ = 0: demonstrates initialization of Distance sensor without using the Enable pin (EN)
  *								- green LED will turn on when analog value from sensor is more or equal to 2048
@@ -16,6 +16,10 @@
  *								- blue LED will turn on when analog value from sensor is less than 2048
  *								- the sensor can be temporarily disabled by holding the on-board SW2 button (use of Enable pin)
  **/
+
+
+#define __MAIN__ 0
+
 
 /* Standard C library import */
 #include <stdlib.h>
@@ -29,9 +33,6 @@
 #include <lib/DistanceSensor/DistanceSensor.h>
 #include <lib/Switch/Switch.h>
 
-/*** Program when __MAIN__ = 0 ***/
-#define __MAIN__ 0
-
 /** 
  * These function declarations are defined in the startup.s assembly file for
  * managing interrupts. 
@@ -40,6 +41,7 @@ void EnableInterrupts(void);    // Defined in startup.s
 void DisableInterrupts(void);   // Defined in startup.s
 void WaitForInterrupt(void);    // Defined in startup.s
 
+/**    Program when __MAIN__ = 0    **/
 #if __MAIN__ == 0
 
 /* Global variables */
