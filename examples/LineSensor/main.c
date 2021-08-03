@@ -12,6 +12,7 @@
  * __MAIN__ = 1: demostrates initalization & LineSensor_GetIntegerarray function
  *							- turn on LEDs depending on analog values
  * 
+ * Analog pins used: PD3, PD2
  **/
 
 #define __MAIN__ 0
