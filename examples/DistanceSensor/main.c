@@ -15,6 +15,9 @@
  *								- green LED will turn on when analog value from sensor is more or equal to 2048
  *								- blue LED will turn on when analog value from sensor is less than 2048
  *								- the sensor can be temporarily disabled by holding the on-board SW2 button (use of Enable pin)
+ *
+ * OUT pin: PD2
+ * EN pin: PA7 (if using Enable pin) or +3.3V (if not using Enable pin) connected through a 10k ohm resistor
  **/
 
 
@@ -57,9 +60,6 @@ int main(void) {
 
     /* Initialize PD2 GPIO to read analog voltage OUT pin of sensor */
     GPIOConfig_t PD2Config = {PIN_D2, NONE, false, true, 8, true};
-		
-	/* Initialize PA7 GPIO for enable pin (EN) */
-	GPIOConfig_t PA7Config = {PIN_A7, NONE,true, false, 0, false};
 	
 	/* Initialize PF2 for on-board blue LED */
 	GPIOConfig_t PF2Config = {PIN_F2, PULL_DOWN, true, false, 0, false};
