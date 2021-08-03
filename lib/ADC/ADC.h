@@ -57,16 +57,6 @@ typedef enum{
 
 void ADC_Init(void);
 
-/**
- *  Initializes an Analog port/pin
- * 
- * Input: name of the desired port/pin
- * 
- * Output: Error (1) if cannot initialize port due to ADC0 not being initialized before
- *         NO_ERROR (0) if analog port was initialized correctly
- */
-
-Error_t AnalogPort_Init(AnalogPort_t port);
 
 /**
  * Reads the data from an analog port
