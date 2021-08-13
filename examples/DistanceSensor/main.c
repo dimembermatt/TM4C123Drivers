@@ -67,36 +67,35 @@ int main(void) {
 	/*Initialize PF3 for on-board green LED */
 	GPIOConfig_t PF3Config = {PIN_F3, PULL_DOWN, true, false, 0, false};
 	
-		/* Initialize GPIO pins */
-    	GPIOInit(PD2Config);
-		GPIOInit(PA7Config);
-		GPIOInit(PF2Config);
-		GPIOInit(PF3Config);
+	/* Initialize GPIO pins */
+	GPIOInit(PD2Config);
+	GPIOInit(PF2Config);
+	GPIOInit(PF3Config);
 		
-		/* initialize the ADC for analog voltage reading */
-		ADC_Init();
-		
-		/** Initialize "sensor" using the optional EN pin (PA7) and using analog PD2 pin for analog reading 
-		 *
-		 * Must always be called after GPIOInit
-		 **/
-		DistanceSensor_Init(&sensor, PD2);
-		
-		/**
-     	 * setup an interrupt for distance sensor that triggers and reads the analog voltage from OUT
-		 * at 200 Hz (every 50 microseconds) using TIMER_0A for the interrupt and setting the interrupt 
-		 * to priority 0 (highest priority).
-		 *
-		 * Must always be called after DistanceSensor_ENInit
-		 **/
-		DistanceSensor_SetInterrupt(&sensor, 200, TIMER_0A, 0);
-		
-		/* setup and initialization is finished and now interrupts may be enabled */
-    	EnableInterrupts();
-		
-		/* turn off LEDs before main loop */
-		GPIOSetBit(PIN_F2, 0);
-		GPIOSetBit(PIN_F3, 0);
+	/* initialize the ADC for analog voltage reading */
+	ADC_Init();
+	
+	/** Initialize "sensor" using the optional EN pin (PA7) and using analog PD2 pin for analog reading 
+	 *
+	 * Must always be called after GPIOInit
+	 **/
+	DistanceSensor_Init(&sensor, PD2);
+	
+	/**
+	 * setup an interrupt for distance sensor that triggers and reads the analog voltage from OUT
+	 * at 200 Hz (every 50 microseconds) using TIMER_0A for the interrupt and setting the interrupt 
+	 * to priority 0 (highest priority).
+	 *
+	 * Must always be called after DistanceSensor_ENInit
+	 **/
+	DistanceSensor_SetInterrupt(&sensor, 200, TIMER_0A, 0);
+	
+	/* setup and initialization is finished and now interrupts may be enabled */
+	EnableInterrupts();
+	
+	/* turn off LEDs before main loop */
+	GPIOSetBit(PIN_F2, 0);
+	GPIOSetBit(PIN_F3, 0);
 		
     
     /* Main loop */
