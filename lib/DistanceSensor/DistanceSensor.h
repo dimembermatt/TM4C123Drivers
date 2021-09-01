@@ -46,12 +46,6 @@ typedef struct DistanceSensor{
     /* the Analog pin used for the sensor */
     AnalogPort_t OUT;
 
-    /* boolean value indicating wheter the EN pin is used */
-    uint8_t isUsingEN;
-
-    /* The GPIO digital output pin for the enable pin */
-    GPIOConfig_t EN; 
-
     /* boolean value that indicates if sensor is enabled */
     int8_t isEnabled;
 
@@ -69,14 +63,9 @@ typedef struct DistanceSensor{
 
 }DistanceSensor_t;
 
-/* data type that indicates if a sensor is enabled or disabled */
-typedef enum{
-    DS_ENABLED,
-    DS_DISABLED
-}DistanceSensorStatus_t;
 
 /**
- * Initialize a Distance Sensor without using the EN pin
+ * Initialize a Distance Sensor 
  * 
  * Inputs: 1) DistanceSensor struct passed as a pointer
  *         2) Desired input analog pin for sensor (See ADC.h in lib/ADC/ for the full list of available pins)
@@ -93,48 +82,6 @@ typedef enum{
 
 void DistanceSensor_Init(DistanceSensor_t* sensor, AnalogPort_t OUT_pin);
 
-/**
- * Initialize a Distance Sensor using the Enable (EN) pin
- * 
- * Inputs: 1) DistanceSensor struct passed as a pointer
- *         2) Desired input analog pin for sensor (See ADC.h in lib/ADC/ for the full list of available pins)
- *              - pin must be initialized as input, analog on, alternative on, alternative function 8
- *         3) GPIO output pin for enable pin
- *              - pin must be initialized as digital output, analog off, alternate off, alternate function 0
- * 
- * Note: a 10k ohm resistor MUST be connected between EN pin and GPIO output pin or you could potentially damage the 
- *       sensor and microcontroller.
- *       
- * Output: no output
- **/
-void DistanceSensor_ENInit(DistanceSensor_t* sensor, AnalogPort_t OUT_pin, GPIOConfig_t EN_pin);
-
-/**
- * Enable Distance Sensor if disabled
- * 
- * Inputs: 1) DistanceSensor struct of desired sensor passed as a pointer
- * 
- * Output: no output
- **/
-void DistanceSensor_Enable(DistanceSensor_t* sensor);
-
-/**
- * Disable Distance Sensor
- * 
- * Inputs: 1) DistanceSensor struct of desired sensor passed as a pointer
- * 
- * Output: no output
- **/
-void DistanceSensor_Disable(DistanceSensor_t* sensor);
-
-/**
- * Show current status of Distance Sensor
- * 
- * Input: DistanceSensor struct passed by value (not a pointer)
- * 
- * Output: Status of sensor: 1) DS_ENABLED or 2) DS_DISABLED
- **/
-DistanceSensorStatus_t DistanceSensor_ShowStatus(DistanceSensor_t sensor);
 
 /**
  * Read analog value from Distance Sensor and store it in the data field of DistanceSensor struct

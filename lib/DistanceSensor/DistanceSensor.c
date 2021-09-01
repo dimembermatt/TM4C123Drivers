@@ -43,7 +43,7 @@ static uint8_t InterruptsActive[MAX_ANALOG_PORTS] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 
 /**
- * Initialize a Distance Sensor without using the EN pin
+ * Initialize a Distance Sensor 
  * 
  * Inputs: 1) DistanceSensor struct passed as a pointer
  *         2) Desired input analog pin for sensor (See ADC.h in lib/ADC/ for the full list of available pins)
@@ -54,8 +54,6 @@ static uint8_t InterruptsActive[MAX_ANALOG_PORTS] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
  *          - You should connect a 10k ohm resistor between the 3.3V power source and the EN pin 
  *            or else the sensor and microcontroller could be damaged.
  * 
- * Note: You won't be able to use functions "DistanceSensor_Enable" or "DistanceSensor_Disable" and hence
- *       won't be able to disable or enable the sensor at will; the sensor will always be enabled.
  * 
  * Output: no output
  **/
@@ -65,102 +63,8 @@ void DistanceSensor_Init(DistanceSensor_t* sensor, AnalogPort_t OUT_pin){
     /* stores the analog pin in struct */
     sensor->OUT = OUT_pin;
 
-    /* Sets the Enable pin as high (3.3V or 1) to enable the sensor */
-    GPIOSetBit(sensor->EN.GPIOPin, 1);
-
     /* store the current status of the sensor in struct */
     sensor->isEnabled = 1;
-
-    /* Indicate that Enable pin is not being used */
-    sensor->isUsingEN = 0;
-}
-
-/**
- * Initialize a Distance Sensor
- * 
- * Inputs: 1) DistanceSensor struct passed as a pointer
- *         2) Desired input analog pin for sensor (See ADC.h in lib/ADC/ for the full list of available pins)
- *              - pin must be initialized as input, analog on, alternative on, alternative function 8
- *         3) GPIO output pin for enable pin
- *              - pin must be initialized as digital output, analog off, alternate off, alternate function 0
- * 
- * Output: no output
- **/
-void DistanceSensor_ENInit(DistanceSensor_t* sensor, AnalogPort_t OUT_pin, GPIOConfig_t EN_pin){
-
-    /* stores the analog pin in struct */
-    sensor->OUT = OUT_pin;
-
-    /* stores the Enable pin in struct */
-    sensor->EN = EN_pin;
-
-    /* Initializes the Enable pin */
-    //GPIOInit(sensor->EN);
-
-    /* Sets the Enable pin as high (3.3V or 1) to enable the sensor */
-    GPIOSetBit(sensor->EN.GPIOPin, 1);
-
-    /* store the current status of the sensor in struct */
-    sensor->isEnabled = 1;
-
-    /* Indicate that Enable pin is being used */
-    sensor->isUsingEN = 1;
-
-}
-/**
- * Enable Distance Sensor if disabled
- * 
- * Inputs: 1) DistanceSensor struct of desired sensor passed as a pointer
- * 
- * Output: no output
- **/
-void DistanceSensor_Enable(DistanceSensor_t* sensor){
-
-    /* enable sensor only if it is disabled and EN pin is being used */
-    if(sensor->isEnabled != 1 && sensor->isUsingEN == 1){
-    
-    /* set the pin output to 1 (high, 3.3v) to enable sensor */
-    GPIOSetBit(sensor->EN.GPIOPin, 1);
-
-    /* Indicate sensor is enabled in struct */
-    sensor->isEnabled = 1;
-    }
-
-}
-/**
- * Disable Distance Sensor
- * 
- * Inputs: 1) DistanceSensor struct of desired sensor passed as a pointer
- * 
- * Output: no output
- **/
-void DistanceSensor_Disable(DistanceSensor_t* sensor){
-
-    /* Disable sensoe only if it is enabled and EN pin is being used */
-    if(sensor->isEnabled != 0 && sensor->isUsingEN == 1){
-
-    /* Disable sensor by setting pin output to 0 (low, 0V) */
-    GPIOSetBit(sensor->EN.GPIOPin, 0);
-
-    /* Indicate sensor is not enabled in struct */
-    sensor->isEnabled = 0;
-    }
-
-}
-
-/**
- * Show current status of Distance Sensor
- * 
- * Input: DistanceSensor struct passed by value (not a pointer)
- * 
- * Output: Status of sensor: 1) DS_ENABLED or 2) DS_DISABLED
- **/
-DistanceSensorStatus_t DistanceSensor_ShowStatus(DistanceSensor_t sensor){
-
-    /* check struct's "isEnabled" boolean variable to check if sensor is enabled or disabled */
-    if(sensor.isEnabled == 1) return DS_ENABLED; // 1 = enabled
-
-    else return DS_DISABLED; // 0 = disabled
 }
 
 /**
