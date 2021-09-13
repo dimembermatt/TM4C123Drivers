@@ -339,7 +339,7 @@
               <MiscControls>--C99</MiscControls>
               <Define>rvmdk PART_LM4F120H5QR</Define>
               <Undefine></Undefine>
-              <IncludePath>..;..\..</IncludePath>
+              <IncludePath>..;..\..\..</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -384,29 +384,29 @@
           <GroupName>Source</GroupName>
           <Files>
             <File>
-              <FileName>startup.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>..\..\inc\startup.s</FilePath>
+              <FileName>Example.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Example.c</FilePath>
             </File>
             <File>
               <FileName>PLL.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\inc\PLL.c</FilePath>
+              <FilePath>..\..\..\inc\PLL.c</FilePath>
+            </File>
+            <File>
+              <FileName>startup.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\..\..\inc\startup.s</FilePath>
             </File>
             <File>
               <FileName>GPIO.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\lib\GPIO\GPIO.c</FilePath>
+              <FilePath>..\..\..\lib\GPIO\GPIO.c</FilePath>
             </File>
             <File>
               <FileName>Timers.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\lib\Timers\Timers.c</FilePath>
-            </File>
-            <File>
-              <FileName>Example.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Example.c</FilePath>
+              <FilePath>..\..\..\lib\Timers\Timers.c</FilePath>
             </File>
           </Files>
         </Group>

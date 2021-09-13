@@ -78,7 +78,6 @@ __heap_limit
 ; External declarations for the interrupt handlers used by the application.
 ;
 ;******************************************************************************
-        EXTERN  USB0DeviceIntHandler
 
 ;******************************************************************************
 ;
@@ -447,6 +446,7 @@ IntDefaultHandler\
                 EXPORT  PWM1Generator2_Handler    [WEAK]
                 EXPORT  PWM1Generator3_Handler    [WEAK]
                 EXPORT  PWM1Fault_Handler         [WEAK]
+				EXPORT  USB0_Handler			  [WEAK]
 
 GPIOPortA_Handler
 GPIOPortB_Handler
@@ -561,7 +561,7 @@ PWM1Generator1_Handler
 PWM1Generator2_Handler
 PWM1Generator3_Handler
 PWM1Fault_Handler
-
+USB0_Handler
                 B       .
 
                 ENDP
