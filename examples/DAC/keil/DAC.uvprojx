@@ -48,17 +48,17 @@
             <NotGenerated>0</NotGenerated>
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
-          <OutputDirectory>.\</OutputDirectory>
+          <OutputDirectory>.\Objects\</OutputDirectory>
           <OutputName>DAC</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
-          <CreateHexFile>0</CreateHexFile>
+          <CreateHexFile>1</CreateHexFile>
           <DebugInformation>1</DebugInformation>
           <BrowseInformation>1</BrowseInformation>
-          <ListingPath>.\</ListingPath>
+          <ListingPath>.\Listings\</ListingPath>
           <HexFormatSelection>1</HexFormatSelection>
           <Merge32K>0</Merge32K>
-          <CreateBatchFile>0</CreateBatchFile>
+          <CreateBatchFile>1</CreateBatchFile>
           <BeforeCompile>
             <RunUserProg1>0</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
@@ -172,8 +172,8 @@
             <AdsLsun>1</AdsLsun>
             <AdsLven>1</AdsLven>
             <AdsLsxf>1</AdsLsxf>
-            <RvctClst>0</RvctClst>
-            <GenPPlst>0</GenPPlst>
+            <RvctClst>1</RvctClst>
+            <GenPPlst>1</GenPPlst>
             <AdsCpuType>"Cortex-M4"</AdsCpuType>
             <RvctDeviceName></RvctDeviceName>
             <mOS>0</mOS>
@@ -339,7 +339,7 @@
               <MiscControls>--C99 -D__FAST__</MiscControls>
               <Define>rvmdk PART_LM4F120H5QR</Define>
               <Undefine></Undefine>
-              <IncludePath>..;..\..</IncludePath>
+              <IncludePath>..;..\..\..</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -352,7 +352,7 @@
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
             <useXO>0</useXO>
-            <ClangAsOpt>4</ClangAsOpt>
+            <ClangAsOpt>1</ClangAsOpt>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -384,39 +384,39 @@
           <GroupName>Source</GroupName>
           <Files>
             <File>
-              <FileName>startup.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>..\..\inc\startup.s</FilePath>
-            </File>
-            <File>
-              <FileName>PLL.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\inc\PLL.c</FilePath>
-            </File>
-            <File>
               <FileName>DACExample.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\DACExample.c</FilePath>
             </File>
             <File>
-              <FileName>DAC.c</FileName>
+              <FileName>PLL.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\lib\DAC\DAC.c</FilePath>
+              <FilePath>..\..\..\inc\PLL.c</FilePath>
             </File>
             <File>
-              <FileName>GPIO.c</FileName>
+              <FileName>startup.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\..\..\inc\startup.s</FilePath>
+            </File>
+            <File>
+              <FileName>DAC.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\lib\GPIO\GPIO.c</FilePath>
+              <FilePath>..\..\..\lib\DAC\DAC.c</FilePath>
             </File>
             <File>
               <FileName>DACSPI.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\lib\DAC\DACSPI.c</FilePath>
+              <FilePath>..\..\..\lib\DAC\DACSPI.c</FilePath>
+            </File>
+            <File>
+              <FileName>GPIO.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\lib\GPIO\GPIO.c</FilePath>
             </File>
             <File>
               <FileName>SSI.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\lib\SSI\SSI.c</FilePath>
+              <FilePath>..\..\..\lib\SSI\SSI.c</FilePath>
             </File>
           </Files>
         </Group>

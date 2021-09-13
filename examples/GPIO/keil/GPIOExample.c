@@ -9,7 +9,7 @@
  * __MAIN__ = 0 - Initialization, getting, and setting of GPIO pins.
  *          = 1 - Initialization of a GPIO pin with an edge triggered interrupt.
  */
-#define __MAIN__ 1
+#define __MAIN__ 0
 
 /** General imports. */
 #include <stdlib.h>

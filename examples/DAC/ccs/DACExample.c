@@ -3,7 +3,11 @@
  * Devices: LM4F120; TM4C123
  * Description: Example program to demonstrate digital to analog converters.
  * Authors: Matthew Yu.
- * Last Modified: 04/17/21
+ * Last Modified: 09/13/21
+ * Note: If you check the target options, in the C/C++ Misc Options, `-D__FAST__` is defined.
+ * __FAST__ is present in GPIO.c; it selects between two definitions of GPIOSetBit and GPIOGetBit.
+ * __FAST__ trades speed for space complexity. It's very useful for when you want to do interrupt
+ * GPIO bit handling or very fast consecutive GPIO bit handling!
  * 
  * Modify __MAIN__ on L12 to determine which main method is executed.
  * __MAIN__ = 0 - Initialization and use a resistor based DAC.

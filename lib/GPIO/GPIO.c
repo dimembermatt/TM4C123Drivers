@@ -3,7 +3,7 @@
  * Devices: LM4F120; TM4C123
  * Description: Low level drivers for GPIO initialization.
  * Authors: Matthew Yu.
- * Last Modified: 04/17/21
+ * Last Modified: 09/13/21
  * 
  * By default, this driver does not support slew rate or drive strength.
  * 
@@ -257,7 +257,6 @@ void GPIOIntInit(GPIOConfig_t pinConfig, GPIOInterruptConfig_t pinIntConfig) {
 }
 
 /** Internal handler to manage GPIO interrupts. */
-#define PORT_E 4
 void GPIOGeneric_Handler(pin_t pin) {
     /** 1. Generate the port offset to find the correct addresses.
      *    There are a couple components in this line:
