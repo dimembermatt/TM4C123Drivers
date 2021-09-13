@@ -26,9 +26,7 @@ This library works with the [Adafruit 1.8" TFT Breakout w/SD card](http://www.ad
 ## Hardware Connections
 
 ### ST7735 TFT and SDC
-1100 1000
-7654 3210
---xx xx--
+
 | Label        | Pin | Connected To                                            |
 |--------------|-----|---------------------------------------------------------|
 | Backlight    | 10  | Connected to 3.3V                                       |

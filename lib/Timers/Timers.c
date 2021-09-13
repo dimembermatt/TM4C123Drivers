@@ -222,6 +222,10 @@ void TimerUpdatePeriod(TimerID_t timerID, uint32_t period) {
     /* Step 3. Update the period. */
     GET_REG(GPTM_BASE + timerOffset + GPTMTAILR_OFFSET) = period - 1;
 
+	/* Step 11. Enable timer after setup. */
+    GET_REG(GPTM_BASE + timerOffset + GPTMCTL_OFFSET) |=
+        ((ID % 2) == 0) ? 0x00000001 : 0x00000100;
+
     return;
 }
 
