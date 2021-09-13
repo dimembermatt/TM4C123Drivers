@@ -139,7 +139,9 @@ build/*
 Debug/
 Release/
 .jxbrowser-data/
+.jxbrowser.userdata/
 examples/.gitignore
 RemoteSystemsTempFiles/
 .settings/
 .launches/
+/.metadata/

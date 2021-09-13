@@ -292,7 +292,8 @@ void GPIOGeneric_Handler(pin_t pin) {
         (((pin - ((pin >= PIN_E0) << 5)) >> 3) << 12) + ((pin >= PIN_E0) << 17);
 
     /* 2. Find which pin triggered an interrupt. Could be multiple at once. */
-    for (uint8_t i = 0; i < 8; i++) {
+    uint8_t i;
+    for (i = 0; i < 8; i++) {
         if (GET_REG(GPIO_PORT_BASE + portOffset + GPIO_MIS_OFFSET) & (0x1 << i)) {
             /* Acknowledge interrupt flag. */
             GET_REG(GPIO_PORT_BASE + portOffset + GPIO_ICR_OFFSET) |= 0x1 << i;
