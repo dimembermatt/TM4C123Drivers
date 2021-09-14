@@ -3,7 +3,7 @@
  * Devices: LM4F120; TM4C123 
  * Description: Example program to demonstrate the SSI SPI capability.
  * Authors: Matthew Yu. 
- * Last Modified: 04/17/21
+ * Last Modified: 09/13/21
  */
 
 /** Device specific imports. */

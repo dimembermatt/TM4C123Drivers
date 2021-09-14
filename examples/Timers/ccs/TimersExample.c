@@ -4,7 +4,7 @@
  * Description: Example programs to demonstrate the capabilities of normal and
  * wide timers. Includes SysTick.
  * Authors: Matthew Yu.
- * Last Modified: 04/17/21
+ * Last Modified: 09/13/21
  * 
  * Modify __MAIN__ on L14 to determine which main method is executed.
  * __MAIN__ = 0 - Initialization and operation of multiple timers at different frequencies.
@@ -81,7 +81,7 @@ int main(void) {
          * Try it again with isPeriod set to false for single trigger mode,
          * or with different priorities on the timers. What do you see?
          *
-         * NOTE: As of (03/13/21) B-side timers do not activate properly. 
+         * NOTE: As of (09/13/21) B-side timers do not activate properly. 
          */
         WaitForInterrupt();
     };

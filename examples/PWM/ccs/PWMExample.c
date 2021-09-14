@@ -3,7 +3,7 @@
  * Devices: LM4F120; TM4C123
  * Description: Example program to demonstrate the low level PWM driver.
  * Authors: Matthew Yu.
- * Last Modified: 04/17/21
+ * Last Modified: 09/13/21
  * 
  * Modify __MAIN__ on L12 to determine which main method is executed.
  * __MAIN__ = 0 - Initialization and management of a timer acting as a PWM for low freq.
