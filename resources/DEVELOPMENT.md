@@ -1,5 +1,67 @@
 # Development Instructions
 
+## Naming Conventions
+
+Functional modules, like ADCs or GPIOs, have methods that are prefixed with: <ModuleName><Function>, utilizing CamelCase notation. Examples are as follows:
+
+- GPIOInit
+- SPIRead
+- ST7735SetTextCursor
+
+The only exceptions are handlers, which use an underscore to split the handler
+postfix: `GPIOPortA_Handler`. This is due to backwards compatibility with older
+startup.s files (that have recently been migrated with the same naming
+convention). This may be fixed in the future, but for now, too many things will
+break and I don't have enough free time to rebuild all the projects properly.
+
+Variable types are generally postfixed with an underscore 't', such as
+`GPIOConfig_t`. These types are exposed outside of the module namespace and are
+used in other modules. They are declared using `typedef`. Using the above
+example:
+
+```c
+typedef struct GPIOConfig {
+    ...
+} GPIOConfig_t;
+```
+
+Other variables that are contained only in the local module namespace, such as
+structs and enums, are not declared with `typedef` and do not have a postfix
+underscore `t`.
+
+Note that C doesn't actually have namespaces. In this context, a namespace is
+all functions and variables specifically designed solely for a functional module.
+
+## Design Philosophy
+
+The current design philosophy is that the USER is responsible for managing the
+state of their data, even if he or she doesn't know the specifics of it.
+
+A tasty metaphor may be a `chocolate bar`. The user declares and instantiates the
+`chocolate bar`. Whether the user proceeds to consume it, lose it, or simply
+unwrap it and stare at it is their decision. The designers shall not withold
+this chocolate bar from the user, since this is *their* `chocolate bar`! 
+
+Okay, here's a more realistic example. In the design of the `ADC` functional
+module, the designer should provide an ADC type (likely a struct), paired with
+an `ADCInit(...)` wrapper that returns an ADC type instance. This instance has
+two general rules.
+
+- The instance only contains data. In the case of the ADC instance; perhaps only
+  the ADC module value, the ADC sequencer value, and the interrupt handler
+  pointer should be in it. Functions that act on the instance type should be
+  divorced from the data. This allows the compiler to save ROM utilization by
+  not linking functions never used by the instance. If the functions part sounds
+  familiar, this is because this is functional programming.
+- All fields in the instance are public: The user retains the ability to peek
+  inside the instance and see what is inside. By extension, the user can modify
+  the instance without repercussions, unless explicitly noted. 
+
+...
+
+
+
+
 ## Keil
 
 A thorough guide on how to install and use it can be found on Valvano's

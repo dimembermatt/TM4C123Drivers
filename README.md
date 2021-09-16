@@ -34,7 +34,7 @@ N: Needs Changes
 | Timers            | D         | 09/13/21         | Untested on TM4C123GH6PM. B side timers, wide timers need implementation/are not working. See #6. |
 | SSI               | D         | 09/13/21         | Untested on TM4C123GH6PM.                                                                         |
 | DAC               | D         | 09/13/21         | CCS has undefined references on another machine.                                                   |
-| ADC               | N         |                  | Needs driver implementation.                                                                       |
+| ADC               | I         | 09/13/21         | Needs driver implementation.                                                                       |
 | PWM               | P         | 09/13/21         | Untested on TM4C123GH6PM. PWM module may need bugfixes. See #4.                                    |
 | UART              | N         |                  | Needs driver implementation.                                                                       |
 | USB               | N         |                  | Needs driver implementation. See HapticMouse src.                                                  |

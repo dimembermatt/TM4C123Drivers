@@ -22,19 +22,12 @@ typedef enum SSISelect{     /** Clk, Fss, Rx,  Tx.  */
     SSI1_PD=5,      /** PD0, PD1, PD2, PD3. */
 } SSISelect_t;
 
-typedef enum SSIFrameFormat{
-    FREESCALE_SPI,
-    TI_SYNCHRONOUS_SERIAL,
-    MICROWIRE,
-    RESERVED
-} SSIFrameFormat_t;
-
 typedef struct SSIConfig {
     /** Which SSI module and port. */
     SSISelect_t SSI;
 
     /** Determines the specific frame format of the SSI. */
-    SSIFrameFormat_t frameFormat;
+    enum SSIFrameFormat { FREESCALE_SPI, TI_SYNCHRONOUS_SERIAL, MICROWIRE, RESERVED } frameFormat;
 
     /** Determines whether the SSI module is Primary or Secondary. */
     bool isPrimary;

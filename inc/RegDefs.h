@@ -194,3 +194,40 @@
 #define PWM_CMPB_OFFSET     0x05C
 #define PWM_GENA_OFFSET     0x060
 #define PWM_GENB_OFFSET     0x064
+
+/**
+ * See table 13-5. ADC Register Map on p. 818 of the TM4C Datasheet for more
+ * details.
+ */
+#define ADC0_BASE           0x40038000
+#define ADC1_BASE           0x40039000
+#define ADC_ACTSS           0x000
+#define ADC_RIS             0x004
+#define ADC_IM              0x008
+#define ADC_ISC             0x00C
+#define ADC_OSTAT           0x010
+#define ADC_EMUX            0x014
+#define ADC_USTAT           0x018
+#define ADC_TSSEL           0x01C
+#define ADC_SSPRI           0x020
+#define ADC_SPC             0x024
+#define ADC_PSSI            0x028
+#define ADC_SAC             0x030
+#define ADC_DCISC           0x034
+#define ADC_CTL             0x038
+#define ADC_SS0             0x040
+#define ADC_SS1             0x060
+#define ADC_SS2             0x080
+#define ADC_SS3             0x0A0
+#define ADC_SSMUX           0x000
+#define ADC_SSCTL           0x004
+#define ADC_SSFIFO          0x008
+#define ADC_SSFSTAT         0x00C
+#define ADC_SSOP            0x010
+#define ADC_SSDC            0x014
+#define ADC_DCRIC           0xD00
+#define ADC_DCCTL           0xE00
+#define ADC_DCCMP           0xE40
+#define ADC_PP              0xFC0
+#define ADC_PC              0xFC4
+#define ADC_CC              0xFC8

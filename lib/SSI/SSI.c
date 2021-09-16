@@ -40,7 +40,7 @@ void SSIInit(SSIConfig_t SSIConfig) {
         {PIN_A4, PULL_UP,   false, true, 2, false},    /* SSI0Rx.  */
         {PIN_A5, PULL_UP,   true,  true, 2, false},    /* SSI0Tx.  */
     };
-    switch(SSIConfig.SSI) {
+    switch (SSIConfig.SSI) {
         case SSI2_PB:
             configs[0].GPIOPin = PIN_B4;
             configs[1].GPIOPin = PIN_B5;
