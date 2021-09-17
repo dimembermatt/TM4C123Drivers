@@ -97,8 +97,8 @@ dkms.conf
 *._ii
 
 # Generated output files
-/Listings/*
-/Objects/*
+*/Listings/*
+*/Objects/*
 */*/RTE/*
 */*/*.scvd
 

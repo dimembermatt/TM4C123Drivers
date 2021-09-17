@@ -8,6 +8,15 @@ See [this source](https://renenyffenegger.ch/notes/development/languages/C-C-plu
 
 ---
 
+## Documentation
+
+Source code documentation can be found at...
+
+<https://github.com/slatedocs/slate/wiki/Using-Slate-Natively>
+
+
+---
+
 ## Resources
 
 Please see [RESOURCES.md](resources/RESOURCES.md) for additional content that may help with bufgixing, device documentation, and so on.

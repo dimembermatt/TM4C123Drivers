@@ -28,7 +28,7 @@ DACConfig_t config = {
 };
 
 /** Initializes both onboard switches to test triggers. */
-int main (void) {
+int main(void) {
     PLLInit(BUS_80_MHZ);
     DACInit(config);
 
@@ -60,7 +60,7 @@ int main(void) {
     PLLInit(BUS_80_MHZ);
     DACSPIInit(SSI2_PB);
 
-    while(1) {
+    while (1) {
         /** 
          * Check the oscilloscope output when this is connected 
          * to the TLV chip to see the SSI input and output voltage. 
