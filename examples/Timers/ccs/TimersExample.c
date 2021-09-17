@@ -38,11 +38,11 @@ void dummyTask3(void) {
     ++counter2A;
     
     if (counter2A == 100) {
-        /* Place a breakpoint at L38! Notice that at counter2A = 100, counter0A ~= 25, counter1A ~= 50. */
+        /* 1. Place a breakpoint at L42! Notice that at counter2A = 100, counter0A ~= 25, counter1A ~= 50. */
         TimerUpdatePeriod(TIMER_2A, freqToPeriod(100, MAX_FREQ)); 
     }
     if (counter2A == 105) {
-        /* Place a breakpoint at L42! Notice here that when counter2A = 105, counter0A ~= 30, counter1A ~= 60. */
+        /* 2. Place a breakpoint at L45! Notice here that when counter2A = 105, counter0A ~= 30, counter1A ~= 60. */
         uint8_t i = 0;
     }
 }
@@ -54,7 +54,7 @@ int main(void) {
      * This program demonstrates the initialization and operation of four
      * timers at different frequencies.
      */
-    PLL_Init(Bus80MHz);
+    PLLInit(BUS_80_MHZ);
     DisableInterrupts();
 
     TimerConfig_t timers[4] = {
@@ -110,7 +110,7 @@ int main(void) {
      * This program demonstrates starting a timer, updating its period, and then
      * stopping the timer.
      */
-    PLL_Init(Bus80MHz);
+    PLLInit(BUS_80_MHZ);
     DisableInterrupts();
 
     /* Initialize a GPIO LED on PF1. */

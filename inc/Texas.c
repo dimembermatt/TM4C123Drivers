@@ -379,7 +379,7 @@ void TExaS_Init(enum TExaSmode mode,uint32_t busfrequency){
 // user sets direction and other modes for digital pins
 // Outputs: none
 void TExaS_SetTask(void(*task)(void)){
-  PLL_Init(Bus80MHz);     // PLL on at 80 MHz
+  PLLInit(BUS_80_MHZ);     // PLL on at 80 MHz
   ADC1_Init();
   UART_Init(80000000,115200);
   PeriodicTask2_Init(task,80000000,10000,5); // run scope at 10k

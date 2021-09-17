@@ -37,7 +37,7 @@ int main(void) {
     /** Hardware and software initializations. */
 
     /* Clock setup. */
-    PLL_Init(Bus80MHz);
+    PLLInit(BUS_80_MHZ);
     DisableInterrupts();
 
     /* Initialize PF1 GPIO (red LED) to flash at 1 Hz. */

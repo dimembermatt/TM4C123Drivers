@@ -17,7 +17,7 @@
 
 /** Prints hello world to the screen. */
 int main2(void) {
-    PLL_Init(Bus80MHz);
+    PLLInit(BUS_80_MHZ);
     ST7735Init();
     ST7735DrawString(0, 0, "Hello World!", ST7735_WHITE, ST7735_BLACK);
     while (1) {};
@@ -25,7 +25,7 @@ int main2(void) {
 
 /** Draws circles, the string 'Char Test', and a bitmaps. */
 int main(void) {
-    PLL_Init(Bus80MHz);
+    PLLInit(BUS_80_MHZ);
     ST7735Init();
 
     /* Draw a small green circle on the top left of the screen. */

@@ -31,7 +31,7 @@ int main(void) {
      * Every 1000ms, PF1 and PF2 - associated with the Red and Blue LED,
      * respectively - are toggled between an ON and OFF state.
      */
-    PLL_Init(Bus80MHz);
+    PLLInit(BUS_80_MHZ);
     DisableInterrupts();
 
     /* Initialize SysTick for delay calls. This is required, since the delay
@@ -86,7 +86,7 @@ int main(void) {
      * interrupt and executing on it. Every time PF0 is pressed, the toggleLED
      * function is called and PF2 (BLUE LED) is toggled.
      */
-    PLL_Init(Bus80MHz);
+    PLLInit(BUS_80_MHZ);
     DisableInterrupts();
 
     /* Initialize SysTick for delay calls. This is required, since the delay

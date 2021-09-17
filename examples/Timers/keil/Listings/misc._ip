@@ -1,6 +1,0 @@
-..\..\..\lib\Misc\Misc.c -E -c --cpu Cortex-M4 -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I .. -I ..\..\.. --C99
--I.\RTE\_Timers
--IC:\Users\matth\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include
--IC:\Users\matth\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C123
--D__UVISION_VERSION="533" -D_RTE_ -DTM4C123GH6PM -D_RTE_ -Drvmdk -DPART_LM4F120H5QR
--o .\listings\misc.i --list_dir ".\\Listings\\" --list

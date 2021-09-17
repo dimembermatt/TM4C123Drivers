@@ -28,8 +28,8 @@ DACConfig_t config = {
 };
 
 /** Initializes both onboard switches to test triggers. */
-int main(void) {
-    PLL_Init(Bus80MHz);
+int main (void) {
+    PLLInit(BUS_80_MHZ);
     DACInit(config);
 
     // View in debugging mode with GPIO_PORTB_DATA_R added to watch 1.
@@ -43,7 +43,7 @@ int main(void) {
     DACOut(config, 2); // GPIO_PORTB_DATA_R should be 0x04.
     DACOut(config, 3); // GPIO_PORTB_DATA_R should be 0x05.
     
-    while(1) {}
+    while (1) {}
 }
 #elif __MAIN__ == 1
 SSIConfig_t config = {
@@ -57,7 +57,7 @@ SSIConfig_t config = {
 
 /** Initializes both onboard switches to test triggers. */
 int main(void) {
-    PLL_Init(Bus80MHz);
+    PLLInit(BUS_80_MHZ);
     DACSPIInit(SSI2_PB);
 
     while(1) {

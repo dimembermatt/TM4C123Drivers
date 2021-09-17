@@ -58,17 +58,17 @@ extern uint32_t __STACK_TOP;
 //*****************************************************************************
 // To be added by user
 
-
+// TODO: should test if this works
 void EnableInterrupts(void) {
- // TODO
+    __asm("    CPSIE i");
 }
 
 void DisableInterrupts(void) {
- // TODO
+    __asm("    CPSID i");
 }
 
 void WaitForInterrupt(void) {
- // TODO
+    __asm("    WFI");
 }
 
 /**

@@ -36,7 +36,7 @@ void retreiveInformation(void) {
 
 /** Initializes both onboard switches to test triggers. */
 int main(void) {
-    PLL_Init(Bus80MHz);
+    PLLInit(BUS_80_MHZ);
     DisableInterrupts();
     ST7735Init();
     ST7735DrawString(0, 0, "EE445L Lab 4D Blynk", ST7735_WHITE, ST7735_BLACK);

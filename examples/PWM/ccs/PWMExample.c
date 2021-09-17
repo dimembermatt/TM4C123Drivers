@@ -32,7 +32,7 @@ int main(void) {
      * flashing an LED with it, updating its frequency and duty cycle, and then
      * stopping it.
      */
-    PLL_Init(Bus80MHz);
+    PLLInit(BUS_80_MHZ);
     DisableInterrupts();
 
     /* Initialize SysTick for delay calls.*/
@@ -81,7 +81,7 @@ int main(void) {
      * This program demonstrates initializing initializing the TM4C PWM module,
      * and progressively changing the brightness using the duty cycle.
      */
-    PLL_Init(Bus80MHz);
+    PLLInit(BUS_80_MHZ);
     DisableInterrupts();
 
     /* Initialize SysTick for delay calls.*/

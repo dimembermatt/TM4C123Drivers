@@ -36,7 +36,7 @@ int main(void) {
      * edge-triggered GPIO and using them to toggle onboard LEDs. This is
      * similar to GPIOExample main #2.
      */
-    PLL_Init(Bus80MHz);
+    PLLInit(BUS_80_MHZ);
     DisableInterrupts();
     
     /* Initialize PF0 (SW2) and PF4 (SW1) as edge triggered interrupt switches. */

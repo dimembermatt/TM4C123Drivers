@@ -3,7 +3,7 @@
  * Devices: LM4F120; TM4C123
  * Description: Low level drivers for ADC initialization.
  * Authors: Matthew Yu.
- * Last Modified: 09/15/21
+ * Last Modified: 09/16/21
  * Note: The following parameters of the ADC are not configurable as 09/15/21:
  * - Sample Sequencer Priority (SSPRI)
  * - Interrupt handling
@@ -101,7 +101,7 @@ ADC_t ADCInit(ADCConfig_t adcConfig) {
     GET_REG(moduleBase + sequencerOffset + ADC_SSCTL) &= 
         ~(0xF << (adcConfig.position << 2));
     GET_REG(moduleBase + sequencerOffset + ADC_SSCTL) |=
-		(0b0110 * !adcConfig.isNotEndSample) << (adcConfig.position << 2);
+		((0b0110 * !adcConfig.isNotEndSample) << (adcConfig.position << 2));
 
     /**
      * Note: these registers are not currently touched for now:
@@ -115,40 +115,89 @@ ADC_t ADCInit(ADCConfig_t adcConfig) {
     ADC_t adc = {
         adcConfig.pin,
         adcConfig.module,
-        adcConfig.sequencer
+        adcConfig.sequencer,
+		adcConfig.position
     };
 
     return adc;
 }
 
-bool ADCIsOverflow(ADC_t adc) {
-    // ADC_OSTAT
-    // ADC_SSFSTAT
-    HardFault_Handler();
-    return false;
+bool ADCIsEmpty(enum ADCModule module, enum ADCSequencer sequencer) {
+    uint32_t moduleBase = !module * ADC0_BASE + module * ADC1_BASE;
+    uint32_t sequencerOffset = ADC_SS0 + 0x020 * sequencer;
+	return GET_REG(moduleBase + sequencerOffset + ADC_SSFSTAT) & 0x100;
 }
 
-bool ADCIsUnderflow(ADC_t adc) {
-    // ADC_USTAT
-    // ADC_SSFSTAT
-    HardFault_Handler();
-    return false;
+bool ADCIsFull(enum ADCModule module, enum ADCSequencer sequencer) {
+    uint32_t moduleBase = !module * ADC0_BASE + module * ADC1_BASE;
+    uint32_t sequencerOffset = ADC_SS0 + 0x020 * sequencer;
+	return GET_REG(moduleBase + sequencerOffset + ADC_SSFSTAT) & 0x1000;
 }
 
-uint32_t ADCSample(ADC_t adc) {
-    /** 1. Initiate sampling in the sample sequencers. */
+uint32_t ADCSampleSingle(ADC_t adc) {
     uint32_t moduleBase = !adc.module * ADC0_BASE + adc.module * ADC1_BASE;
-    GET_REG(moduleBase + ADC_PSSI) |=  1 << adc.sequencer;
-
-    /** 2. Wait for flag that conversion is done. */
-    while (!(GET_REG(moduleBase + ADC_RIS) & (1 << adc.sequencer))) {}
-
-    /** 3. Read result from the FIFO. */
     uint32_t sequencerOffset = ADC_SS0 + 0x020 * adc.sequencer;
-    uint32_t result = GET_REG(moduleBase + sequencerOffset +  ADC_SSFIFO);
 
-    /** 4. Clear flag. ADC_ISC clear interrupt */
+	/* 0. Clear internal FIFO beforehand. */
+	while (!(GET_REG(moduleBase + sequencerOffset + ADC_SSFSTAT) & 0x100)) {
+		GET_REG(moduleBase + sequencerOffset +  ADC_SSFIFO);
+	}
+	
+    /* 1. Initiate sampling in the sample sequencers. */
+	GET_REG(moduleBase + ADC_PSSI) =  1 << adc.sequencer;
+	
+    /* 2. Wait for flag that conversion is done. */
+    while ((GET_REG(moduleBase + ADC_RIS) & (1 << adc.sequencer)) == 0) {}
+	
+    /* 3. Read result from the FIFO. */
+	uint32_t result = 0;
+	uint8_t i = 0;
+    for (; !(GET_REG(moduleBase + sequencerOffset + ADC_SSFSTAT) & 0x100) && i < 8; ++i) {
+		if (i == adc.position)
+			result = GET_REG(moduleBase + sequencerOffset +  ADC_SSFIFO) & 0xFFF;
+		else
+			GET_REG(moduleBase + sequencerOffset +  ADC_SSFIFO);
+	}
+	
+    /* 4. Clear flag. ADC_ISC clear interrupt */
     GET_REG(moduleBase + ADC_ISC) |= 1 << adc.sequencer;
 
     return result;
+}
+
+void ADCSampleSequencer(
+	enum ADCModule module, 
+	enum ADCSequencer sequencer, 
+	uint32_t arr[8]
+) {
+    uint32_t moduleBase = !module * ADC0_BASE + module * ADC1_BASE;
+    uint32_t sequencerOffset = ADC_SS0 + 0x020 * sequencer;
+
+	/* 0. Clear internal FIFO beforehand. */
+	while (!(GET_REG(moduleBase + sequencerOffset + ADC_SSFSTAT) & 0x100)) {
+		GET_REG(moduleBase + sequencerOffset +  ADC_SSFIFO);
+	}
+	
+    /* 1. Initiate sampling in the sample sequencers. */
+	GET_REG(moduleBase + ADC_PSSI) =  1 << sequencer;
+	
+    /* 2. Wait for flag that conversion is done. */
+    while ((GET_REG(moduleBase + ADC_RIS) & (1 << sequencer)) == 0) {}
+	
+    /* 3. Read result from the FIFO. */
+	uint8_t i = 0;
+    for (; !(GET_REG(moduleBase + sequencerOffset + ADC_SSFSTAT) & 0x100) && i < 8; ++i) {
+		arr[i] = GET_REG(moduleBase + sequencerOffset +  ADC_SSFIFO) & 0xFFF;
+	}
+
+    /* 4. Clear flag. ADC_ISC clear interrupt */
+    GET_REG(moduleBase + ADC_ISC) |= 1 << sequencer;
+}
+
+void ADC0Seq0_Handler(void) {
+	__nop();
+}
+
+void ADC0Seq1_Handler(void) {
+	__nop();
 }

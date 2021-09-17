@@ -29,7 +29,7 @@ int main(void) {
     /**
      * This program demonstrates initializing a GPIO pin and updating its value.
      */
-    PLL_Init(Bus80MHz);
+    PLLInit(BUS_80_MHZ);
     DisableInterrupts();
 
     /* Initialize SysTick for delay calls.*/
@@ -80,7 +80,7 @@ int main(void) {
      * This program demonstrates initializing a GPIO pin with an edge triggered
      * interrupt and executing on it.
      */
-    PLL_Init(Bus80MHz);
+    PLLInit(BUS_80_MHZ);
     DisableInterrupts();
 
     /* Initialize SysTick for delay calls. */

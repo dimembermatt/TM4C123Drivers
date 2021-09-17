@@ -29,7 +29,7 @@ DACConfig_t config = {
 
 /** Initializes both onboard switches to test triggers. */
 int main(void) {
-    PLL_Init(Bus80MHz);
+    PLLInit(BUS_80_MHZ);
     DACInit(config);
 
     // View in debugging mode with GPIO_PORTB_DATA_R added to watch 1.
@@ -57,7 +57,7 @@ SSIConfig_t config = {
 
 /** Initializes both onboard switches to test triggers. */
 int main(void) {
-    PLL_Init(Bus80MHz);
+    PLLInit(BUS_80_MHZ);
     DACSPIInit(SSI2_PB);
 
     while(1) {

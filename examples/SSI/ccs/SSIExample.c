@@ -28,7 +28,7 @@ int main(void) {
      * unit operating as an SPI bus. It writes an incrementing counter to the PB
      * lines.
      */
-    PLL_Init(Bus80MHz);
+    PLLInit(BUS_80_MHZ);
     DisableInterrupts();
 
     SSIConfig_t config = {
