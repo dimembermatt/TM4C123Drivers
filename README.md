@@ -1,10 +1,14 @@
 # TM4C123Drivers
 
-This repository contains a selection of drivers originally written by Jonathan Valvano and refactored by Matthew Yu. Some inspiration taken from IEEE RAS' [RASWare](https://github.com/ut-ras/Rasware).
+This repository contains a selection of drivers originally written by Jonathan Valvano and refactored by Matthew Yu. Some inspiration was also taken from IEEE RAS' [RASWare](https://github.com/ut-ras/Rasware).
 
-This is meant to be a future replacement for RASWare, with its own CLI build system and higher level drivers for devices such as color sensors, line sensors, and so on. I am optimistic that this set of drivers will be rolled out by the Fall 2021 RAS Robotathon competition for students to use.
+This set of drivers has been developed for several simultaneous projects, and a few are provided here:
+* A future low level driver replacement for RASWare, which is a HAL software library for use by students in the fall IEEE RAS Robotathon competition.
+* The EE445L Spring 2021 [Haptic Mouse](https://www.youtube.com/watch?v=ZX0DsBXqy6Q), which was developed by Kevin Mechler, Arshad Bacchus, and Matthew Yu as a final project. It went on to get second place in the 445L competition.
+* A planned smart multimeter watch, under development as part of the EE382V Technology for Embedded Internet of Things graduate class.
+* And others...
 
-See [this source](https://renenyffenegger.ch/notes/development/languages/C-C-plus-plus/GCC/create-libraries/index) for figuring out how to hide implementation file details, in case this becomes an issue later.
+Altogether, this library contains drivers for all sets of peripherals for the TM4C123GH6PM chip, including timers, ADCs, GPIOs, PWM, and so on. A list of driver statuses are found below. These drivers each contain example projects that can be run on Keil or Code Composer Studio with minimal effort, and will accompany a yet to be created set of API documentation that should help developers like myself use this library.
 
 ---
 
@@ -60,3 +64,6 @@ Higher level drivers for Robotathon are required in RASWare - Line sensor, motor
 Motor driver can be ported from 445L lab.
 
 Drivers should potentially be obfuscated into a lib.
+
+
+See [this source](https://renenyffenegger.ch/notes/development/languages/C-C-plus-plus/GCC/create-libraries/index) for figuring out how to hide implementation file details, in case this becomes an issue later.
