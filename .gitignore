@@ -97,10 +97,10 @@ dkms.conf
 *._ii
 
 # Generated output files
-*/Listings/*
-*/Objects/*
-*/*/RTE/*
-*/*/*.scvd
+examples/*/Keil/Listings
+examples/*/Keil/Objects
+examples/*/Keil/RTE
+examples/*/Keil/*.scvd
 
 # Debugger files
 # define exception below if needed

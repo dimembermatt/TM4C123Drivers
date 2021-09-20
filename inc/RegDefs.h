@@ -199,7 +199,7 @@
 
 /**
  * See table 13-5. ADC Register Map on p. 818 of the TM4C Datasheet for more
- * details.
+ * details. TODO: rename to _OFFSET
  */
 #define ADC0_BASE           0x40038000
 #define ADC1_BASE           0x40039000
@@ -233,3 +233,36 @@
 #define ADC_PP              0xFC0
 #define ADC_PC              0xFC4
 #define ADC_CC              0xFC8
+
+/**
+ * See table 16-4. I2C Interface Register Map on p. 1017 of the TM4C Datasheet
+ * for more details. 
+ */
+#define I2C0_BASE           0x40020000
+#define I2C1_BASE           0x40021000
+#define I2C2_BASE           0x40022000
+#define I2C3_BASE           0x40023000
+#define I2C_MSA_OFFSET      0x000
+#define I2C_MCS_OFFSET      0x004
+#define I2C_MDR_OFFSET      0x008
+#define I2C_MTPR_OFFSET     0x00C
+#define I2C_MIMR_OFFSET     0x010
+#define I2C_MRIS_OFFSET     0x014
+#define I2C_MMIS_OFFSET     0x018
+#define I2C_MICR_OFFSET     0x01C
+#define I2C_MCR_OFFSET      0x020
+#define I2C_MCLKOCNT_OFFSET 0x024
+#define I2C_MBMON_OFFSET    0x02C
+#define I2C_MCR2_OFFSET     0x038
+#define I2C_SOAR_OFFSET     0x800
+#define I2C_SCSR_OFFSET     0x804
+#define I2C_SDR_OFFSET      0x808
+#define I2C_SIMR_OFFSET     0x80C
+#define I2C_SRIS_OFFSET     0x810
+#define I2C_SMIS_OFFSET     0x814
+#define I2C_SICR_OFFSET     0x818
+#define I2C_SOAR2_OFFSET    0x81C
+#define I2C_SACKCTL_OFFSET  0x820
+#define I2C_PP_OFFSET       0xFC0
+#define I2C_PC_OFFSET       0xFC4
+
