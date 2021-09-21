@@ -17,6 +17,7 @@
 #include <inc/RegDefs.h>
 #include <lib/ADC/ADC.h>
 
+
 void HardFault_Handler(void);    // Defined in startup.s
 
 static pin_t ADCPinMapping[12] = {
@@ -195,9 +196,9 @@ void ADCSampleSequencer(
 }
 
 void ADC0Seq0_Handler(void) {
-    __nop();
+	HardFault_Handler();
 }
 
 void ADC0Seq1_Handler(void) {
-    __nop();
+	HardFault_Handler();
 }

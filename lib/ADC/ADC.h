@@ -1,5 +1,5 @@
 /**
- * ADC.c
+ * ADC.h
  * Devices: LM4F120; TM4C123
  * Description: Low level drivers for ADC initialization.
  * Authors: Matthew Yu.
@@ -85,6 +85,7 @@ enum ADCPhase {
 typedef struct ADCConfig {
     /**
      * The GPIO that can be selected as ADC pins.
+     * 
      * Default is AIN0, which corresponds to PE3.
      */
     enum ADCPin pin;
