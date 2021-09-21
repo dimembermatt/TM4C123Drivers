@@ -241,6 +241,3 @@ uint32_t ADCSampleSingle(ADC_t adc);
  * @param arr A reference to an array to fill with values.
  */
 void ADCSampleSequencer(enum ADCModule module, enum ADCSequencer sequencer, uint32_t arr[8]);
-
-
-
