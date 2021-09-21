@@ -3,7 +3,7 @@
 ;
 ; startup_rvmdk.S - Startup code for use with Keil's uVision.
 ;
-; Copyright (c) 2012 Texas Instruments Incorporated.  All rights reserved.
+; Copyright (c) 2013-2020 Texas Instruments Incorporated.  All rights reserved.
 ; Software License Agreement
 ; 
 ; Texas Instruments (TI) is supplying this software for use solely and
@@ -19,17 +19,10 @@
 ; CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 ; DAMAGES, FOR ANY REASON WHATSOEVER.
 ; 
-; This is part of revision 9453 of the EK-LM4F120XL Firmware Package.
+; This is part of revision 2.2.0.295 of the EK-TM4C123GXL Firmware Package.
 ;
 ;******************************************************************************
-; Edited to conform with ISR names as described in 
-;   "Embedded Systems: Introduction to ARM Cortex M Microcontrollers",
-;   ISBN: 978-1469998749, Jonathan Valvano, copyright (c) 2012
-;   "Embedded Systems: Real Time Interfacing to ARM Cortex M Microcontrollers",
-;   ISBN: 978-1463590154, Jonathan Valvano, copyright (c) 2012
-;   "Embedded Systems: Real-Time Operating Systems for ARM Cortex M Microcontrollers",
-;   ISBN: 978-1466468863, Jonathan Valvano, copyright (c) 2013
-;
+
 ;******************************************************************************
 ;
 ; <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
@@ -82,6 +75,12 @@ __heap_limit
 
 ;******************************************************************************
 ;
+; External declarations for the interrupt handlers used by the application.
+;
+;******************************************************************************
+
+;******************************************************************************
+;
 ; The vector table.
 ;
 ;******************************************************************************
@@ -91,18 +90,18 @@ __Vectors
         DCD     Reset_Handler               ; Reset Handler
         DCD     NMI_Handler                 ; NMI Handler
         DCD     HardFault_Handler           ; Hard Fault Handler
-        DCD     MemManage_Handler           ; MPU Fault Handler
-        DCD     BusFault_Handler            ; Bus Fault Handler
-        DCD     UsageFault_Handler          ; Usage Fault Handler
+        DCD     MemManage_Handler           ; The MPU fault handler
+        DCD     BusFault_Handler            ; The bus fault handler
+        DCD     UsageFault_Handler           ; The usage fault handler
         DCD     0                           ; Reserved
         DCD     0                           ; Reserved
         DCD     0                           ; Reserved
         DCD     0                           ; Reserved
-        DCD     SVC_Handler                 ; SVCall Handler
-        DCD     DebugMon_Handler            ; Debug Monitor Handler
+        DCD     SVC_Handler                 ; SVCall handler
+        DCD     DebugMon_Handler            ; Debug monitor handler
         DCD     0                           ; Reserved
-        DCD     PendSV_Handler              ; PendSV Handler
-        DCD     SysTick_Handler             ; SysTick Handler
+        DCD     PendSV_Handler              ; The PendSV handler
+        DCD     SysTick_Handler             ; The SysTick handler
         DCD     GPIOPortA_Handler           ; GPIO Port A
         DCD     GPIOPortB_Handler           ; GPIO Port B
         DCD     GPIOPortC_Handler           ; GPIO Port C
@@ -112,27 +111,27 @@ __Vectors
         DCD     UART1_Handler               ; UART1 Rx and Tx
         DCD     SSI0_Handler                ; SSI0 Rx and Tx
         DCD     I2C0_Handler                ; I2C0 Master and Slave
-        DCD     PWM0Fault_Handler           ; PWM 0 Fault
-        DCD     PWM0Generator0_Handler      ; PWM 0 Generator 0
-        DCD     PWM0Generator1_Handler      ; PWM 0 Generator 1
-        DCD     PWM0Generator2_Handler      ; PWM 0 Generator 2
+        DCD     PWM0Fault_Handler           ; PWM Fault
+        DCD     PWM0Generator0_Handler      ; PWM Generator 0
+        DCD     PWM0Generator1_Handler      ; PWM Generator 1
+        DCD     PWM0Generator2_Handler      ; PWM Generator 2
         DCD     Quadrature0_Handler         ; Quadrature Encoder 0
         DCD     ADC0Seq0_Handler            ; ADC0 Sequence 0
         DCD     ADC0Seq1_Handler            ; ADC0 Sequence 1
         DCD     ADC0Seq2_Handler            ; ADC0 Sequence 2
         DCD     ADC0Seq3_Handler            ; ADC0 Sequence 3
-        DCD     WDT_Handler                 ; Watchdog
+        DCD     WDT_Handler                 ; Watchdog timer
         DCD     Timer0A_Handler             ; Timer 0 subtimer A
         DCD     Timer0B_Handler             ; Timer 0 subtimer B
         DCD     Timer1A_Handler             ; Timer 1 subtimer A
         DCD     Timer1B_Handler             ; Timer 1 subtimer B
         DCD     Timer2A_Handler             ; Timer 2 subtimer A
         DCD     Timer2B_Handler             ; Timer 2 subtimer B
-        DCD     Comp0_Handler               ; Analog Comp 0
-        DCD     Comp1_Handler               ; Analog Comp 1
-        DCD     Comp2_Handler               ; Analog Comp 2
-        DCD     SysCtl_Handler              ; System Control
-        DCD     FlashCtl_Handler            ; Flash Control
+        DCD     Comp0_Handler               ; Analog Comparator 0
+        DCD     Comp1_Handler               ; Analog Comparator 1
+        DCD     Comp2_Handler               ; Analog Comparator 2
+        DCD     SysCtl_Handler              ; System Control (PLL, OSC, BO)
+        DCD     FlashCtl_Handler            ; FLASH Control
         DCD     GPIOPortF_Handler           ; GPIO Port F
         DCD     GPIOPortG_Handler           ; GPIO Port G
         DCD     GPIOPortH_Handler           ; GPIO Port H
@@ -144,19 +143,19 @@ __Vectors
         DCD     Quadrature1_Handler         ; Quadrature Encoder 1
         DCD     CAN0_Handler                ; CAN0
         DCD     CAN1_Handler                ; CAN1
-        DCD     CAN2_Handler                ; CAN2
-        DCD     Ethernet_Handler            ; Ethernet
+        DCD     0                           ; Reserved
+        DCD     0                           ; Reserved
         DCD     Hibernate_Handler           ; Hibernate
         DCD     USB0_Handler                ; USB0
-        DCD     PWM0Generator3_Handler      ; PWM 0 Generator 3
+        DCD     PWM0Generator3_Handler      ; PWM Generator 3
         DCD     uDMA_Handler                ; uDMA Software Transfer
         DCD     uDMA_Error                  ; uDMA Error
         DCD     ADC1Seq0_Handler            ; ADC1 Sequence 0
         DCD     ADC1Seq1_Handler            ; ADC1 Sequence 1
         DCD     ADC1Seq2_Handler            ; ADC1 Sequence 2
         DCD     ADC1Seq3_Handler            ; ADC1 Sequence 3
-        DCD     I2S0_Handler                ; I2S0
-        DCD     ExtBus_Handler              ; External Bus Interface 0
+        DCD     0                           ; Reserved
+        DCD     0                           ; Reserved
         DCD     GPIOPortJ_Handler           ; GPIO Port J
         DCD     GPIOPortK_Handler           ; GPIO Port K
         DCD     GPIOPortL_Handler           ; GPIO Port L
@@ -210,14 +209,14 @@ __Vectors
         DCD     WideTimer5A_Handler         ; Wide Timer 5 subtimer A
         DCD     WideTimer5B_Handler         ; Wide Timer 5 subtimer B
         DCD     FPU_Handler                 ; FPU
-        DCD     PECI0_Handler               ; PECI 0
-        DCD     LPC0_Handler                ; LPC 0
+        DCD     0                           ; Reserved
+        DCD     0                           ; Reserved
         DCD     I2C4_Handler                ; I2C4 Master and Slave
         DCD     I2C5_Handler                ; I2C5 Master and Slave
         DCD     GPIOPortM_Handler           ; GPIO Port M
         DCD     GPIOPortN_Handler           ; GPIO Port N
         DCD     Quadrature2_Handler         ; Quadrature Encoder 2
-        DCD     Fan0_Handler                ; Fan 0
+        DCD     0                           ; Reserved
         DCD     0                           ; Reserved
         DCD     GPIOPortP_Handler           ; GPIO Port P (Summary or P0)
         DCD     GPIOPortP1_Handler          ; GPIO Port P1
@@ -252,7 +251,7 @@ __Vectors
         EXPORT  Reset_Handler
 Reset_Handler
         ;
-        ; DO NOT enable the floating-point unit.  This must be done here to handle the
+        ; Enable the floating-point unit.  This must be done here to handle the
         ; case where main() uses floating-point and the function prologue saves
         ; floating-point registers (which will fault if floating-point is not
         ; enabled).  Any configuration of the floating-point unit using
@@ -262,11 +261,11 @@ Reset_Handler
         ; Note that this does not use DriverLib since it might not be included
         ; in this project.
         ;
-;        MOVW    R0, #0xED88
-;        MOVT    R0, #0xE000
-;        LDR     R1, [R0]
-;        ORR     R1, #0x00F00000
-;        STR     R1, [R0]
+        MOVW    R0, #0xED88
+        MOVT    R0, #0xE000
+        LDR     R1, [R0]
+        ORR     R1, #0x00F00000
+        STR     R1, [R0]
 
         ;
         ; Call the C library enty point that handles startup.  This will copy
@@ -283,11 +282,9 @@ Reset_Handler
 ; by a debugger.
 ;
 ;******************************************************************************
-NMI_Handler     PROC
-                EXPORT  NMI_Handler               [WEAK]
-                B       .
-                ENDP
-
+NMI_Handler
+        B       NMI_Handler
+        
 ;******************************************************************************
 ;
 ; This is the code that gets called when the processor receives a fault
@@ -380,7 +377,6 @@ IntDefaultHandler\
                 EXPORT  CAN2_Handler              [WEAK]
                 EXPORT  Ethernet_Handler          [WEAK]
                 EXPORT  Hibernate_Handler         [WEAK]
-                EXPORT  USB0_Handler              [WEAK]
                 EXPORT  PWM0Generator3_Handler    [WEAK]
                 EXPORT  uDMA_Handler              [WEAK]
                 EXPORT  uDMA_Error                [WEAK]
@@ -450,6 +446,7 @@ IntDefaultHandler\
                 EXPORT  PWM1Generator2_Handler    [WEAK]
                 EXPORT  PWM1Generator3_Handler    [WEAK]
                 EXPORT  PWM1Fault_Handler         [WEAK]
+				EXPORT  USB0_Handler			  [WEAK]
 
 GPIOPortA_Handler
 GPIOPortB_Handler
@@ -495,7 +492,6 @@ CAN1_Handler
 CAN2_Handler
 Ethernet_Handler
 Hibernate_Handler
-USB0_Handler
 PWM0Generator3_Handler
 uDMA_Handler
 uDMA_Error
@@ -565,7 +561,7 @@ PWM1Generator1_Handler
 PWM1Generator2_Handler
 PWM1Generator3_Handler
 PWM1Fault_Handler
-
+USB0_Handler
                 B       .
 
                 ENDP

@@ -3,7 +3,7 @@
  * Devices: LM4F120; TM4C123
  * Description: Low level drivers to configure a resistor ladder DAC output.
  * Authors: Matthew Yu.
- * Last Modified: 04/17/21
+ * Last Modified: 09/13/21
  */
 
 /** General Imports. */
@@ -26,7 +26,8 @@
  *       for managing the pins data structures.
  */
 void DACInit(DACConfig_t pins) {
-    for (uint8_t i = 0; i < MAX_DAC_PINS; i++) {
+    uint8_t i;
+    for (i = 0; i < MAX_DAC_PINS; i++) {
         if (pins.pinList[i] == PIN_COUNT) return;
         GPIOConfig_t config = {
             pins.pinList[i],
@@ -48,7 +49,8 @@ void DACInit(DACConfig_t pins) {
  *       following pins are invalid.
  */
 void DACOut(DACConfig_t pins, uint8_t data) {
-    for (uint8_t i = 0; i < MAX_DAC_PINS; i++) {
+    uint8_t i;
+    for (i = 0; i < MAX_DAC_PINS; i++) {
         if (pins.pinList[i] == PIN_COUNT) return;
         GPIOSetBit(pins.pinList[i], (data>>i) & 0x1);
     }

@@ -72,17 +72,17 @@ static struct PWMSettings pwmSettings[PWM_COUNT] = {
  * @param period The period of one cycle of the PWM.
  * @param dutyCycle The duty cycle of one cycle of the PWM, from 0 to 100.
  * @note Calling a Timer based PWM requires calling EnableInterrupts() after
- * 		 initialization. Only one Timer based PWM can be on at a time.
+ *       initialization. Only one Timer based PWM can be on at a time.
  *       It is highly recommended that a timer based PWM is used when the period
- *		 is a value larger than 0xFFFF. The PWM load register saturates at this 
- *	     period. This may mean different cutoff frequencies depending on the system
- *		 clock.
+ *       is a value larger than 0xFFFF. The PWM load register saturates at this 
+ *       period. This may mean different cutoff frequencies depending on the system
+ *       clock.
  */
 void PWMInit(struct PWMConfig pwmConfig, uint32_t period, uint32_t dutyCycle) {
     if (pwmConfig.source == DEFAULT) {
-		/* Saturate period. */
-		period = (period > 0xFFFF) ? 0xFFFF : period;
-		
+        /* Saturate period. */
+        period = (period > 0xFFFF) ? 0xFFFF : period;
+        
         PWMPin_t pwmPin = pwmConfig.config.pwmPin;
 
         /* In-built TM4C PWM. */
@@ -116,24 +116,24 @@ void PWMInit(struct PWMConfig pwmConfig, uint32_t period, uint32_t dutyCycle) {
 
         uint32_t generatorOffset = (pwmSettings[pwmPin].generator >> 1);
 
-		/* 5. Shut down the PWM temporarily. */
+        /* 5. Shut down the PWM temporarily. */
         GET_REG(PWMBase + PWM_CTL_OFFSET + PWM_OFFSET * generatorOffset) = 0x0;
 
         /* 6. Set the period. PWM clock source is SYSCLK. */
         GET_REG(PWMBase + PWM_LOAD_OFFSET + PWM_OFFSET * generatorOffset) = period-1;
-		
+        
         /* 7. Configure PWM for countdown mode. and set their pulse width. 
-		      By default, both PWMA and PWMB signal generation are initialized 
-			  to count down. */
-		if (pwmSettings[pwmPin].generator % 2 == 0) {
-			GET_REG(PWMBase + PWM_GENA_OFFSET + PWM_OFFSET * generatorOffset) = 0x000000C8; /* Drive high at cmpA, drive low at LOAD. */
-			GET_REG(PWMBase + PWM_CMPA_OFFSET + PWM_OFFSET * generatorOffset) = 
-				(period*dutyCycle/100)-1;
-		} else {
-			GET_REG(PWMBase + PWM_GENB_OFFSET + PWM_OFFSET * generatorOffset) = 0x00000C08; /* Drive high at cmpB, drive low at LOAD. */
-			GET_REG(PWMBase + PWM_CMPB_OFFSET + PWM_OFFSET * generatorOffset) = 
-				(period*dutyCycle/100)-1;
-		}
+              By default, both PWMA and PWMB signal generation are initialized 
+              to count down. */
+        if (pwmSettings[pwmPin].generator % 2 == 0) {
+            GET_REG(PWMBase + PWM_GENA_OFFSET + PWM_OFFSET * generatorOffset) = 0x000000C8; /* Drive high at cmpA, drive low at LOAD. */
+            GET_REG(PWMBase + PWM_CMPA_OFFSET + PWM_OFFSET * generatorOffset) = 
+                (period*dutyCycle/100)-1;
+        } else {
+            GET_REG(PWMBase + PWM_GENB_OFFSET + PWM_OFFSET * generatorOffset) = 0x00000C08; /* Drive high at cmpB, drive low at LOAD. */
+            GET_REG(PWMBase + PWM_CMPB_OFFSET + PWM_OFFSET * generatorOffset) = 
+                (period*dutyCycle/100)-1;
+        }
 
         /* 8. Start the timers. */
         GET_REG(PWMBase + PWM_CTL_OFFSET + PWM_OFFSET * generatorOffset) = 0x1;
@@ -198,13 +198,13 @@ void PWMUpdateConfig(struct PWMConfig pwmConfig, uint32_t period, uint32_t dutyC
             
         /* 3. Set the pulse width. The offset is dependent on which comparator is
            selected. Each module can have two comparators running. */
-		if (pwmSettings[pwmPin].generator % 2 == 0) {
-			GET_REG(PWMBase + PWM_CMPA_OFFSET + PWM_OFFSET * generatorOffset) = 
-				(period*dutyCycle/100)-1;
-		} else {
-			GET_REG(PWMBase + PWM_CMPB_OFFSET + PWM_OFFSET * generatorOffset) = 
-				(period*dutyCycle/100)-1;
-		}
+        if (pwmSettings[pwmPin].generator % 2 == 0) {
+            GET_REG(PWMBase + PWM_CMPA_OFFSET + PWM_OFFSET * generatorOffset) = 
+                (period*dutyCycle/100)-1;
+        } else {
+            GET_REG(PWMBase + PWM_CMPB_OFFSET + PWM_OFFSET * generatorOffset) = 
+                (period*dutyCycle/100)-1;
+        }
 
         /* 4. Start the timers. */
         GET_REG(PWMBase + PWM_CTL_OFFSET + PWM_OFFSET * generatorOffset) = 1;
