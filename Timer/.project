@@ -28,22 +28,28 @@
 		<link>
 			<name>PLL.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/inc/PLL.c</locationURI>
+			<locationURI>copy_PARENT/inc/PLL.c</locationURI>
 		</link>
 		<link>
-			<name>Timers.c</name>
+			<name>Timer.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/lib/Timers/Timers.c</locationURI>
+			<locationURI>copy_PARENT/lib/Timer/Timer.c</locationURI>
 		</link>
 		<link>
 			<name>tm4c123gh6pm.cmd</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/inc/tm4c123gh6pm.cmd</locationURI>
+			<locationURI>copy_PARENT/inc/tm4c123gh6pm.cmd</locationURI>
 		</link>
 		<link>
 			<name>tm4c123gh6pm_startup_ccs.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/inc/tm4c123gh6pm_startup_ccs.c</locationURI>
+			<locationURI>copy_PARENT/inc/tm4c123gh6pm_startup_ccs.c</locationURI>
 		</link>
 	</linkedResources>
+	<variableList>
+		<variable>
+			<name>copy_PARENT</name>
+			<value>$%7BPARENT-1-PROJECT_LOC%7D</value>
+		</variable>
+	</variableList>
 </projectDescription>

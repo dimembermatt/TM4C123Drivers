@@ -128,11 +128,12 @@ void TimerUpdatePeriod(Timer_t timer);
 void TimerStop(Timer_t timer);
 
 /**
- * @brief TimerRestart restarts execution of the timer specified.
+ * @brief TimerStart Starts execution of the timer specified. This is only
+ *        needed when the Timer has stopped prior for any reason.
  *
  * @param timer A timer configuration to adjust.
  */
-void TimerRestart(Timer_t timer);
+void TimerStart(Timer_t timer);
 
 /**
  * @brief freqToPeriod converts a desired frequency into the equivalent period
