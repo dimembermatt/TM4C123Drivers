@@ -134,7 +134,7 @@ bool ADCIsFull(enum ADCModule module, enum ADCSequencer sequencer) {
     return GET_REG(moduleBase + sequencerOffset + ADC_SSFSTAT) & 0x1000;
 }
 
-uint32_t ADCSampleSingle(ADC_t adc) {
+uint16_t ADCSampleSingle(ADC_t adc) {
     uint32_t moduleBase = !adc.module * ADC0_BASE + adc.module * ADC1_BASE;
     uint32_t sequencerOffset = ADC_SS0 + 0x020 * adc.sequencer;
 
@@ -150,7 +150,7 @@ uint32_t ADCSampleSingle(ADC_t adc) {
     while ((GET_REG(moduleBase + ADC_RIS) & (1 << adc.sequencer)) == 0) {}
 
     /* 3. Read result from the FIFO. */
-    uint32_t result = 0;
+    uint16_t result = 0;
     uint8_t i = 0;
     for (; !(GET_REG(moduleBase + sequencerOffset + ADC_SSFSTAT) & 0x100) && i < 8; ++i) {
         if (i == adc.position)
@@ -168,7 +168,7 @@ uint32_t ADCSampleSingle(ADC_t adc) {
 void ADCSampleSequencer(
     enum ADCModule module,
     enum ADCSequencer sequencer,
-    uint32_t arr[8]
+    uint16_t arr[8]
 ) {
     uint32_t moduleBase = !module * ADC0_BASE + module * ADC1_BASE;
     uint32_t sequencerOffset = ADC_SS0 + 0x020 * sequencer;

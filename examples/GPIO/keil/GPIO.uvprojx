@@ -404,14 +404,14 @@
               <FilePath>..\..\..\lib\GPIO\GPIO.c</FilePath>
             </File>
             <File>
-              <FileName>Misc.c</FileName>
+              <FileName>Timer.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\lib\Misc\Misc.c</FilePath>
+              <FilePath>..\..\..\lib\Timer\Timer.c</FilePath>
             </File>
             <File>
-              <FileName>Timers.c</FileName>
+              <FileName>FaultHandler.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\lib\Timers\Timers.c</FilePath>
+              <FilePath>..\..\..\inc\FaultHandler.c</FilePath>
             </File>
           </Files>
         </Group>

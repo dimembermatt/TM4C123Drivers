@@ -67,3 +67,14 @@ Drivers should potentially be obfuscated into a lib.
 
 
 See [this source](https://renenyffenegger.ch/notes/development/languages/C-C-plus-plus/GCC/create-libraries/index) for figuring out how to hide implementation file details, in case this becomes an issue later.
+
+
+Features for the refactor branch
+- standardization of API to ADC drivers (config generates data struct which is managed by user)
+- doxygen supported javadoc documentation styling
+- ASSERT statements for config inputs and so forth
+- variable argument inputs for interrupts (GPIO, Timer, etc)
+- rename Timers to Timer library
+- remove Blynk, ST7735, esp8266, switch from library
+- move Systick delay from Misc into Timers. 
+- performance measurement on DelayMillisec, DelayMicrosec, and optimize.

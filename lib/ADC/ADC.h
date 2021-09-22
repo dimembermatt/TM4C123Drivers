@@ -84,7 +84,7 @@ enum ADCPhase {
 /** Configuration of a single DAC object. */
 typedef struct ADCConfig {
     /**
-     * The GPIO that can be selected as ADC pins.
+     * The GPIO pin that can be selected as ADC pins.
      * Default is AIN0, which corresponds to PE3.
      */
     enum ADCPin pin;
@@ -194,7 +194,7 @@ typedef struct ADC {
 
 
 /**
- * ADCInit initializes an ADC module given an ADCConfig_t configuration.
+ * @brief ADCInit initializes an ADC module given an ADCConfig_t configuration.
  * 
  * @param config The configuration of the ADC module.
  * @return An ADC_t struct instance used for sampling.
@@ -202,8 +202,8 @@ typedef struct ADC {
 ADC_t ADCInit(ADCConfig_t config);
 
 /**
- * ADCIsEmpty checks whether the sequencer at the given ADC module has no
- * samples available.
+ * @brief ADCIsEmpty checks whether the sequencer at the given ADC module has no
+ *        samples available.
  * 
  * @param module ADC module to check.
  * @param sequencer ADC module's sequencer to check.
@@ -212,8 +212,8 @@ ADC_t ADCInit(ADCConfig_t config);
 bool ADCIsEmpty(enum ADCModule module, enum ADCSequencer sequencer);
 
 /**
- * ADCIsFull checks whether the sequencer at the given ADC module cannot capture
- * any more samples.
+ * @brief ADCIsFull checks whether the sequencer at the given ADC module cannot
+ *        capture any more samples.
  * 
  * @param module ADC module to check.
  * @param sequencer ADC module's sequencer to check.
@@ -222,25 +222,27 @@ bool ADCIsEmpty(enum ADCModule module, enum ADCSequencer sequencer);
 bool ADCIsFull(enum ADCModule module, enum ADCSequencer sequencer);
 
 /**
- * ADCSampleSingle samples a single ADC pin. This may be slower if the sequencer
- * is configured to capture other samples, as this method cycles through the
- * internal sample FIFO to capture the wanted value and throw out the others.
+ * @brief ADCSampleSingle samples a single ADC pin. This may be slower if the
+ *        sequencer is configured to capture other samples, as this method
+ *        cycles through the internal sample FIFO to capture the wanted value
+ *        and throw out the others.
  *
  * @param adc The ADC object containing the pin value that should be sampled.
- * @return A single uint32_t representing the pin ADC value sampled.
+ * @return A single uint16_t representing the pin ADC value sampled.
  */
-uint32_t ADCSampleSingle(ADC_t adc);
+uint16_t ADCSampleSingle(ADC_t adc);
 
 /**
- * ADCSampleSequencer samples a single sequencer and returns all the values in the
- * FIFO accumulated, up to 8 values. This may be faster than ADCSampleSingle on a
- * per sample basis. Guarantees that the internal FIFO is empty beforehand.
+ * @brief ADCSampleSequencer samples a single sequencer and returns all the
+ *        values in the FIFO accumulated, up to 8 values. This may be faster
+ *        than ADCSampleSingle on a  per sample basis. Guarantees that the
+ *        internal FIFO is empty beforehand.
  *
  * @param module The ADCModule to execute.
  * @param sequencer The ADCSequencer to sequence.
  * @param arr A reference to an array to fill with values.
  */
-void ADCSampleSequencer(enum ADCModule module, enum ADCSequencer sequencer, uint32_t arr[8]);
+void ADCSampleSequencer(enum ADCModule module, enum ADCSequencer sequencer, uint16_t arr[8]);
 
 
 
