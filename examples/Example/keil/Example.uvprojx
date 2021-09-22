@@ -404,9 +404,9 @@
               <FilePath>..\..\..\lib\GPIO\GPIO.c</FilePath>
             </File>
             <File>
-              <FileName>Timers.c</FileName>
+              <FileName>Timer.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\lib\Timers\Timers.c</FilePath>
+              <FilePath>..\..\..\lib\Timer\Timer.c</FilePath>
             </File>
           </Files>
         </Group>

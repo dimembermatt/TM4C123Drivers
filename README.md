@@ -31,7 +31,7 @@ Please see [RESOURCES.md](resources/RESOURCES.md) for additional content that ma
 
 
 ## Driver Status
-> Under construction as of 09/13/21.
+> Under construction as of 09/22/21.
 
 C: Completed
 I: Implementing
@@ -41,27 +41,19 @@ N: Needs Changes
 
 | Name              | Status    | Last Modified    | Further Details                                                                                    |
 |-------------------|-----------|------------------|----------------------------------------------------------------------------------------------------|
-| Example           | D         | 09/13/21         | CCS has undefined references on another machine.                                                   |
-| GPIO              | D         | 09/13/21         | CCS has undefined references on another machine.                                                   |
-| Switch            | D         | 09/13/21         | Untested on TM4C123GH6PM.                                                                          |
-| Timers            | D         | 09/13/21         | Untested on TM4C123GH6PM. B side timers, wide timers need implementation/are not working. See #6.  |
+| Example           | D         | 09/13/21         | Both Keil and CCS projects work on personal machine.                                               |
+| GPIO              | D         | 09/22/21         | Both Keil and CCS projects work on personal machine.                                               |
+| Timers            | D         | 09/13/21         | Both Keil and CCS projects work on personal machine. B side, wide timers in progress. See #6.      |
 | SSI               | D         | 09/13/21         | Untested on TM4C123GH6PM.                                                                          |
 | DAC               | D         | 09/13/21         | CCS has undefined references on another machine.                                                   |
 | ADC               | D         | 09/13/21         | Needs CCS example project.                                                                         |
 | PWM               | P         | 09/13/21         | Untested on TM4C123GH6PM. PWM module may need bugfixes. See #4.                                    |
+| I2C               | I         |                  | Working on driver implementation.                                                                  |
 | UART              | N         |                  | Needs driver implementation.                                                                       |
 | USB               | N         |                  | Needs driver implementation. See HapticMouse src.                                                  |
-| I2C               | N         |                  | Needs driver implementation.                                                                       |
 | CAN               | N         |                  | Needs driver implementation.                                                                       |
 | DMA               | N         |                  | Needs driver implementation.                                                                       |
-| ST7735            | P         |                  | Needs CCS example project. Minor bugs. See #3. Needs tm4c123gh6pm dependency removed. See #2.      |
-| ESP8266           | N         |                  | Needs driver implementation. And maybe pull out of repo.                                           |
-| Blynk             | N         |                  | Needs CCS example project. And maybe pull out of repo.                                             |
 | Bluetooth         | N         |                  | Needs driver implementation. And maybe pull out of repo.                                           |
-
-ST7735, ESP8266, Blynk should potentially be pulled out of this repo into a private repo.
-Higher level drivers for Robotathon are required in RASWare - Line sensor, motor, distance sensor, color sensor..
-Motor driver can be ported from 445L lab.
 
 Drivers should potentially be obfuscated into a lib.
 
