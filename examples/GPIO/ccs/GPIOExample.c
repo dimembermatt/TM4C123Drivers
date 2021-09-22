@@ -73,13 +73,13 @@ int main(void) {
 #elif __MAIN__ == 1
 
 uint32_t args[2] = {
-	1 /* Number of arguments. */, 
-	PIN_F2 /* First argument. */
+    1 /* Number of arguments. */, 
+    PIN_F2 /* First argument. */
 };
 
 /** This dummy task toggles the GPIO pin specified in args[1]. */
 void toggleLED(uint32_t *args) { 
-	GPIOSetBit((GPIOPin_t)args[1], !GPIOGetBit((GPIOPin_t)args[1]));
+    GPIOSetBit((GPIOPin_t)args[1], !GPIOGetBit((GPIOPin_t)args[1]));
 }
 
 int main(void) {
@@ -117,9 +117,9 @@ int main(void) {
     GPIOInterruptConfig_t PF0IntConfig = {
         .priority=3,
         .touchTask=toggleLED,
-		.touchArgs=args,
+        .touchArgs=args,
         .releaseTask=NULL,
-		.releaseArgs=NULL,
+        .releaseArgs=NULL,
         .pinStatus=LOWERED
     };
 

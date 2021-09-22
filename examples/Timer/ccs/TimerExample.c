@@ -79,10 +79,10 @@ int main(void) {
     while (1) {
         /* View in debugging mode with counter0A, counter0B, counter1A, and
            counter2A added to watch 1. Put a breakpoint at L45 and L50. Run 
-		   until the first breakpoint is hit, and check the register value
+           until the first breakpoint is hit, and check the register value
            ratios. It should be 1 : 0 : 2 : 4. When then change Timer 2A to 
-		   100 Hz, and run it again. See if the counters match comment L49.
-		   
+           100 Hz, and run it again. See if the counters match comment L49.
+           
            Note that you can't run both A side and B side timers at once.
            Try it again with isPeriod set to false for single trigger mode,
            or with different priorities on the timers. What do you see?
@@ -104,19 +104,19 @@ void dummyTask(uint32_t * args) {
 
     if (counter == 25) {
         /* At about 5 seconds, the LED toggle frequency should double. */
-		timer.period = freqToPeriod(10, MAX_FREQ);
+        timer.period = freqToPeriod(10, MAX_FREQ);
         TimerUpdatePeriod(timer); 
     }
 
     if (counter == 75) {
         /* At about 10 seconds, the LED toggle should stop. */
         TimerStop(timer);
-		
-		/* We can forcefully delay another 5 seconds using SysTick. */
-		DelayMillisec(5000);
-		
-		/* And then restart the timer, and it'll go on its merry way! */
-		TimerStart(timer);
+        
+        /* We can forcefully delay another 5 seconds using SysTick. */
+        DelayMillisec(5000);
+        
+        /* And then restart the timer, and it'll go on its merry way! */
+        TimerStart(timer);
     }
 }
 
@@ -128,8 +128,8 @@ int main(void) {
     PLLInit(BUS_80_MHZ);
     DisableInterrupts();
 
-	DelayInit();
-	
+    DelayInit();
+    
     /* Initialize a GPIO LED on PF1. */
     GPIOConfig_t PF1Config = {
         .pin=PIN_F1, 
@@ -137,19 +137,19 @@ int main(void) {
         .isOutput=true, 
         .alternateFunction=0, 
         .isAnalog=false,
-		.drive=GPIO_DRIVE_2MA,
-		.enableSlew=false
+        .drive=GPIO_DRIVE_2MA,
+        .enableSlew=false
     };
     GPIOInit(PF1Config);
 
     /* Initialize a timer executing at 5 Hz. */
     TimerConfig_t timerConfig = {
-		.timerID=TIMER_0A,
-		.period=freqToPeriod(5, MAX_FREQ), 
-		.timerTask=dummyTask,
-		.isPeriodic=true, 
-		.priority=5, 
-		.timerArgs=NULL};
+        .timerID=TIMER_0A,
+        .period=freqToPeriod(5, MAX_FREQ), 
+        .timerTask=dummyTask,
+        .isPeriodic=true, 
+        .priority=5, 
+        .timerArgs=NULL};
     TimerInit(timerConfig);
 
     EnableInterrupts();

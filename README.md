@@ -41,19 +41,19 @@ N: Needs Changes
 
 | Name              | Status    | Last Modified    | Further Details                                                                                    |
 |-------------------|-----------|------------------|----------------------------------------------------------------------------------------------------|
-| Example           | D         | 09/13/21         | Both Keil and CCS projects work on personal machine.                                               |
-| GPIO              | D         | 09/22/21         | Both Keil and CCS projects work on personal machine.                                               |
-| Timers            | D         | 09/13/21         | Both Keil and CCS projects work on personal machine. B side, wide timers in progress. See #6.      |
+| Example           | C         | 09/22/21         | Working as expected.                                                                               |
+| GPIO              | C         | 09/22/21         | Working as expected.                                                                               |
+| Timers            | C         | 09/22/21         | Working as expected. B side, wide timers in progress. See #6.                                      |
 | SSI               | D         | 09/13/21         | Untested on TM4C123GH6PM.                                                                          |
 | DAC               | D         | 09/13/21         | CCS has undefined references on another machine.                                                   |
-| ADC               | D         | 09/13/21         | Needs CCS example project.                                                                         |
+| ADC               | D         | 09/22/21         | Testing on another machine.                                                                        |
 | PWM               | P         | 09/13/21         | Untested on TM4C123GH6PM. PWM module may need bugfixes. See #4.                                    |
 | I2C               | I         |                  | Working on driver implementation.                                                                  |
-| UART              | N         |                  | Needs driver implementation.                                                                       |
-| USB               | N         |                  | Needs driver implementation. See HapticMouse src.                                                  |
-| CAN               | N         |                  | Needs driver implementation.                                                                       |
+| UART              | N         |                  | Needs driver implementation. 1st in queue.                                                         |
+| USB               | N         |                  | Needs driver implementation. See HapticMouse src. 2nd in queue.                                    |
+| CAN               | N         |                  | Needs driver implementation. 3rd in queue.                                                         |
 | DMA               | N         |                  | Needs driver implementation.                                                                       |
-| Bluetooth         | N         |                  | Needs driver implementation. And maybe pull out of repo.                                           |
+| Low Power Mode    | N         |                  | In planning.                                                                                       |
 
 Drivers should potentially be obfuscated into a lib.
 
