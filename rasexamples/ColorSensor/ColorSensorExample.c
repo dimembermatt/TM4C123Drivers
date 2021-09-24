@@ -16,7 +16,7 @@
 #include <inc/PLL.h>
 #include <lib/GPIO/GPIO.h>
 #include <lib/Timers/Timers.h>
-#include <lib/ColorSensor/ColorSensor.h>
+#include <raslib/ColorSensor/ColorSensor.h>
 
 
 /** 

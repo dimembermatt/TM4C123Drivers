@@ -21,7 +21,7 @@
 
 /* library imports */
 #include <lib/ColorSensor/ColorSensor.h>
-#include <inc/I2C3.h>
+#include <rasinc/I2C3.h>
 #include <lib/GPIO/GPIO.h>
 #include <lib/Timers/Timers.h>
 
