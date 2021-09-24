@@ -20,7 +20,7 @@
  **/
 
 /* library imports */
-#include <lib/ColorSensor/ColorSensor.h>
+#include <raslib/ColorSensor/ColorSensor.h>
 #include <rasinc/I2C3.h>
 #include <lib/GPIO/GPIO.h>
 #include <lib/Timers/Timers.h>

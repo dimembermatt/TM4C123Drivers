@@ -37,7 +37,7 @@
  *  SDA -------- PB3 | SDA -------- PA7 | SDA -------- PE5 | SDA -------- PD1
  */
 #include <stdint.h>
-#include "../inc/I2C3.h"
+#include <rasinc/I2C3.h>
 #include "../inc/tm4c123gh6pm.h"
 
 #define I2C_MCS_ACK             0x00000008  // Data Acknowledge Enable
