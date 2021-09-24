@@ -17,7 +17,7 @@
 
 /** Device specific imports. */
 #include <inc/RegDefs.h>
-#include <inc/faultHandler.h>
+#include <lib/FaultHandler/FaultHandler.h>
 #include <lib/Timer/Timer.h>
 
 
@@ -80,6 +80,7 @@ Timer_t TimerInit(TimerConfig_t config) {
     /* Initialization asserts. */
     assert(config.timerID < TIMER_COUNT);
     assert(config.priority <= 7);
+    assert(0 < config.period);
 
     Timer_t timer = {
         .timerID=config.timerID,

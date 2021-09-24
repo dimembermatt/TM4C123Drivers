@@ -43,11 +43,11 @@ N: Needs Changes
 |-------------------|-----------|------------------|----------------------------------------------------------------------------------------------------|
 | Example           | C         | 09/22/21         | Working as expected.                                                                               |
 | GPIO              | C         | 09/22/21         | Working as expected.                                                                               |
-| Timers            | C         | 09/22/21         | Working as expected. B side, wide timers in progress. See #6.                                      |
-| SSI               | D         | 09/13/21         | Untested on TM4C123GH6PM.                                                                          |
-| DAC               | D         | 09/13/21         | CCS has undefined references on another machine.                                                   |
-| ADC               | D         | 09/22/21         | Testing on another machine.                                                                        |
-| PWM               | P         | 09/13/21         | Untested on TM4C123GH6PM. PWM module may need bugfixes. See #4.                                    |
+| Timers            | C         | 09/22/21         | Working as expected.                                                                               |
+| SSI               | D         | 09/22/21         | Updating examples.                                                                                 |
+| DAC               | I         | 09/22/21         | Refactoring.                                                                                       |
+| ADC               | C         | 09/22/21         | Working as expected.                                                                               |
+| PWM               | P         | 09/13/21         | Refactoring.                                                                                       |
 | I2C               | I         |                  | Working on driver implementation.                                                                  |
 | UART              | N         |                  | Needs driver implementation. 1st in queue.                                                         |
 | USB               | N         |                  | Needs driver implementation. See HapticMouse src. 2nd in queue.                                    |

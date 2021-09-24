@@ -4,23 +4,18 @@
  * @brief This file contains user implementations of fault handlers such as
  *        HardFault_Handler, __aeabi_assert, and so on.
  * @version 0.1
- * @date 2021-09-22
- * 
+ * @date 2021-09-23
  * @copyright Copyright (c) 2021
  */
 
-#pragma once
-
-
 /** Device imports. */
-#include <inc/FaultHandler.h>
+#include <lib/FaultHandler/FaultHandler.h>
 #include <lib/GPIO/GPIO.h>
 
 
 void __aeabi_assert(const char *expr, const char *file, int line) {
-	
-	/* Set red LED ON. */
-	GPIOConfig_t PF1Config = {
+    /* Set red LED ON. */
+    GPIOConfig_t PF1Config = {
         .pin=PIN_F1, 
         .pull=GPIO_PULL_DOWN, 
         .isOutput=true,
@@ -29,18 +24,18 @@ void __aeabi_assert(const char *expr, const char *file, int line) {
         .drive=GPIO_DRIVE_2MA,
         .enableSlew=false
     };
-	
-	GPIOPin_t PF1 = GPIOInit(PF1Config);
-	GPIOSetBit(PF1, 1);
-	
-	/* TODO: Once UART is enabled, write to UART an error message. */
-	
+    
+    GPIOPin_t PF1 = GPIOInit(PF1Config);
+    GPIOSetBit(PF1, 1);
+    
+    /* TODO: Once UART is enabled, write to UART an error message. */
+    
     while (1) {};
 }
 
 void HardFault_Handler(void) {
-	/* Set red LED ON. */
-	GPIOConfig_t PF1Config = {
+    /* Set red LED ON. */
+    GPIOConfig_t PF1Config = {
         .pin=PIN_F1, 
         .pull=GPIO_PULL_DOWN, 
         .isOutput=true,
@@ -49,11 +44,11 @@ void HardFault_Handler(void) {
         .drive=GPIO_DRIVE_2MA,
         .enableSlew=false
     };
-	
-	GPIOPin_t PF1 = GPIOInit(PF1Config);
-	GPIOSetBit(PF1, 1);
+    
+    GPIOPin_t PF1 = GPIOInit(PF1Config);
+    GPIOSetBit(PF1, 1);
 
-	/* TODO: Once UART is enabled, write to UART an error message. */
-	
+    /* TODO: Once UART is enabled, write to UART an error message. */
+    
     while (1) {};
 }

@@ -3,8 +3,7 @@
  * @author your name (you@domain.com)
  * @brief Example program template for new users.
  * @version 0.1
- * @date 2021-09-22
- * 
+ * @date 2021-09-23
  * @copyright Copyright (c) 2021
  */
 
@@ -15,7 +14,7 @@
  * Device specific imports. Include files and library files are accessed like
  * the below examples.
  */
-#include <inc/PLL.h>
+#include <lib/PLL/PLL.h>
 #include <lib/GPIO/GPIO.h>
 #include <lib/Timer/Timer.h>
 

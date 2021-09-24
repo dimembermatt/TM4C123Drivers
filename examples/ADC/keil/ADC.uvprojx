@@ -399,11 +399,6 @@
               <FilePath>..\..\..\lib\GPIO\GPIO.c</FilePath>
             </File>
             <File>
-              <FileName>PLL.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\inc\PLL.c</FilePath>
-            </File>
-            <File>
               <FileName>startup.s</FileName>
               <FileType>2</FileType>
               <FilePath>..\..\..\inc\startup.s</FilePath>
@@ -412,6 +407,16 @@
               <FileName>Timer.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\lib\Timer\Timer.c</FilePath>
+            </File>
+            <File>
+              <FileName>PLL.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\lib\PLL\PLL.c</FilePath>
+            </File>
+            <File>
+              <FileName>FaultHandler.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\lib\FaultHandler\FaultHandler.c</FilePath>
             </File>
           </Files>
         </Group>

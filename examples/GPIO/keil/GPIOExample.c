@@ -3,20 +3,20 @@
  * @author Matthew Yu (matthewjkyu@gmail.com)
  * @brief An example project showing how to use the GPIO driver.
  * @version 0.1
- * @date 2021-09-22
+ * @date 2021-09-23
  * @copyright Copyright (c) 2021
  * @note 
  * Modify __MAIN__ on L13 to determine which main method is executed.
  * __MAIN__ = 0 - Initialization, getting, and setting of GPIO pins.
  *          = 1 - Initialization of a GPIO pin with an edge triggered interrupt.
  */
-#define __MAIN__ 1
+#define __MAIN__ 0
 
 /** General imports. */
 #include <stdlib.h>
 
 /** Device specific imports. */
-#include <inc/PLL.h>
+#include <lib/PLL/PLL.h>
 #include <lib/GPIO/GPIO.h>
 #include <lib/Timer/Timer.h>
 

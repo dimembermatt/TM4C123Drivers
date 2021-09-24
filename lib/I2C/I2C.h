@@ -13,6 +13,11 @@
 /** Device specific imports. */
 #include <lib/GPIO/GPIO.h>
 
+
+/**
+ * @brief 
+ * 
+ */
 enum I2CModule {
     I2C_MODULE_0,   // PB2 SCL
                     // PB3 SDA

@@ -28,7 +28,7 @@
 		<link>
 			<name>FaultHandler.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/inc/FaultHandler.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/lib/FaultHandler/FaultHandler.c</locationURI>
 		</link>
 		<link>
 			<name>GPIO.c</name>
@@ -38,7 +38,7 @@
 		<link>
 			<name>PLL.c</name>
 			<type>1</type>
-			<locationURI>PARENT-3-PROJECT_LOC/inc/PLL.c</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/lib/PLL/PLL.c</locationURI>
 		</link>
 		<link>
 			<name>Timer.c</name>

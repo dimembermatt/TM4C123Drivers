@@ -20,8 +20,6 @@
 #include <lib/ADC/ADC.h>
 
 
-void HardFault_Handler(void);    // Defined in startup.s
-
 static GPIOPin_t ADCPinMapping[12] = {
     PIN_E3,
     PIN_E2,

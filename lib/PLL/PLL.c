@@ -27,7 +27,7 @@
  * http://users.ece.utexas.edu/~valvano/
  */
 #include <stdint.h>
-#include "PLL.h"
+#include <lib/PLL/PLL.h>
 #include <inc/RegDefs.h>
 
 

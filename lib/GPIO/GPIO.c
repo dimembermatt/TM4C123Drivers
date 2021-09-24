@@ -24,7 +24,7 @@
 
 /** Device imports. */
 #include <inc/RegDefs.h>
-#include <inc/faultHandler.h>
+#include <lib/FaultHandler/FaultHandler.h>
 #include <lib/GPIO/GPIO.h>
 
 

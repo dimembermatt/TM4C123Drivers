@@ -1,46 +1,50 @@
 /**
- * PWM.c
- * Devices: LM4F120; TM4C123
- * Description: Middle level drivers for generating square waves.
- * Authors: Matthew Yu.
- * Last Modified: 04/17/21
- * 
- * This driver will support both the TM4C's existing PWM modules as well as a
- * GPIO + Timer configuration. 
+ * @file PWM.h
+ * @author Matthew Yu (matthewjkyu@gmail.com)
+ * @brief An example project showing how to use the PWM driver.
+ * @version 0.1
+ * @date 2021-09-23
+ * @copyright Copyright (c) 2021
+ * @note
+ * Modes. This driver will support both the TM4C's existing PWM modules as well
+ * as a GPIO + Timer configuration.
+ * Unsupported Features. This driver does not support PWM module interrupts, or
+ * different priorities for Timer based PWM.
  */
+
+/** General imports. */
+#include <assert.h>
 
 /** Device Specific imports. */
 #include <lib/PWM/PWM.h>
 #include <inc/RegDefs.h>
 
 
-struct PWMTimerSettings {
-    /* Duty cycle of the PWM. */
-    uint8_t dutyCycle;
-
-    /* Pin output of duty cycle. */
-    pin_t pin;
-};
-
-static struct PWMTimerSettings PWMTimerSetting;
-
-void PWMTimerHandler(void) {
+/**
+ * @brief PWMTimerHandler is the generic handler passed to the Timer interrupt
+ *        functions. It toggles the state of the PWM pin based on a duty cycle.
+ *
+ * @param args A pointer to a list of arguments. In this function, args[0] should
+ *             be the GPIOPin_t selected as the PWMPin and args[1] should be the
+ *             duty cycle, from [0, 100].
+ */
+void PWMTimerHandler(uint32_t * args) {
+    // TODO: for some reason, enabling interrupts and the first interrupt execution overwrites these args. figure out why.
     static uint8_t idx = 0;
 
     /* i.e. 0 - 69: ON; 70 - 99: OFF for a 70% duty cycle. */
-    GPIOSetBit(PWMTimerSetting.pin, idx < PWMTimerSetting.dutyCycle); 
+    //GPIOSetBit((GPIOPin_t) args[0], idx < (uint8_t) args[1]);
     idx = (idx + 1) % 100;
 }
 
-struct PWMSettings {
-    /** Pin associated with the PWM enum. */
-    pin_t pin;
+/** @brief pwmSettings is a set of PWM configurations. */
+static struct PWMSettings {
+    /** @brief Pin associated with the PWM enum. */
+    GPIOPin_t pin;
 
-    /** PWM generator associated with the PWM enum. */
+    /** @brief PWM generator associated with the PWM enum. */
     uint8_t generator;
-};
-
-static struct PWMSettings pwmSettings[PWM_COUNT] = {
+} pwmSettings[PWM_COUNT] = {
     {PIN_B6, 0},
     {PIN_B7, 1},
     {PIN_B4, 2},
@@ -64,54 +68,50 @@ static struct PWMSettings pwmSettings[PWM_COUNT] = {
     {PIN_F3, 7},
 };
 
-/**
- * PWMInit initializes a PWM configuration with a given frequency and duty
- * cycle.
- * 
- * @param pwmConfig The PWM configuration that should be started.
- * @param period The period of one cycle of the PWM.
- * @param dutyCycle The duty cycle of one cycle of the PWM, from 0 to 100.
- * @note Calling a Timer based PWM requires calling EnableInterrupts() after
- *       initialization. Only one Timer based PWM can be on at a time.
- *       It is highly recommended that a timer based PWM is used when the period
- *       is a value larger than 0xFFFF. The PWM load register saturates at this 
- *       period. This may mean different cutoff frequencies depending on the system
- *       clock.
- */
-void PWMInit(struct PWMConfig pwmConfig, uint32_t period, uint32_t dutyCycle) {
-    if (pwmConfig.source == DEFAULT) {
-        /* Saturate period. */
-        period = (period > 0xFFFF) ? 0xFFFF : period;
-        
-        PWMPin_t pwmPin = pwmConfig.config.pwmPin;
+/** @brief pwmTimerSettings hold the args for the timer interrupt handler. Index
+ *         0 holds the GPIOPin_t and index 1 holds the duty cycle. */
+static uint32_t pwmTimerSettings[TIMER_COUNT][2];
 
-        /* In-built TM4C PWM. */
-        if (pwmPin == PWM_COUNT) return;
+PWM_t PWMInit(PWMConfig_t config) {
+    /* Initialization asserts. */
+    assert(config.source <= PWM_SOURCE_TIMER);
+    assert(0 < config.period);
+    assert(config.dutyCycle <= 100);
+
+    PWM_t pwm = {
+        .source=config.source,
+    };
+	
+    if (config.source == PWM_SOURCE_DEFAULT) {
+        assert(config.sourceInfo.pin < PWM_COUNT);
+        PWMPin_t pwmPin = config.sourceInfo.pin;
+        pwm.sourceInfo.pin=pwmPin;
 
         /* 1. Enable PWM clock and stall until ready. */
         GET_REG(SYSCTL_BASE + SYSCTL_RCGCPWM_OFFSET) =
             0x1 * (pwmPin <= M0_PD1) | 0x2 * (pwmPin > M0_PD1);
-        while ((GET_REG(SYSCTL_BASE + SYSCTL_PRPWM_OFFSET) & 
+        while ((GET_REG(SYSCTL_BASE + SYSCTL_PRPWM_OFFSET) &
             (0x1 * (pwmPin <= M0_PD1) | 0x2 * (pwmPin > M0_PD1))) == 0) {};
 
         /* 2. Enable appropriate GPIO. */
         GPIOConfig_t gpioConfig = {
-            pwmSettings[pwmPin].pin,
-            NONE,
-            true,
-            true,
-            4 * (pwmPin <= M0_PD1) + 
-            5 * (pwmPin > M0_PD1),
-            false
+            .pin=pwmSettings[pwmPin].pin,
+            .pull=GPIO_TRI_STATE,
+            .isOutput=true,
+            .alternateFunction=4 * (pwmPin <= M0_PD1) +
+                               5 * (pwmPin > M0_PD1),
+            .isAnalog=false,
+            .drive=GPIO_DRIVE_2MA,
+            .enableSlew=false
         };
         GPIOInit(gpioConfig);
 
-        /* 3. Cut the clock to  */
+        /* 3. Cut the clock to TODO: this */
         GET_REG(SYSCTL_BASE + SYSCTL_RCC_OFFSET) &= ~0x00100000;
 
         /* 4. Select the PWM base based on the PWM pin. */
-        uint32_t PWMBase = 
-            PWM0_BASE * (pwmPin <= M0_PD1) + 
+        uint32_t PWMBase =
+            PWM0_BASE * (pwmPin <= M0_PD1) +
             PWM1_BASE * (pwmPin > M0_PD1);
 
         uint32_t generatorOffset = (pwmSettings[pwmPin].generator >> 1);
@@ -120,19 +120,19 @@ void PWMInit(struct PWMConfig pwmConfig, uint32_t period, uint32_t dutyCycle) {
         GET_REG(PWMBase + PWM_CTL_OFFSET + PWM_OFFSET * generatorOffset) = 0x0;
 
         /* 6. Set the period. PWM clock source is SYSCLK. */
-        GET_REG(PWMBase + PWM_LOAD_OFFSET + PWM_OFFSET * generatorOffset) = period-1;
-        
-        /* 7. Configure PWM for countdown mode. and set their pulse width. 
-              By default, both PWMA and PWMB signal generation are initialized 
+        GET_REG(PWMBase + PWM_LOAD_OFFSET + PWM_OFFSET * generatorOffset) = config.period-1;
+
+        /* 7. Configure PWM for countdown mode. and set their pulse width.
+              By default, both PWMA and PWMB signal generation are initialized
               to count down. */
         if (pwmSettings[pwmPin].generator % 2 == 0) {
             GET_REG(PWMBase + PWM_GENA_OFFSET + PWM_OFFSET * generatorOffset) = 0x000000C8; /* Drive high at cmpA, drive low at LOAD. */
-            GET_REG(PWMBase + PWM_CMPA_OFFSET + PWM_OFFSET * generatorOffset) = 
-                (period*dutyCycle/100)-1;
+            GET_REG(PWMBase + PWM_CMPA_OFFSET + PWM_OFFSET * generatorOffset) =
+                (config.period * config.dutyCycle / 100) - 1;
         } else {
             GET_REG(PWMBase + PWM_GENB_OFFSET + PWM_OFFSET * generatorOffset) = 0x00000C08; /* Drive high at cmpB, drive low at LOAD. */
-            GET_REG(PWMBase + PWM_CMPB_OFFSET + PWM_OFFSET * generatorOffset) = 
-                (period*dutyCycle/100)-1;
+            GET_REG(PWMBase + PWM_CMPB_OFFSET + PWM_OFFSET * generatorOffset) =
+                (config.period * config.dutyCycle / 100) - 1;
         }
 
         /* 8. Start the timers. */
@@ -140,106 +140,138 @@ void PWMInit(struct PWMConfig pwmConfig, uint32_t period, uint32_t dutyCycle) {
 
         /* 9. Enable the PWM outputs. */
         GET_REG(PWMBase + PWM_ENABLE_OFFSET) |= 1 << pwmSettings[pwmPin].generator;
-
     } else {
+        assert(config.sourceInfo.timerSelect.timerID < TIMER_COUNT);
+        assert(config.sourceInfo.timerSelect.pin < PIN_COUNT);
+
         /* Timer based PWM. */
-        PWMTimerSetting.dutyCycle = dutyCycle;
-        PWMTimerSetting.pin = pwmConfig.config.timerSelect.pin;
+        GPIOPin_t gpioPin = config.sourceInfo.timerSelect.pin;
+        TimerID_t timerID = config.sourceInfo.timerSelect.timerID;
+        pwmTimerSettings[timerID][0] = gpioPin;
+        pwmTimerSettings[timerID][1] = config.dutyCycle;
 
         GPIOConfig_t pinConfig = {
-            PWMTimerSetting.pin, 
-            NONE,
-            true, 
-            false, 
-            0,
-            false
+            .pin=gpioPin,
+            .pull=GPIO_TRI_STATE,
+            .isOutput=true,
+            .alternateFunction=0,
+            .isAnalog=false,
+            .drive=GPIO_DRIVE_2MA,
+            .enableSlew=false
         };
         GPIOInit(pinConfig);
 
         TimerConfig_t timerConfig = {
-            pwmConfig.config.timerSelect.timerID,
-            period/100, /* Execute handler at 100 x the frequency. */
-            true,
-            3,
-            PWMTimerHandler
+            .timerID=timerID,
+            .period=config.period/100, /* Execute handler at 100 x the frequency. */
+            .timerTask=PWMTimerHandler,
+            .isPeriodic=true,
+            .priority=3,
+            .timerArgs=pwmTimerSettings[timerID]
         };
-        TimerInit(timerConfig);
+        pwm.sourceInfo.timerInfo.timer = TimerInit(timerConfig);
     }
+
+    return pwm;
 }
 
-/**
- * PWMUpdateConfig updates the PWM period and duty cycle. 
- * Does not check if the PWM was previously initialized.
- * 
- * @param pwmConfig The PWM configuration that should be started.
- * @param period The period of one cycle of the PWM.
- * @param dutyCycle The duty cycle of one cycle of the PWM, from 0 to 100.
- * @note Only one Timer based PWM can be on at a time.
- */
-void PWMUpdateConfig(struct PWMConfig pwmConfig, uint32_t period, uint32_t dutyCycle) {
-    if (pwmConfig.source == DEFAULT) {
-        PWMPin_t pwmPin = pwmConfig.config.pwmPin;
+void PWMUpdateConfig(PWM_t pwm, uint16_t period, uint8_t dutyCycle) {
+    /* Initialization asserts. */
+    assert(0 < period);
+    assert(dutyCycle <= 100);
+    assert(pwm.source <= PWM_SOURCE_TIMER);
+    if (pwm.source == PWM_SOURCE_DEFAULT) {
+        assert(pwm.sourceInfo.pin < PWM_COUNT);
 
-        /* In-built TM4C PWM. */
-        if (pwmPin == PWM_COUNT) return;
+        PWMPin_t pin = pwm.sourceInfo.pin;
 
         /* 0. Select the PWM base based on the PWM pin. */
-        uint32_t PWMBase = 
-            PWM0_BASE * (pwmPin <= M0_PD1) + 
-            PWM1_BASE * (pwmPin > M0_PD1);
+        uint32_t PWMBase =
+            PWM0_BASE * (pin <= M0_PD1) +
+            PWM1_BASE * (pin > M0_PD1);
 
-        uint32_t generatorOffset = (pwmSettings[pwmPin].generator >> 1);
+        uint32_t generatorOffset = (pwmSettings[pin].generator >> 1);
 
         /* 1. Disable the timers. */
         GET_REG(PWMBase + PWM_CTL_OFFSET + PWM_OFFSET * generatorOffset) = 0;
 
         /* 2. Set the period. PWM clock source is SYSCLK. */
         GET_REG(PWMBase + PWM_LOAD_OFFSET + PWM_OFFSET * generatorOffset) = period-1;
-            
+
         /* 3. Set the pulse width. The offset is dependent on which comparator is
            selected. Each module can have two comparators running. */
-        if (pwmSettings[pwmPin].generator % 2 == 0) {
-            GET_REG(PWMBase + PWM_CMPA_OFFSET + PWM_OFFSET * generatorOffset) = 
+        if (pwmSettings[pin].generator % 2 == 0) {
+            GET_REG(PWMBase + PWM_CMPA_OFFSET + PWM_OFFSET * generatorOffset) =
                 (period*dutyCycle/100)-1;
         } else {
-            GET_REG(PWMBase + PWM_CMPB_OFFSET + PWM_OFFSET * generatorOffset) = 
+            GET_REG(PWMBase + PWM_CMPB_OFFSET + PWM_OFFSET * generatorOffset) =
                 (period*dutyCycle/100)-1;
         }
 
         /* 4. Start the timers. */
         GET_REG(PWMBase + PWM_CTL_OFFSET + PWM_OFFSET * generatorOffset) = 1;
-    } else {
+    } else {        
+        assert(pwm.sourceInfo.timerInfo.timer.timerID < TIMER_COUNT);
+        assert(pwm.sourceInfo.timerInfo.timer.period > 0);
+        assert(pwm.sourceInfo.timerInfo.pin < PIN_COUNT);
+
         /* Timer based PWM. */
-        PWMTimerSetting.dutyCycle = dutyCycle;
-        TimerUpdatePeriod(pwmConfig.config.timerSelect.timerID, period/100);
+		pwmTimerSettings[pwm.sourceInfo.timerInfo.timer.timerID][1] = dutyCycle;
+        pwm.sourceInfo.timerInfo.timer.period = period/100;
+        TimerUpdatePeriod(pwm.sourceInfo.timerInfo.timer);
     }
 }
 
-/**
- * PWMStop disables a PWM configuration.
- * 
- * @param pwmConfig The PWM that should be halted.
- */
-void PWMStop(struct PWMConfig pwmConfig) {
-    if (pwmConfig.source == DEFAULT) {
-        /* In-built TM4C PWM. */
-        PWMPin_t pwmPin = pwmConfig.config.pwmPin;
+void PWMStop(PWM_t pwm) {
+    /* Initialization asserts. */
+    assert(pwm.source <= PWM_SOURCE_TIMER);
+    if (pwm.source == PWM_SOURCE_DEFAULT) {
+        assert(pwm.sourceInfo.pin < PWM_COUNT);
 
-        /* In-built TM4C PWM. */
-        if (pwmPin == PWM_COUNT) return;
+        PWMPin_t pin = pwm.sourceInfo.pin;
 
         /* 0. Select the PWM base based on the PWM pin. */
-        uint32_t PWMBase = 
-            PWM0_BASE * (pwmPin <= M0_PD1) + 
-            PWM1_BASE * (pwmPin > M0_PD1);
+        uint32_t PWMBase =
+            PWM0_BASE * (pin <= M0_PD1) +
+            PWM1_BASE * (pin > M0_PD1);
 
-        uint32_t generatorOffset = (pwmSettings[pwmPin].generator >> 1);
+        uint32_t generatorOffset = (pwmSettings[pin].generator >> 1);
 
         /* 1. Disable the timers. */
-        GET_REG(PWMBase + PWM_CTL_OFFSET + PWM_OFFSET * generatorOffset) = 0;
-
+        GET_REG(PWMBase + PWM_CTL_OFFSET + PWM_OFFSET * generatorOffset) &= ~0x1;
     } else {
+        assert(pwm.sourceInfo.timerInfo.timer.timerID < TIMER_COUNT);
+        assert(pwm.sourceInfo.timerInfo.timer.period > 0);
+        assert(pwm.sourceInfo.timerInfo.pin < PIN_COUNT);
+
         /* Timer based PWM. */
-        TimerStop(pwmConfig.config.timerSelect.timerID);
+        TimerStop(pwm.sourceInfo.timerInfo.timer);
     }
+}
+
+void PWMStart(PWM_t pwm) {
+    /* Initialization asserts. */
+    assert(pwm.source <= PWM_SOURCE_TIMER);
+    if (pwm.source == PWM_SOURCE_DEFAULT) {
+        assert(pwm.sourceInfo.pin < PWM_COUNT);
+		
+		PWMPin_t pin = pwm.sourceInfo.pin;
+
+        /* 0. Select the PWM base based on the PWM pin. */
+        uint32_t PWMBase =
+            PWM0_BASE * (pin <= M0_PD1) +
+            PWM1_BASE * (pin > M0_PD1);
+
+        uint32_t generatorOffset = (pwmSettings[pin].generator >> 1);
+
+        /* 1. Enable the timers. */
+        GET_REG(PWMBase + PWM_CTL_OFFSET + PWM_OFFSET * generatorOffset) |= 0x1;
+    } else {
+        assert(pwm.sourceInfo.timerInfo.timer.timerID < TIMER_COUNT);
+        assert(pwm.sourceInfo.timerInfo.timer.period > 0);
+        assert(pwm.sourceInfo.timerInfo.pin < PIN_COUNT);
+		
+        /* Timer based PWM. */
+        TimerStart(pwm.sourceInfo.timerInfo.timer);    
+	}
 }

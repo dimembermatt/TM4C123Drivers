@@ -48,7 +48,9 @@ typedef struct TimerConfig {
     /**
      * @brief Timer reload time, in cycles.
      *
-     * Default is 0.
+     * This value must be specified and be greater than zero. Failing this
+     * condition will trigger an internal assert in debug mode. In production,
+     * this causes undefined behavior.
      */
     uint32_t period;
 

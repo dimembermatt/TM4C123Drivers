@@ -3,20 +3,20 @@
  * @author Matthew Yu (matthewjkyu@gmail.com)
  * @brief An example project showing how to use the Timer driver.
  * @version 0.1
- * @date 2021-09-22
+ * @date 2021-09-23
  * @copyright Copyright (c) 2021
  * @note 
  * Modify __MAIN__ on L13 to determine which main method is executed.
  * __MAIN__ = 0 - Initialization and operation of multiple timers at different frequencies.
  *          = 1 - Initialization of a timer, modifying its period, and stopping it.
  */
-#define __MAIN__ 0
+#define __MAIN__ 1
 
 /** General imports. */
 #include <stdlib.h>
 
 /** Device specific imports. */
-#include <inc/PLL.h>
+#include <lib/PLL/PLL.h>
 #include <lib/Timer/Timer.h>
 #include <lib/GPIO/GPIO.h>
 
@@ -141,7 +141,7 @@ int main(void) {
         .enableSlew=false
     };
     GPIOInit(PF1Config);
-
+	
     /* Initialize a timer executing at 5 Hz. */
     TimerConfig_t timerConfig = {
         .timerID=TIMER_0A,

@@ -3,20 +3,20 @@
  * @author Matthew Yu (matthewjkyu@gmail.com)
  * @brief An example project showing how to use the ADC driver.
  * @version 0.1
- * @date 2021-09-22
+ * @date 2021-09-23
  * @copyright Copyright (c) 2021
  * @note
  * Modify __MAIN__ on L12 to determine which main method is executed.
  * __MAIN__ = 0 - Initialization and software sampling of a default ADC and pin.
  *          = 1 - Initialization software sampling of multiple pins on a single ADC.
  */
-#define __MAIN__ 1
+#define __MAIN__ 0
 
 /** General imports. */
 #include <stdio.h>
 
 /** Device specific imports. */
-#include <inc/PLL.h>
+#include <lib/PLL/PLL.h>
 #include <lib/ADC/ADC.h>
 #include <lib/Timer/Timer.h>
 
@@ -66,7 +66,7 @@ int main(void) {
     DelayInit();
 
     /* Initialize a SW controlled ADC sampling on PE3, PE2. PE2 is in position 2
-     * and should be sampled second. */
+       and should be sampled second. */
     ADCConfig_t adcPE3Config = {
         .pin=AIN0,
         .position=ADC_SEQPOS_0,
