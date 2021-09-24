@@ -411,12 +411,12 @@
             <File>
               <FileName>I2C3.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\inc\I2C3.c</FilePath>
+              <FilePath>..\..\rasinc\I2C3.c</FilePath>
             </File>
             <File>
               <FileName>ColorSensor.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\lib\ColorSensor\ColorSensor.c</FilePath>
+              <FilePath>..\..\raslib\ColorSensor\ColorSensor.c</FilePath>
             </File>
           </Files>
         </Group>

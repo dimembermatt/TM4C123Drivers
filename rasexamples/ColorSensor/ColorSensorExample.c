@@ -19,6 +19,10 @@
 #include <raslib/ColorSensor/ColorSensor.h>
 
 
+#define Bus80MHz     4 //temporary
+
+
+
 /** 
  * These function declarations are defined in the startup.s assembly file for
  * managing interrupts. 
