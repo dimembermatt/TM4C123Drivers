@@ -6,7 +6,12 @@
  * @date 2021-09-24
  * @copyright Copyright (c) 2021
  * @note
- * Modify __MAIN__ on L13 to determine which main method is executed.
+ * __FAST__. If you check the target options, in the C/C++ Misc Options, `-D__FAST__` is defined.
+ * __FAST__ is present in GPIO.c; it selects between two definitions of GPIOSetBit and GPIOGetBit.
+ * __FAST__ trades speed for space complexity. It's very useful for when you
+ * want to do GPIO bit handling or very fast consecutive GPIO bit handling!
+ * 
+ * Modify __MAIN__ on L18 to determine which main method is executed.
  * __MAIN__ = 0 - Initialization and management of a timer acting as a PWM for low freq.
  *          = 1 - Initialization and management of a PWM module for high freq.
  */
@@ -38,7 +43,7 @@ int main(void) {
 
     /* Initialize SysTick for delay calls.*/
     DelayInit();
-
+    
     PWMConfig_t pwmConfigPF1 = {
         .source=PWM_SOURCE_TIMER,
         .sourceInfo={
@@ -55,7 +60,7 @@ int main(void) {
     PWM_t pwm = PWMInit(pwmConfigPF1);
 
     EnableInterrupts();
-
+    
     uint8_t mode = 3;
     while (1) {
         switch (mode) {
@@ -94,7 +99,7 @@ int main(void) {
 
     /* Initialize SysTick for delay calls.*/
     DelayInit();
-
+    
     PWMConfig_t pwmConfigPF1 = {
         .source=PWM_SOURCE_DEFAULT,
         .sourceInfo={
@@ -103,7 +108,7 @@ int main(void) {
         .period=freqToPeriod(2000, MAX_FREQ),
         .dutyCycle=0
     };
-
+    
     PWM_t pwm = PWMInit(pwmConfigPF1);
 
     EnableInterrupts();

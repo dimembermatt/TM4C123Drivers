@@ -31,7 +31,7 @@ Please see [RESOURCES.md](resources/RESOURCES.md) for additional content that ma
 
 
 ## Driver Status
-> Under construction as of 09/22/21.
+> Under construction as of 09/24/21.
 
 C: Completed
 I: Implementing
@@ -41,13 +41,13 @@ N: Needs Changes
 
 | Name              | Status    | Last Modified    | Further Details                                                                                    |
 |-------------------|-----------|------------------|----------------------------------------------------------------------------------------------------|
-| Example           | C         | 09/22/21         | Working as expected.                                                                               |
-| GPIO              | C         | 09/22/21         | Working as expected.                                                                               |
-| Timers            | C         | 09/22/21         | Working as expected.                                                                               |
-| SSI               | D         | 09/22/21         | Updating examples.                                                                                 |
-| DAC               | I         | 09/22/21         | Refactoring.                                                                                       |
-| ADC               | C         | 09/22/21         | Working as expected.                                                                               |
-| PWM               | P         | 09/13/21         | Refactoring.                                                                                       |
+| Example           | C         | 09/24/21         | Working as expected.                                                                               |
+| GPIO              | C         | 09/24/21         | Working as expected.                                                                               |
+| Timers            | C         | 09/24/21         | Working as expected.                                                                               |
+| SSI               | C         | 09/24/21         | Working as expected.                                                                               |
+| DAC               | C         | 09/24/21         | Working as expected.                                                                               |
+| ADC               | C         | 09/24/21         | Working as expected.                                                                               |
+| PWM               | C         | 09/24/21         | Working as expected.                                                                               |
 | I2C               | I         |                  | Working on driver implementation.                                                                  |
 | UART              | N         |                  | Needs driver implementation. 1st in queue.                                                         |
 | USB               | N         |                  | Needs driver implementation. See HapticMouse src. 2nd in queue.                                    |
@@ -61,7 +61,7 @@ Drivers should potentially be obfuscated into a lib.
 See [this source](https://renenyffenegger.ch/notes/development/languages/C-C-plus-plus/GCC/create-libraries/index) for figuring out how to hide implementation file details, in case this becomes an issue later.
 
 
-Features for the refactor branch
+Features for the refactor branch.
 - standardization of API to ADC drivers (config generates data struct which is managed by user)
 - doxygen supported javadoc documentation styling
 - ASSERT statements for config inputs and so forth
