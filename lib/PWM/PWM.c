@@ -3,7 +3,7 @@
  * @author Matthew Yu (matthewjkyu@gmail.com)
  * @brief An example project showing how to use the PWM driver.
  * @version 0.1
- * @date 2021-09-23
+ * @date 2021-09-24
  * @copyright Copyright (c) 2021
  * @note
  * Modes. This driver will support both the TM4C's existing PWM modules as well
@@ -29,11 +29,15 @@
  *             duty cycle, from [0, 100].
  */
 void PWMTimerHandler(uint32_t * args) {
-    // TODO: for some reason, enabling interrupts and the first interrupt execution overwrites these args. figure out why.
     static uint8_t idx = 0;
+	static bool on = false;
+	
 
     /* i.e. 0 - 69: ON; 70 - 99: OFF for a 70% duty cycle. */
-    //GPIOSetBit((GPIOPin_t) args[0], idx < (uint8_t) args[1]);
+	if (on != idx <= (uint8_t) args[1])
+		GPIOSetBit((GPIOPin_t) args[0], on);
+
+	on = idx <= (uint8_t) args[1];
     idx = (idx + 1) % 100;
 }
 
@@ -83,6 +87,7 @@ PWM_t PWMInit(PWMConfig_t config) {
     };
 	
     if (config.source == PWM_SOURCE_DEFAULT) {
+		assert(config.period <= 0xFFFF);
         assert(config.sourceInfo.pin < PWM_COUNT);
         PWMPin_t pwmPin = config.sourceInfo.pin;
         pwm.sourceInfo.pin=pwmPin;
@@ -175,12 +180,13 @@ PWM_t PWMInit(PWMConfig_t config) {
     return pwm;
 }
 
-void PWMUpdateConfig(PWM_t pwm, uint16_t period, uint8_t dutyCycle) {
+void PWMUpdateConfig(PWM_t pwm, uint32_t period, uint8_t dutyCycle) {
     /* Initialization asserts. */
     assert(0 < period);
     assert(dutyCycle <= 100);
     assert(pwm.source <= PWM_SOURCE_TIMER);
     if (pwm.source == PWM_SOURCE_DEFAULT) {
+		assert(period <= 0xFFFF);
         assert(pwm.sourceInfo.pin < PWM_COUNT);
 
         PWMPin_t pin = pwm.sourceInfo.pin;

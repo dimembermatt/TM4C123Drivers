@@ -3,14 +3,14 @@
  * @author Matthew Yu (matthewjkyu@gmail.com)
  * @brief An example project showing how to use the Timer driver.
  * @version 0.1
- * @date 2021-09-23
+ * @date 2021-09-24
  * @copyright Copyright (c) 2021
  * @note 
  * Modify __MAIN__ on L13 to determine which main method is executed.
  * __MAIN__ = 0 - Initialization and operation of multiple timers at different frequencies.
  *          = 1 - Initialization of a timer, modifying its period, and stopping it.
  */
-#define __MAIN__ 1
+#define __MAIN__ 0
 
 /** General imports. */
 #include <stdlib.h>

@@ -395,7 +395,7 @@ void GPIOPortF_Handler(void) { GPIOGeneric_Handler(PIN_F0); }
 #ifdef __FAST__
 void GPIOSetBit(GPIOPin_t pin, bool val) {
     /* Initialization asserts. */
-    assert(0 <= pin && pin < PIN_COUNT);
+    assert(pin < PIN_COUNT);
 
     switch (pin) {
         case PIN_A0:
@@ -552,7 +552,7 @@ void GPIOSetBit(GPIOPin_t pin, bool val) {
 
 bool GPIOGetBit(GPIOPin_t pin) {
     /* Initialization asserts. */
-    assert(0 <= pin && pin < PIN_COUNT);
+    assert(pin < PIN_COUNT);
     
     switch (pin) {
         case PIN_A0:
@@ -656,6 +656,9 @@ bool GPIOGetBit(GPIOPin_t pin) {
             return GET_REG(0x40025100);
         case PIN_F7:
             return GET_REG(0x40025200);
+		default:
+			assert(0); // Failure condition - this passed the initial assert.
+			return false;
     }
 }
 

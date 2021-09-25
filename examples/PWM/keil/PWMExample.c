@@ -3,7 +3,7 @@
  * @author Matthew Yu (matthewjkyu@gmail.com)
  * @brief An example project showing how to use the PWM driver.
  * @version 0.1
- * @date 2021-09-23
+ * @date 2021-09-24
  * @copyright Copyright (c) 2021
  * @note
  * Modify __MAIN__ on L13 to determine which main method is executed.
@@ -55,6 +55,7 @@ int main(void) {
     PWM_t pwm = PWMInit(pwmConfigPF1);
 
     EnableInterrupts();
+	
     uint8_t mode = 3;
     while (1) {
         switch (mode) {
@@ -72,11 +73,12 @@ int main(void) {
                 GPIOSetBit(PIN_F1, 1);
                 break;
             case 3:
-                /* The LED connected to PF1 should start. */
+                /* The LED connected to PF1 should start. On the second iteration, it should behave
+                   like it is in case 1. */
                 PWMStart(pwm);
                 break;
         }
-        DelayMillisec(2000);
+        DelayMillisec(5000);
         mode = (mode + 1) % 4;
     }
 }
@@ -91,27 +93,30 @@ int main(void) {
     DisableInterrupts();
 
     /* Initialize SysTick for delay calls.*/
-    delayInit();
+    DelayInit();
     
     PWMConfig_t pwmConfigPF1 = {
-        .source=DEFAULT,
-        .config={
-            .pwmPin=M1_PF1
-        }
+        .source=PWM_SOURCE_DEFAULT,
+        .sourceInfo={
+            .pin=M1_PF1
+        },
+		.period=freqToPeriod(2000, MAX_FREQ),
+		.dutyCycle=0
     };
-    PWMInit(pwmConfigPF1, freqToPeriod(2000, MAX_FREQ), 0);
+	
+    PWM_t pwm = PWMInit(pwmConfigPF1);
 
     EnableInterrupts();
     uint8_t dutyCycle = 0;
     while(1) {
-        delayMillisec(100);
+        DelayMillisec(100);
         /**
          * Run this on an oscilloscope to check if the waveform matches 2 kHz.
          * What if you change the frequency? Duty cycle?
          * At what minimum frequency/period can you load onto the pin and still
          * have an accurate waveform?
          */
-        PWMUpdateConfig(pwmConfigPF1, freqToPeriod(2000, MAX_FREQ), dutyCycle);
+        PWMUpdateConfig(pwm, freqToPeriod(2000, MAX_FREQ), dutyCycle);
         dutyCycle = (dutyCycle + 1)%100;
     }
 }

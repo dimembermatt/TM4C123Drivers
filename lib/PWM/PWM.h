@@ -3,11 +3,13 @@
  * @author Matthew Yu (matthewjkyu@gmail.com)
  * @brief An example project showing how to use the PWM driver.
  * @version 0.1
- * @date 2021-09-23
+ * @date 2021-09-24
  * @copyright Copyright (c) 2021
  * @note
- * This driver will support both the TM4C's existing PWM modules as well as a
- * GPIO + Timer configuration. 
+ * Modes. This driver will support both the TM4C's existing PWM modules as well
+ * as a GPIO + Timer configuration.
+ * Unsupported Features. This driver does not support PWM module interrupts, or
+ * different priorities for Timer based PWM.
  */
 #pragma once
 
@@ -98,11 +100,12 @@ typedef struct PWMConfig {
      * @brief PWM cycle duration. This is dependent on the system
      *        clock, which is typically defined at 80 MHZ by PLLInit.
      * 
-     * This value must be specified and be greater than zero. Failing this
-     * condition will trigger an internal assert in debug mode. In production,
-     * this causes undefined behavior.
+     * @note This value must be specified and be greater than zero. PWM modules  
+	 *       can only have a maximum period of 16 bit; timers can go up to 32 bit. 
+	 *       Failing these conditions will trigger an internal assert in debug 
+	 *       mode. In production, this causes undefined behavior.
      */
-    uint16_t period;
+    uint32_t period;
 
     /**
      * @brief Percentage of the PWM that is on. This is a value from [0, 100].
@@ -150,25 +153,29 @@ typedef struct PWM {
 PWM_t PWMInit(PWMConfig_t config);
 
 /**
- * PWMUpdateConfig updates the PWM period and duty cycle. And then starts it.
- * Does not check if the PWM was previously initialized.
+ * @brief PWMUpdateConfig updates the PWM period and duty cycle. And then starts
+ *        it. Does not check if the PWM was previously initialized.
  * 
  * @param pwm The PWM instance that should be updated and restarted.
  * @param period The period of one cycle of the PWM.
+ *               This value must be specified and be greater than zero. PWM modules 
+ *               can only have a maximum period of 16 bit; timers can go up to 32 bit. 
+ *               Failing these conditions will trigger an internal assert in debug 
+ *               mode. In production, this causes undefined behavior.
  * @param dutyCycle The duty cycle of one cycle of the PWM, from 0 to 100.
- * @note Only one Timer based PWM can be on at a time.
+ * @note Only one Timer based PWM can be on at a time.  
  */
-void PWMUpdateConfig(PWM_t pwm, uint16_t period, uint8_t dutyCycle);
+void PWMUpdateConfig(PWM_t pwm, uint32_t period, uint8_t dutyCycle);
 
 /**
- * PWMStop disables a PWM configuration.
+ * @brief PWMStop disables a PWM configuration.
  * 
  * @param pwm The PWM instance that should be updated and restarted.
  */
 void PWMStop(PWM_t pwm);
 
 /**
- * PWMStop enables a PWM configuration.
+ * @brief PWMStart enables a PWM configuration.
  * 
  * @param pwm The PWM instance that should be updated and restarted.
  */
