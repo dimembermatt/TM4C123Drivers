@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>PWM</TargetName>
+      <TargetName>Timer</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>5060960::V5.06 update 7 (build 960)::.\ARMCC</pCCUsed>
@@ -49,7 +49,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\Objects\</OutputDirectory>
-          <OutputName>PWM</OutputName>
+          <OutputName>Timer</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>
@@ -337,7 +337,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls>--C99</MiscControls>
-              <Define>rvmdk PART_LM4F120H5QR __FAST__</Define>
+              <Define>rvmdk PART_LM4F120H5QR</Define>
               <Undefine></Undefine>
               <IncludePath>..;..\..\..</IncludePath>
             </VariousControls>
@@ -384,11 +384,6 @@
           <GroupName>Source</GroupName>
           <Files>
             <File>
-              <FileName>PWMExample.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\PWMExample.c</FilePath>
-            </File>
-            <File>
               <FileName>startup.s</FileName>
               <FileType>2</FileType>
               <FilePath>..\..\..\inc\startup.s</FilePath>
@@ -399,14 +394,14 @@
               <FilePath>..\..\..\lib\GPIO\GPIO.c</FilePath>
             </File>
             <File>
-              <FileName>PWM.c</FileName>
+              <FileName>Timer.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\lib\PWM\PWM.c</FilePath>
+              <FilePath>..\..\..\lib\Timer\Timer.c</FilePath>
             </File>
             <File>
-              <FileName>PLL.c</FileName>
+              <FileName>TimerExample.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\lib\PLL\PLL.c</FilePath>
+              <FilePath>.\TimerExample.c</FilePath>
             </File>
             <File>
               <FileName>FaultHandler.c</FileName>
@@ -414,9 +409,9 @@
               <FilePath>..\..\..\lib\FaultHandler\FaultHandler.c</FilePath>
             </File>
             <File>
-              <FileName>Timer.c</FileName>
+              <FileName>PLL.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\lib\Timer\Timer.c</FilePath>
+              <FilePath>..\..\..\lib\PLL\PLL.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -433,7 +428,7 @@
       <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.0.2" condition="ARMv6_7_8-M Device">
         <package name="CMSIS" schemaVersion="1.3" url="http://www.keil.com/pack/" vendor="ARM" version="5.2.0"/>
         <targetInfos>
-          <targetInfo name="PWM"/>
+          <targetInfo name="Timer"/>
         </targetInfos>
       </component>
     </components>

@@ -389,21 +389,6 @@
               <FilePath>..\..\..\inc\startup.s</FilePath>
             </File>
             <File>
-              <FileName>PLL.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\inc\PLL.c</FilePath>
-            </File>
-            <File>
-              <FileName>Misc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\lib\Misc\Misc.c</FilePath>
-            </File>
-            <File>
-              <FileName>Timers.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\lib\Timers\Timers.c</FilePath>
-            </File>
-            <File>
               <FileName>SSIExample.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\SSIExample.c</FilePath>
@@ -417,6 +402,21 @@
               <FileName>GPIO.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\lib\GPIO\GPIO.c</FilePath>
+            </File>
+            <File>
+              <FileName>FaultHandler.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\lib\FaultHandler\FaultHandler.c</FilePath>
+            </File>
+            <File>
+              <FileName>PLL.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\lib\PLL\PLL.c</FilePath>
+            </File>
+            <File>
+              <FileName>Timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\lib\Timer\Timer.c</FilePath>
             </File>
           </Files>
         </Group>

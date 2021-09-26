@@ -1,9 +1,10 @@
 /**
- * File name: Example.h
- * Devices: LM4F120; TM4C123
- * Description: <PROGRAM DESCRIPTION>
- * Authors: <YOUR NAME>
- * Last Modified: <TODAY'S DATE>
+ * @file Example.c
+ * @author your name (you@domain.com)
+ * @brief Example program template for new users.
+ * @version 0.1
+ * @date 2021-09-23
+ * @copyright Copyright (c) 2021
  */
 
 /** General imports. These can be declared the like the example below. */
@@ -13,9 +14,9 @@
  * Device specific imports. Include files and library files are accessed like
  * the below examples.
  */
-#include <inc/PLL.h>
+#include <lib/PLL/PLL.h>
 #include <lib/GPIO/GPIO.h>
-#include <lib/Timers/Timers.h>
+#include <lib/Timer/Timer.h>
 
 
 /** 
@@ -30,7 +31,7 @@ void WaitForInterrupt(void);    // Defined in startup.s
  * Put your global variables and function declarations and/or implementations
  * here. 
  */
-void heartbeat(void) { GPIOSetBit(PIN_F1, !GPIOGetBit(PIN_F1)); }
+void heartbeat(uint32_t * args) { GPIOSetBit(PIN_F1, !GPIOGetBit(PIN_F1)); }
 
 /** Your main execution loop. */
 int main(void) {
@@ -42,21 +43,23 @@ int main(void) {
 
     /* Initialize PF1 GPIO (red LED) to flash at 1 Hz. */
     GPIOConfig_t PF1Config = {
-        .GPIOPin=PIN_F1,
-        .pull=PULL_DOWN,
+        .pin=PIN_F1,
+        .pull=GPIO_PULL_DOWN,
         .isOutput=true,
-        .isAlternative=false,
         .alternateFunction=0,
-        .isAnalog=false
+        .isAnalog=false,
+        .drive=GPIO_DRIVE_2MA,
+        .enableSlew=false
     };
     GPIOInit(PF1Config);
 
     TimerConfig_t heartbeatTimerConfig = {
         .timerID=TIMER_0A,
         .period=freqToPeriod(2, MAX_FREQ),
+        .timerTask=heartbeat,
         .isPeriodic=true,
         .priority=6,
-        .handlerTask=heartbeat
+        .timerArgs=NULL
     };
     TimerInit(heartbeatTimerConfig);
 
