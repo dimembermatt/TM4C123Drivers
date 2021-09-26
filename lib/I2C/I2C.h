@@ -15,10 +15,9 @@
 
 
 /**
- * @brief 
- * 
- */
-enum I2CModule {
+ * @brief I2CModule is an enumeration specifying a set of pins used for I2C
+ *        communication. */
+typedef enum I2CModule {
     I2C_MODULE_0,   // PB2 SCL
                     // PB3 SDA
 
@@ -30,8 +29,9 @@ enum I2CModule {
 
     I2C_MODULE_3    // PD0 SCL
                     // PD1 SDA
-};
+} I2CModule_t;
 
+/** @brief I2CMode is an enumeration specifying the I2C function. */
 enum I2CMode {
     I2C_MODE_MASTER_TRANSMIT,
     I2C_MODE_MASTER_RECEIVE,
@@ -39,6 +39,7 @@ enum I2CMode {
     I2C_MODE_SLAVE_RECEIVE
 };
 
+/** @brief I2CSpeed is an enumeration specifying the I2C transmission speed. */
 enum I2CSpeed {
     I2C_SPEED_100_KBPS,
     I2C_SPEED_400_KBPS,
@@ -55,7 +56,7 @@ typedef struct I2CConfig {
      *
      * Default I2C_MODULE_0.
      */
-    enum I2CModule module;
+    I2CModule_t module;
 
     /**
      * The data transmission speed for the I2C module.

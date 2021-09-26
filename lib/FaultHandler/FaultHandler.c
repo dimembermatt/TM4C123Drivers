@@ -12,8 +12,10 @@
 #include <lib/FaultHandler/FaultHandler.h>
 #include <lib/GPIO/GPIO.h>
 
+void DisableInterrupts(void);   // Defined in startup.s
 
 void __aeabi_assert(const char *expr, const char *file, int line) {
+	DisableInterrupts();
     /* Set red LED ON. */
     GPIOConfig_t PF1Config = {
         .pin=PIN_F1, 
@@ -34,6 +36,7 @@ void __aeabi_assert(const char *expr, const char *file, int line) {
 }
 
 void HardFault_Handler(void) {
+	DisableInterrupts();
     /* Set red LED ON. */
     GPIOConfig_t PF1Config = {
         .pin=PIN_F1, 

@@ -15,10 +15,10 @@
 #include <stdio.h>
 
 /** Device specific imports. */
-#include <inc/PLL.h>
+#include <lib/PLL/PLL.h>
 #include <lib/GPIO/GPIO.h>
 #include <lib/I2C/I2C.h>
-#include <lib/Misc/Misc.h>
+#include <lib/Timer/Timer.h>
 
 
 void EnableInterrupts(void);    // Defined in startup.s
@@ -26,6 +26,15 @@ void DisableInterrupts(void);   // Defined in startup.s
 void WaitForInterrupt(void);    // Defined in startup.s
 
 #if __MAIN__ == 0
+
+uint8_t received[3] = { 0 };
+void readTask(uint8_t data) {
+	static uint8_t i = 0;
+	received[i] = data;
+	
+	i = (i+1)%3;
+}
+
 int main(void) {
     /**
      * This program demonstrates initializing a loopback I2C device and sending
@@ -35,7 +44,7 @@ int main(void) {
     DisableInterrupts();
 
     /* Initialize SysTick for delay calls.*/
-    delayInit();
+    DelayInit();
     
     /* Initialize an I2C device. */
     I2CConfig_t i2cConfig = {
@@ -52,6 +61,7 @@ int main(void) {
     while (1) {
         /* Write 3 bytes . */
         I2CMasterTransmit(i2c, 0x3C, data, 3);
+		I2CSlaveProcess(i2c, 0x3C, readTask, NULL);
     };
 }
 #elif __MAIN__ == 1
