@@ -389,11 +389,6 @@
               <FilePath>.\DACExample.c</FilePath>
             </File>
             <File>
-              <FileName>PLL.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\inc\PLL.c</FilePath>
-            </File>
-            <File>
               <FileName>startup.s</FileName>
               <FileType>2</FileType>
               <FilePath>..\..\..\inc\startup.s</FilePath>
@@ -404,11 +399,6 @@
               <FilePath>..\..\..\lib\DAC\DAC.c</FilePath>
             </File>
             <File>
-              <FileName>DACSPI.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\lib\DAC\DACSPI.c</FilePath>
-            </File>
-            <File>
               <FileName>GPIO.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\lib\GPIO\GPIO.c</FilePath>
@@ -417,6 +407,11 @@
               <FileName>SSI.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\lib\SSI\SSI.c</FilePath>
+            </File>
+            <File>
+              <FileName>PLL.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\lib\PLL\PLL.c</FilePath>
             </File>
           </Files>
         </Group>
