@@ -4,10 +4,7 @@
  * Description: Example program to demonstrate the capabilities of the onboard I2C.
  * Authors: Matthew Yu.
  * Last Modified: 09/20/21
- * 
- * Modify __MAIN__ on L12 to determine which main method is executed.
- * __MAIN__ = 0 - Loopback communication with I2C.
- *          = 1 - I2C communication with a TSL2591 light sensor.
+ * I2C communication with a TSL2591 light sensor.
  */
 #define __MAIN__ 0
 
@@ -25,16 +22,6 @@ void EnableInterrupts(void);    // Defined in startup.s
 void DisableInterrupts(void);   // Defined in startup.s
 void WaitForInterrupt(void);    // Defined in startup.s
 
-#if __MAIN__ == 0
-
-uint8_t received[3] = { 0 };
-void readTask(uint8_t data) {
-	static uint8_t i = 0;
-	received[i] = data;
-	
-	i = (i+1)%3;
-}
-
 int main(void) {
     /**
      * This program demonstrates initializing a loopback I2C device and sending
@@ -46,6 +33,14 @@ int main(void) {
     /* Initialize SysTick for delay calls.*/
     DelayInit();
     
+    /* Our visual indicator (Green LED) that the I2C transaction worked. */
+    GPIOConfig_t PF3Config = {
+        PIN_F3, 
+        GPIO_PULL_DOWN,
+        true
+    };
+    GPIOPin_t PF3 = GPIOInit(PF3Config);
+
     /* Initialize an I2C device. */
     I2CConfig_t i2cConfig = {
         .module=I2C_MODULE_0, // This uses pins PB2 (SCL) and PB3 (SDA).
@@ -56,13 +51,17 @@ int main(void) {
     I2C_t i2c = I2CInit(i2cConfig);
 
 
-    uint8_t data[3] = {'I', '2', 'C'};
+    uint8_t data[1] = { 0xA0 | 0x12 };
+    uint8_t received[1] = { 0 };
     EnableInterrupts();
     while (1) {
-        /* Write 3 bytes . */
-        I2CMasterTransmit(i2c, 0x3C, data, 3);
-		I2CSlaveProcess(i2c, 0x3C, readTask, NULL);
+        /* Write 3 bytes and check the ID register for 50. */
+        I2CMasterTransmit(i2c, 0x29, data, 1);
+        I2CMasterReceive(i2c, 0x29, received, 1);
+
+        if (received[0] == 0x50) {
+            GPIOSetBit(PF3, 1);
+            while(1) {}
+        }
     };
 }
-#elif __MAIN__ == 1
-#endif
