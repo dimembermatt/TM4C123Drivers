@@ -9,6 +9,7 @@
 /** General Imports. */
 #include <stdlib.h>
 #include <stdbool.h>
+#include <assert.h>
 
 /** Device specific imports. */
 #include <inc/RegDefs.h>
@@ -16,7 +17,7 @@
 
 void HardFault_Handler(void);    // Defined in startup.s
 
-static pin_t I2CPinMapping[4][2] = {
+static GPIOPin_t I2CPinMapping[4][2] = {
     //SCL    //SDA
     {PIN_B2, PIN_B3},
     {PIN_A6, PIN_A7},
@@ -31,51 +32,61 @@ static uint32_t I2CSpeedMapping[4] = {
     3330000
 };
 
-I2C_t I2CInit(I2CConfig_t i2cConfig) {
-    /* 1. Enable SCL and SDA GPIO pins. */
+I2C_t I2CInit(I2CConfig_t config) {
+    /* Initialization asserts. */
+    assert(config.module <= I2C_MODULE_3);
+    assert(config.speed <= I2C_SPEED_3_33_MBPS);
+
+    /* 1. Activate the clock for RCGCI2C. */
+    GET_REG(SYSCTL_BASE + SYSCTL_RCGCI2C_OFFSET) |=
+        1 << config.module;
+
+    /* 2. Stall until clock is ready. */
+    while ((GET_REG(SYSCTL_BASE + SYSCTL_PRI2C_OFFSET) &
+        (1 << config.module)) == 0) {};
+
+    /* 3. Enable SCL and SDA GPIO pins. */
     GPIOConfig_t sclPin = {
-        I2CPinMapping[i2cConfig.module][0],
-        NONE, /* Do NOT configure SCL as open drain. */
-        true,
+        I2CPinMapping[config.module][0],
+        GPIO_TRI_STATE, /* Do NOT configure SCL as open drain. */
         true,
         3,
+        false,
+        GPIO_DRIVE_2MA,
         false
     };
     GPIOInit(sclPin);
     GPIOConfig_t sdaPin = {
-        I2CPinMapping[i2cConfig.module][1],
-        OPEN_DRAIN,
-        true,
+        I2CPinMapping[config.module][1],
+        GPIO_OPEN_DRAIN,
         true,
         3,
+        false,
+        GPIO_DRIVE_2MA,
         false
     };
     GPIOInit(sdaPin);
 
-    /* 2. Activate the clock for RCGCI2C. */
-    GET_REG(SYSCTL_BASE + SYSCTL_RCGCI2C_OFFSET) |=
-        1 << i2cConfig.module;
-
-    /* 3. Stall until clock is ready. */
-    while ((GET_REG(SYSCTL_BASE + SYSCTL_PRI2C_OFFSET) &
-        (1 << i2cConfig.module)) == 0) {};
-
-    uint32_t moduleBase = i2cConfig.module * 1000 + I2C0_BASE;
+    uint32_t moduleBase = config.module * 1000 + I2C0_BASE;
 
     /* 4. Set transmission mode. */
     /* Glitch filter is disabled, master mode enabled, and loopback mode is on. */
-    GET_REG(moduleBase + I2C_MCR_OFFSET) = 0x11;
+    GET_REG(moduleBase + I2C_MCR_OFFSET) = 0x31;
 
     // if in master mode.
     /* 5. Select clock speed. */
     /* Default 80 MHz. */
-    uint8_t tpr = 80000000 / (20 * I2CSpeedMapping[i2cConfig.speed]) - 1;
+    uint8_t tpr = 80000000 / (20 * I2CSpeedMapping[config.speed]) - 1;
     GET_REG(moduleBase + I2C_MTPR_OFFSET) = tpr;
 
     I2C_t i2c = {
-        i2cConfig.module,
-        (i2cConfig.I2CErrorHandler != NULL) ? i2cConfig.I2CErrorHandler : &HardFault_Handler
+        config.module,
+        (config.I2CErrorHandler != NULL) ? config.I2CErrorHandler : &HardFault_Handler
     };
+
+    // if in slave mode.
+    GET_REG(moduleBase + I2C_SOAR_OFFSET) = 0x3C;
+    GET_REG(moduleBase + I2C_SCSR_OFFSET) = 1;
 
     return i2c;
 }
@@ -88,7 +99,7 @@ void I2CMasterTransmit(I2C_t i2c, uint8_t slaveAddress, uint8_t * bytes, uint8_t
 
     /* 2. Write data to I2CMDR. */
     GET_REG(moduleBase + I2C_MDR_OFFSET) = bytes[0];
-    
+
     /* 3. Busy wait on I2CMCS bus. */
     while ((GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x40)) {}
 
@@ -115,7 +126,7 @@ void I2CMasterTransmit(I2C_t i2c, uint8_t slaveAddress, uint8_t * bytes, uint8_t
         /* 5.4. If there are bytes left to write, write the run bit to I2CMCS. */
         if (i < numBytes - 1) {
             GET_REG(moduleBase + I2C_MCS_OFFSET) = 0x01;
-        } 
+        }
     }
 
     /* 6. When done, write stop and run to I2CMCS. */
@@ -162,7 +173,7 @@ void I2CMasterReceive(I2C_t i2c, uint8_t slaveAddress, uint8_t bytes[], uint8_t 
         /* 5.4. If there are bytes left to write, write the run bit to I2CMCS. */
         if (i < numBytes - 1) {
             GET_REG(moduleBase + I2C_MCS_OFFSET) = 0x11;
-        } 
+        }
     }
 
     /* 5. When done, write ack and run bits to I2CMCS. */

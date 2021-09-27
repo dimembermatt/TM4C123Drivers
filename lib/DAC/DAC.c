@@ -1,57 +1,73 @@
 /**
- * DAC.c
- * Devices: LM4F120; TM4C123
- * Description: Low level drivers to configure a resistor ladder DAC output.
- * Authors: Matthew Yu.
- * Last Modified: 09/13/21
+ * @file DAC.c
+ * @author Matthew Yu (matthewjkyu@gmail.com)
+ * @brief Digital to Analog Converter peripheral driver.
+ * @version 0.1
+ * @date 2021-09-24
+ * @copyright Copyright (c) 2021
+ * @note
+ * Unsupported Features. This driver does not support WTimers, multiple clock
+ * modes, nor count up vs count down. B-side timers are currently broken.
  */
 
 /** General Imports. */
 #include <stdbool.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <math.h>
 
 /** Device specific imports. */
-#include <inc/tm4c123gh6pm.h>
+#include <inc/regDefs.h>
 #include <lib/DAC/DAC.h>
 
 
-#define MAX_DAC_PINS 6
+/** @brief pinMap is a mapping of bit level registers to each GPIO pin. */
+static struct DACMap {
+    uint32_t address;
+} dacMap[PORT_COUNT] = {
+    0x40004000, // PA
+    0x40005000, // PB
+    0x40006000, // PC
+    0x40007000, // PD
+    0x40024000, // PE
+    0x40025000, // PF
+};
 
-/**
- * DACInit initializes an N-bit DAC on Port B.
- * @param pins A list of pins to initialize, in order of LSB to MSB.
- * @note Assumes that the first pin that is invalid (PIN_COUNT) means all
- *       following pins are invalid.
- *       Goes up to 6 bits of resolution.
- *       Multiple DACs can be configured, but the user retains responsibility
- *       for managing the pins data structures.
- */
-void DACInit(DACConfig_t pins) {
+DAC_t DACInit(DACConfig_t config) {
+
+    /** For each specified pin. */
     uint8_t i;
-    for (i = 0; i < MAX_DAC_PINS; i++) {
-        if (pins.pinList[i] == PIN_COUNT) return;
-        GPIOConfig_t config = {
-            pins.pinList[i],
-            PULL_DOWN,
-            true,
-            false,
-            0,
-            false
+    for (i = 0; i < config.numPins; ++i) {
+        assert(config.pins[i] != NULL);
+
+        /* Initialize pin. */
+        GPIOConfig_t pinConfig = {
+            .pin=config.pins[i],
+            .pull=GPIO_PULL_DOWN,
+            .isOutput=true,
+            .alternateFunction=0,
+            .isAnalog=false,
+            .drive=GPIO_DRIVE_2MA,
+            .enableSlew=false
         };
-        GPIOInit(config);
+        GPIOInit(pinConfig);
     }
+
+    DAC_t dac = {
+        .pins=config.pins,
+        .numPins=config.numPins
+    };
+
+    return dac;
 }
 
-/**
- * DACOut outputs data to the relevant DAC pins set by DACInit.
- * @param pins The list of pins to write data to, in order of LSB to MSB.
- * @param data A value from 0 - 255. Scaled based on how many bits are part of the DAC.
- * @note Assumes that the first pin that is invalid (PIN_COUNT) means all
- *       following pins are invalid.
- */
-void DACOut(DACConfig_t pins, uint8_t data) {
+void DACOut(DAC_t dac, uint8_t data) {
     uint8_t i;
-    for (i = 0; i < MAX_DAC_PINS; i++) {
-        if (pins.pinList[i] == PIN_COUNT) return;
-        GPIOSetBit(pins.pinList[i], (data>>i) & 0x1);
+    for (i = 0; i < dac.numPins; ++i) {
+		uint32_t addr = 
+			dacMap[(uint8_t)(dac.pins[i] / PINS_PER_PORT)].address + 
+			(0x4 << (dac.pins[i] % PINS_PER_PORT));
+		uint32_t value = ((data >> i) & 0x1) << (dac.pins[i] % PINS_PER_PORT);
+        GET_REG(addr) = value;
     }
 }

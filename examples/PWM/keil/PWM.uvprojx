@@ -337,9 +337,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls>--C99</MiscControls>
-              <Define>rvmdk PART_LM4F120H5QR</Define>
+              <Define>rvmdk PART_LM4F120H5QR __FAST__</Define>
               <Undefine></Undefine>
-              <IncludePath>..;../../..</IncludePath>
+              <IncludePath>..;..\..\..</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -389,11 +389,6 @@
               <FilePath>.\PWMExample.c</FilePath>
             </File>
             <File>
-              <FileName>PLL.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\inc\PLL.c</FilePath>
-            </File>
-            <File>
               <FileName>startup.s</FileName>
               <FileType>2</FileType>
               <FilePath>..\..\..\inc\startup.s</FilePath>
@@ -404,19 +399,24 @@
               <FilePath>..\..\..\lib\GPIO\GPIO.c</FilePath>
             </File>
             <File>
-              <FileName>Misc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\lib\Misc\Misc.c</FilePath>
-            </File>
-            <File>
-              <FileName>Timers.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\lib\Timers\Timers.c</FilePath>
-            </File>
-            <File>
               <FileName>PWM.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\lib\PWM\PWM.c</FilePath>
+            </File>
+            <File>
+              <FileName>PLL.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\lib\PLL\PLL.c</FilePath>
+            </File>
+            <File>
+              <FileName>FaultHandler.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\lib\FaultHandler\FaultHandler.c</FilePath>
+            </File>
+            <File>
+              <FileName>Timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\lib\Timer\Timer.c</FilePath>
             </File>
           </Files>
         </Group>

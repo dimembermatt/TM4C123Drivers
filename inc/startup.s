@@ -446,7 +446,8 @@ IntDefaultHandler\
                 EXPORT  PWM1Generator2_Handler    [WEAK]
                 EXPORT  PWM1Generator3_Handler    [WEAK]
                 EXPORT  PWM1Fault_Handler         [WEAK]
-				EXPORT  USB0_Handler			  [WEAK]
+                EXPORT  USB0_Handler              [WEAK]
+                EXPORT  __aeabi_assert            [WEAK]
 
 GPIOPortA_Handler
 GPIOPortB_Handler
@@ -562,6 +563,7 @@ PWM1Generator2_Handler
 PWM1Generator3_Handler
 PWM1Fault_Handler
 USB0_Handler
+__aeabi_assert
                 B       .
 
                 ENDP
