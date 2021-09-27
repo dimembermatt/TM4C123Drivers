@@ -30,14 +30,14 @@
  */
 void PWMTimerHandler(uint32_t * args) {
     static uint8_t idx = 0;
-	static bool on = false;
-	
+    static bool on = false;
+    
 
     /* i.e. 0 - 69: ON; 70 - 99: OFF for a 70% duty cycle. */
-	if (on != idx <= (uint8_t) args[1])
-		GPIOSetBit((GPIOPin_t) args[0], on);
+    if (on != idx <= (uint8_t) args[1])
+        GPIOSetBit((GPIOPin_t) args[0], on);
 
-	on = idx <= (uint8_t) args[1];
+    on = idx <= (uint8_t) args[1];
     idx = (idx + 1) % 100;
 }
 
@@ -85,9 +85,9 @@ PWM_t PWMInit(PWMConfig_t config) {
     PWM_t pwm = {
         .source=config.source,
     };
-	
+    
     if (config.source == PWM_SOURCE_DEFAULT) {
-		assert(config.period <= 0xFFFF);
+        assert(config.period <= 0xFFFF);
         assert(config.sourceInfo.pin < PWM_COUNT);
         PWMPin_t pwmPin = config.sourceInfo.pin;
         pwm.sourceInfo.pin=pwmPin;
@@ -186,7 +186,7 @@ void PWMUpdateConfig(PWM_t pwm, uint32_t period, uint8_t dutyCycle) {
     assert(dutyCycle <= 100);
     assert(pwm.source <= PWM_SOURCE_TIMER);
     if (pwm.source == PWM_SOURCE_DEFAULT) {
-		assert(period <= 0xFFFF);
+        assert(period <= 0xFFFF);
         assert(pwm.sourceInfo.pin < PWM_COUNT);
 
         PWMPin_t pin = pwm.sourceInfo.pin;
@@ -222,7 +222,7 @@ void PWMUpdateConfig(PWM_t pwm, uint32_t period, uint8_t dutyCycle) {
         assert(pwm.sourceInfo.timerInfo.pin < PIN_COUNT);
 
         /* Timer based PWM. */
-		pwmTimerSettings[pwm.sourceInfo.timerInfo.timer.timerID][1] = dutyCycle;
+        pwmTimerSettings[pwm.sourceInfo.timerInfo.timer.timerID][1] = dutyCycle;
         pwm.sourceInfo.timerInfo.timer.period = period/100;
         TimerUpdatePeriod(pwm.sourceInfo.timerInfo.timer);
     }
@@ -260,8 +260,8 @@ void PWMStart(PWM_t pwm) {
     assert(pwm.source <= PWM_SOURCE_TIMER);
     if (pwm.source == PWM_SOURCE_DEFAULT) {
         assert(pwm.sourceInfo.pin < PWM_COUNT);
-		
-		PWMPin_t pin = pwm.sourceInfo.pin;
+        
+        PWMPin_t pin = pwm.sourceInfo.pin;
 
         /* 0. Select the PWM base based on the PWM pin. */
         uint32_t PWMBase =
@@ -276,8 +276,8 @@ void PWMStart(PWM_t pwm) {
         assert(pwm.sourceInfo.timerInfo.timer.timerID < TIMER_COUNT);
         assert(pwm.sourceInfo.timerInfo.timer.period > 0);
         assert(pwm.sourceInfo.timerInfo.pin < PIN_COUNT);
-		
+        
         /* Timer based PWM. */
         TimerStart(pwm.sourceInfo.timerInfo.timer);    
-	}
+    }
 }
