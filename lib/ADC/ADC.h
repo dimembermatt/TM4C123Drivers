@@ -228,9 +228,9 @@ bool ADCIsFull(enum ADCModule module, enum ADCSequencer sequencer);
  * internal sample FIFO to capture the wanted value and throw out the others.
  *
  * @param adc The ADC object containing the pin value that should be sampled.
- * @return A single uint32_t representing the pin ADC value sampled.
+ * @return A single uint16_t representing the pin ADC value sampled.
  */
-uint32_t ADCSampleSingle(ADC_t adc);
+uint16_t ADCSampleSingle(ADC_t adc);
 
 /**
  * ADCSampleSequencer samples a single sequencer and returns all the values in the
@@ -241,4 +241,4 @@ uint32_t ADCSampleSingle(ADC_t adc);
  * @param sequencer The ADCSequencer to sequence.
  * @param arr A reference to an array to fill with values.
  */
-void ADCSampleSequencer(enum ADCModule module, enum ADCSequencer sequencer, uint32_t arr[8]);
+void ADCSampleSequencer(enum ADCModule module, enum ADCSequencer sequencer, uint16_t arr[8]);

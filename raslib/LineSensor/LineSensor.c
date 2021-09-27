@@ -1,10 +1,11 @@
 /**
- * LineSensor.c
- * Devices: TM4C123
- * Description: High level driver for QTR Reflectance Sensor
- * Authors: Dario Jimenez, Matthew Yu
- * Last Modified: 09/21/2021
- * 
+ * @file LineSensor.h
+ * @author Dario Jimenez, Matthew Yu (matthewjkyu@gmail.com)
+ * @brief High level driver for the QTR Reflectance Sensor
+ * @version 0.1
+ * @date 2021-09-27
+ * @copyright Copyright (c) 2021
+ * @note
  * QTR reflectance Sensor information:
  * This sensor detects the reflectance of an object.
  * For instance: white reflects a high amount of light, hence the sensor will
@@ -13,6 +14,8 @@
  * reflectance. The reflectance captured by the sensor is converted into a
  * voltage level from 0 - 3.3V, which can be captured by the TM4C ADC as a
  * 12-bit value (0 - 4095).
+ * - The optimal distance for the sensors is 3 mm
+ * - Maximum recommended sensing distance is 6 mm
  * 
  * Available TM4C123 pins for QTR sensor: 
  * - PE5, PE4, PE3, PE2, PE1, PE0
@@ -20,42 +23,69 @@
  * - PB5, PB4
  * 
  * Power Specifications:
- * Connect VCC to 3.3V or 5V (VDD)
- * 100 mA input
- * It is STRONGLY RECOMMENDED to use a 5V, 5A regulator at the power input.
+ * - Supply voltage: 3.3 - 5.0 V
+ * - Supply current: 100 mA
+ * - Use your 5V regulator! Do not draw from TM4C.
  * 
- * Hardware:
- * Connect pins on sensor to analog pins
- * The optimal distance for the sensors is 0.125" (3 mm)
- * Maximum recommended sensing distance: 0.25" (6mm)
+ * Pinout:
+ * - VCC pin: 5V input line or 3.3V input line. If latter, short the 3.3V bypass.
+ * - GND pin: GND input line
+ * - 1-8 pins: ADC inputs, in order
  * 
- * Summary of Driver:
- * This driver initializes a specified number of sensors on the QTR as analog inputs
- * and returns the raw data from the sensor as an array of 16-bit values.
+ * Summary of driver:
+ * - this driver allows you to initialize line sensors, read an unsigned
+ *   16-bit value from the sensors, and set up periodic interrupts where data
+ *   is read from a sensor at a desired frequency.
  */
 
 /** General imports. */
-#include <stdint.h>
+#include <assert.h>
 
 /** Device specific imports. */
 #include <raslib/LineSensor/LineSensor.h>
 #include <lib/Timers/Timers.h>
 
 
-static bool isThresholded = false;
-static uint16_t threshold = 0;
-LineSensor_t * intSensor;
-void LineSensorReadInterrupt(void) {
-    if (isThresholded) {
+#define NUM_ADC_MODULES 2
+#define NUM_ADC_SEQUENCERS 4
+
+/** @brief */
+static struct LineSensorSettings {
+    /** @brief */
+    LineSensor_t * sensor;
+
+    /** @brief */
+    bool isThresholded;
+
+    /** @brief */
+    uint16_t threshold;
+
+} sensorSettings[NUM_ADC_MODULES * NUM_ADC_SEQUENCERS];
+
+/**
+ * @brief LineSensorReadInterrupt is the generic handler passed to the ADC timer
+ *        based interrupt function. It samples the ADC.
+ *
+ * @param args A pointer to a list of arguments. In this function, arg[0] should
+ *             be a pointer to an entry in sensorSettings.
+ */
+void LineSensorReadInterrupt(uint32_t * args) {
+    struct LineSensorSettings * setting = (struct LineSensorSettings *) args[0];
+    if (setting->isThresholded) {
         /* Call LineSensorGetBoolArray. */
-        LineSensorGetBoolArray(intSensor, threshold);
+        LineSensorGetBoolArray(setting->sensor, setting->threshold);
     } else {
         /* Call LineSensorGetIntArray. */
-        LineSensorGetIntArray(intSensor);
+        LineSensorGetIntArray(setting->sensor);
     }
 }
 
 LineSensor_t LineSensorInit(LineSensorConfig_t config) {
+    /* Initialization asserts. */
+    assert(config.numPins <= MAX_PINS_QTR_8);
+    assert(config.repeatFrequency <= 100);
+    assert(config.threshold <= 4095);
+
     LineSensor_t sensor = {
         .values={0},
         .numPins=config.numPins
@@ -66,6 +96,8 @@ LineSensor_t LineSensorInit(LineSensorConfig_t config) {
         /* Set up the appropriate ADC. */
         ADCConfig_t adcConfig = {
             .pin=config.pins[i],
+            .module=ADC_MODULE_0,
+            .sequencer=ADC_SS_0,
             .position=(enum ADCSequencePosition)i,
             .isNotEndSample=i<(config.numPins-1),
         };
@@ -75,24 +107,20 @@ LineSensor_t LineSensorInit(LineSensorConfig_t config) {
     
     /* Set up a recurring timer on TIMER_3 with priority 5. */
     if (1 <= config.repeatFrequency && config.repeatFrequency <= 100) {
-        /* Resize threshold if necessary and set isReadBool global. */
-        if (config.isThresholded) {
-            isThresholded = config.isThresholded;
+        uint8_t idx = config.module * 4 + config.sequence;
 
-            if (4095 < config.threshold) {
-                config.threshold = 4095;
-            }
-            threshold = config.threshold;
-        }
-        intSensor = &sensor;
+        sensorSettings[idx].isThresholded = config.isThresholded;
+        sensorSettings[idx].threshold = config.threshold;
+        sensorSettings[idx].sensor = &sensor;
 
         /* Set up timer for interrupt. */
         TimerConfig_t timerConfig = {
-            .timerID=TIMER_3A,
+            .timerID=config.timer,
             .period=freqToPeriod(config.repeatFrequency, MAX_FREQ),
+            .timerTask=LineSensorReadInterrupt,
             .isPeriodic=true,
             .priority=5,
-            .handlerTask=LineSensorReadInterrupt
+            .timerArgs=sensorSettings[idx]
         };
         TimerInit(timerConfig);
     }

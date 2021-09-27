@@ -101,6 +101,10 @@ examples/*/Keil/Listings
 examples/*/Keil/Objects
 examples/*/Keil/RTE
 examples/*/Keil/*.scvd
+rasexamples/*/Keil/Listings
+rasexamples/*/Keil/Objects
+rasexamples/*/Keil/RTE
+rasexamples/*/Keil/*.scvd
 
 # Debugger files
 # define exception below if needed
