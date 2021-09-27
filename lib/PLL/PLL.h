@@ -30,7 +30,7 @@
 
 
 /**
- * PLLInit sets up the internal clock at the provided frequency.
+ * @brief PLLInit sets up the internal clock at the provided frequency.
  * 
  * @param freq Frequency to drive the TM4C.
  * @note Use the defines defined in the header file.
