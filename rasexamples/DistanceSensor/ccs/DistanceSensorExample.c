@@ -21,7 +21,6 @@
 
 /** Device specific imports. */
 #include <lib/PLL/PLL.h>
-#include <lib/Timer/Timer.h>
 #include <lib/GPIO/GPIO.h>
 #include <raslib/DistanceSensor/DistanceSensor.h>
 

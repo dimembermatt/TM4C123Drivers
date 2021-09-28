@@ -64,7 +64,7 @@ static struct DistanceSensorSettings {
  *             be a pointer to an entry in sensorSettings.
  */
 void DistanceSensorReadInterrupt(uint32_t * args) {
-    struct DistanceSensorSettings * setting = (struct DistanceSensorSettings *) args[0];
+    struct DistanceSensorSettings * setting = ((struct DistanceSensorSettings *)args);
     if (setting->isThresholded) {
         /* Call DistanceSensorGetBoolArray. */
         DistanceSensorGetBool(setting->sensor, setting->threshold);
@@ -109,7 +109,7 @@ DistanceSensor_t DistanceSensorInit(DistanceSensorConfig_t config) {
             .timerTask=DistanceSensorReadInterrupt,
             .isPeriodic=true,
             .priority=5,
-            .timerArgs=((uint32_t *)&sensorSettings[idx])
+            .timerArgs=(uint32_t *)&sensorSettings[idx]
         };
         TimerInit(timerConfig);
     }
