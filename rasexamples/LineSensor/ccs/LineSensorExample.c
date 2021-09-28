@@ -1,29 +1,33 @@
 /**
- * File name: LineSensorExample.c
- * Devices: TM4C123
- * Description: Program that demonstrates a simple use of the QTR reflectance sensor.
- * Authors: Dario Jimenez, Matthew Yu
- * Last Modified: 09/21/2021
- *
- * Modify the value of "__MAIN__" on line 15 to choose which program to run:
+ * @file LineSensorExample.c
+ * Authors: Dario Jimenez, Matthew Yu (matthewjkyu@gmail.com)
+ * @brief Program that demonstrates a simple use of the QTR reflectance sensor.
+ * @version 0.1
+ * @date 2021-09-27
+ * @copyright Copyright (c) 2021
+ * @note
+ * Modify the value of "__MAIN__" on line 16 to choose which program to run:
  *
  * __MAIN__ = 0: demonstrates initialization and manual triggering of a line sensor.
- * __MAIN__ = 1: demostrates initalization and interrupt capability of a line sensor.
+ * __MAIN__ = 1: demonstrates initialization and interrupt capability of a line sensor.
  *
  * Analog pins used: PD3, PD2.
- **/
+ */
 #define __MAIN__ 0
 
 /** General imports. */
 #include <stdlib.h>
 
 /** Device specific imports. */
-#include <inc/PLL.h>
-#include <raslib/LineSensor/LineSensor.h>
-#include <lib/Misc/Misc.h>
+#include <lib/PLL/PLL.h>
 #include <lib/GPIO/GPIO.h>
+#include <raslib/LineSensor/LineSensor.h>
 
 
+/** 
+ * These function declarations are defined in the startup.s assembly file for
+ * managing interrupts. 
+ */
 void EnableInterrupts(void);    // Defined in startup.s
 void DisableInterrupts(void);   // Defined in startup.s
 void WaitForInterrupt(void);    // Defined in startup.s
@@ -31,9 +35,9 @@ void WaitForInterrupt(void);    // Defined in startup.s
 #if __MAIN__ == 0
 int main(void) {
     /**
-     * This program demonstrates intializing a line sensor with 2 pins, PD3 and
-     * PD2 and reading from it manually on demand as both integer and boolean
-     * values.
+     * @brief This program demonstrates intializing a line sensor with 2 pins,
+     * PD3 and PD2 and reading from it manually on demand as both integer and
+     * boolean values.
      */
     PLLInit(BUS_80_MHZ);
     DisableInterrupts();
@@ -43,47 +47,42 @@ int main(void) {
         .numPins=2,
     };
 
-    /* Initialzation of ADC */
+    /* Initialization of ADC */
     LineSensor_t sensor = LineSensorInit(config);
 
-    /* Initialize SysTick for delay calls.*/
-    delayInit();
+    /* Initialize SysTick for delay calls. */
+    DelayInit();
 
     /* Initialize PF1 as a GPIO output. This is associated with the RED led on
        the TM4C. */
     GPIOConfig_t PF1Config = {
-        PIN_F1, 
-        PULL_DOWN, 
-        true, 
-        false, 
-        0, 
-        false
+        .pin=PIN_F1,
+        .pull=GPIO_PULL_DOWN,
+        .isOutput=true,
+        .alternateFunction=0,
+        .isAnalog=false,
+        .drive=GPIO_DRIVE_2MA,
+        .enableSlew=false
     };
 
     /* Initialize PF2 as a GPIO output. This is associated with the BLUE led on
        the TM4C. */
     GPIOConfig_t PF2Config = {
-        PIN_F2, 
-        PULL_DOWN, 
-        true, 
-        false, 
-        0, 
-        false
+        PIN_F2,
+        GPIO_PULL_DOWN,
+        true
     };
-    
+
     /* Initialize PF3 as a GPIO output. This is associated with the GREEN led on
        the TM4C. */
     GPIOConfig_t PF3Config = {
-        PIN_F3, 
-        PULL_DOWN, 
-        true, 
-        false, 
-        0, 
-        false
+        PIN_F3,
+        GPIO_PULL_DOWN,
+        true
     };
-	GPIOInit(PF1Config);
-	GPIOInit(PF2Config);
-	GPIOInit(PF3Config);
+    GPIOInit(PF1Config);
+    GPIOInit(PF2Config);
+    GPIOInit(PF3Config);
 
     EnableInterrupts();
 
@@ -96,7 +95,7 @@ int main(void) {
         /* Here, you should check your debugger to see what is inside the sensor
            values array! */
 
-        delayMillisec(50);
+        DelayMillisec(50);
 
         /* Read from the line sensor again, but this time using a threshold.
            This threshold corresponds to 2048 / 4095 * 3.3 V. */
@@ -124,15 +123,15 @@ int main(void) {
         }
 
         /* Delay another 50 ms. */
-        delayMillisec(50);
+        DelayMillisec(50);
     }
 }
 
 #elif __MAIN__ == 1
 int main(void) {
     /**
-     * This program demonstrates intializing a line sensor with 2 pins, PD3 and
-     * PD2 and having it read from the sensor automagically using an interrupt
+     * @brief This program demonstrates intializing a line sensor with 2 pins, PD3 
+     * and PD2 and having it read from the sensor automagically using an interrupt
      * on TIMER3. It reads at 20 Hz. It also uses a thresholding feature to
      * convert values into a boolean array based on a threshold.
      */
@@ -145,49 +144,43 @@ int main(void) {
         .repeatFrequency=20,
         .isThresholded=true,
         .threshold=2048 // This threshold corresponds to 2048 / 4095 * 3.3 V.
+        // Uses ADC Module 0, Sequencer 0, Timer 0A by default.
     };
 
-    /* Initialzation of ADC */
+    /* Initialization of ADC. */
     LineSensor_t sensor = LineSensorInit(config);
-
-    /* Initialize SysTick for delay calls.*/
-    delayInit();
 
     /* Initialize PF1 as a GPIO output. This is associated with the RED led on
        the TM4C. */
     GPIOConfig_t PF1Config = {
-        PIN_F1, 
-        PULL_DOWN, 
-        true, 
-        false, 
-        0, 
-        false
+        .pin=PIN_F1,
+        .pull=GPIO_PULL_DOWN,
+        .isOutput=true,
+        .alternateFunction=0,
+        .isAnalog=false,
+        .drive=GPIO_DRIVE_2MA,
+        .enableSlew=false
     };
 
     /* Initialize PF2 as a GPIO output. This is associated with the BLUE led on
        the TM4C. */
     GPIOConfig_t PF2Config = {
-        PIN_F2, 
-        PULL_DOWN, 
-        true, 
-        false, 
-        0, 
-        false
+        PIN_F2,
+        GPIO_PULL_DOWN,
+        true
     };
-    
+
     /* Initialize PF3 as a GPIO output. This is associated with the GREEN led on
        the TM4C. */
     GPIOConfig_t PF3Config = {
-        PIN_F3, 
-        PULL_DOWN, 
-        true, 
-        false, 
-        0, 
-        false
+        PIN_F3,
+        GPIO_PULL_DOWN,
+        true
     };
-	GPIOInit(PF1Config);
-	GPIOInit(PF2Config);
-	GPIOInit(PF3Config);
+    GPIOInit(PF1Config);
+    GPIOInit(PF2Config);
+    GPIOInit(PF3Config);
+
 
     EnableInterrupts();
 

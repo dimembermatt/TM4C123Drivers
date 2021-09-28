@@ -44,8 +44,8 @@
 // TM4C123 hardware
 // SDA    PD1 I2C data
 // SCL    PD0 I2C clock
-/*
- *  I2C0 Conncection | I2C1 Conncection | I2C2 Conncection | I2C3 Conncection
+/**
+ *  I2C0 Connection  | I2C1 Connection  | I2C2 Connection  | I2C3 Connection
  *  ---------------- | ---------------- | ---------------- | ----------------
  *  SCL -------- PB2 | SCL -------- PA6 | SCL -------- PE4 | SCL -------- PD0
  *  SDA -------- PB3 | SDA -------- PA7 | SDA -------- PE5 | SDA -------- PD1

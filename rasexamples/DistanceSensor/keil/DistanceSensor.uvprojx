@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>GPIO</TargetName>
+      <TargetName>DistanceSensor</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>6150000::V6.15::ARMCLANG</pCCUsed>
@@ -48,14 +48,14 @@
             <NotGenerated>0</NotGenerated>
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
-          <OutputDirectory>.\</OutputDirectory>
-          <OutputName>GPIO</OutputName>
+          <OutputDirectory>.\Objects\</OutputDirectory>
+          <OutputName>Example</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>
           <DebugInformation>1</DebugInformation>
           <BrowseInformation>1</BrowseInformation>
-          <ListingPath>.\</ListingPath>
+          <ListingPath>.\Listings\</ListingPath>
           <HexFormatSelection>1</HexFormatSelection>
           <Merge32K>0</Merge32K>
           <CreateBatchFile>0</CreateBatchFile>
@@ -82,7 +82,7 @@
           <AfterMake>
             <RunUserProg1>0</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
-            <UserProg1Name>fromelf.exe --bin C:\Users\matth\Documents\EE445L\TM4C123Drivers\examples\GPIO\GPIO.axf --output C:\Users\matth\Documents\EE445L\TM4C123Drivers\examples\GPIO\GPIO.bin</UserProg1Name>
+            <UserProg1Name></UserProg1Name>
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
@@ -172,8 +172,8 @@
             <AdsLsun>1</AdsLsun>
             <AdsLven>1</AdsLven>
             <AdsLsxf>1</AdsLsxf>
-            <RvctClst>0</RvctClst>
-            <GenPPlst>0</GenPPlst>
+            <RvctClst>1</RvctClst>
+            <GenPPlst>1</GenPPlst>
             <AdsCpuType>"Cortex-M4"</AdsCpuType>
             <RvctDeviceName></RvctDeviceName>
             <mOS>0</mOS>
@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>rvmdk PART_LM4F120H5QR</Define>
               <Undefine></Undefine>
-              <IncludePath>..;..\..</IncludePath>
+              <IncludePath>..;..\..\..\..\UTRASWare</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -384,44 +384,44 @@
           <GroupName>Source</GroupName>
           <Files>
             <File>
+              <FileName>DistanceSensorExample.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\DistanceSensorExample.c</FilePath>
+            </File>
+            <File>
               <FileName>startup.s</FileName>
               <FileType>2</FileType>
-              <FilePath>..\..\inc\startup.s</FilePath>
-            </File>
-            <File>
-              <FileName>PLL.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\inc\PLL.c</FilePath>
-            </File>
-            <File>
-              <FileName>GPIO.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\lib\GPIO\GPIO.c</FilePath>
+              <FilePath>..\..\..\inc\startup.s</FilePath>
             </File>
             <File>
               <FileName>ADC.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\lib\ADC\ADC.c</FilePath>
+              <FilePath>..\..\..\lib\ADC\ADC.c</FilePath>
             </File>
             <File>
-              <FileName>Misc.c</FileName>
+              <FileName>PLL.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\lib\Misc\Misc.c</FilePath>
+              <FilePath>..\..\..\lib\PLL\PLL.c</FilePath>
             </File>
             <File>
-              <FileName>Timers.c</FileName>
+              <FileName>GPIO.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\lib\Timers\Timers.c</FilePath>
+              <FilePath>..\..\..\lib\GPIO\GPIO.c</FilePath>
             </File>
             <File>
-              <FileName>LineSensorExample.c</FileName>
+              <FileName>Timer.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\LineSensorExample.c</FilePath>
+              <FilePath>..\..\..\lib\Timer\Timer.c</FilePath>
             </File>
             <File>
-              <FileName>LineSensor.c</FileName>
+              <FileName>FaultHandler.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\raslib\LineSensor\LineSensor.c</FilePath>
+              <FilePath>..\..\..\lib\FaultHandler\FaultHandler.c</FilePath>
+            </File>
+            <File>
+              <FileName>DistanceSensor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\raslib\DistanceSensor\DistanceSensor.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -438,7 +438,7 @@
       <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.4.0" condition="ARMv6_7_8-M Device">
         <package name="CMSIS" schemaVersion="1.3" url="http://www.keil.com/pack/" vendor="ARM" version="5.7.0"/>
         <targetInfos>
-          <targetInfo name="GPIO"/>
+          <targetInfo name="DistanceSensor"/>
         </targetInfos>
       </component>
     </components>

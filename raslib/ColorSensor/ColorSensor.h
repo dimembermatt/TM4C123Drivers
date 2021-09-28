@@ -19,19 +19,11 @@
  * 
  **/
 
-
-//TODO: write up an example program
-
-
-//TODO: write up a new I2C library
-
-
-#ifndef ColorSensor_H
-#define ColorSensor_H
+#pragma once
 
 /* imports */
 #include <stdint.h>
-#include <lib/Timers/Timers.h>
+#include <lib/Timer/Timer.h>
 
 
 #define TCS34725_ADDRESS 0x29 //I2C Slave Adress for TCS34725
@@ -187,5 +179,3 @@ void ColorSensor_SetInterrupt(ColorSensor_t* sensor, uint16_t low, uint16_t high
  **/
 
 void ColorSensor_DisableInterrupt(ColorSensorColors_t color);
-
-#endif

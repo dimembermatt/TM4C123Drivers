@@ -1,10 +1,11 @@
 /**
- * File name: DistanceSensor.c
- * Devices: TM4C123
- * Description: Low-level driver for GP2Y0A60SZ analog distance sensor
- * Authors: Dario Jimenez, Matthew Yu
- * Last Modified: 09/21/21
- * 
+ * @file DistanceSensor.c
+ * @author Dario Jimenez, Matthew Yu (matthewjkyu@gmail.com)
+ * @brief High level driver for the GP2Y0A60SZ analog distance sensor.
+ * @version 0.1
+ * @date 2021-09-27
+ * @copyright Copyright (c) 2021
+ * @note
  * GP2Y0A60SZLF Analog Distance Sensor information:
  * This sensor measures the time of flight of an infrared transceiver pair. The
  * time of flight corresponds to a distance value.
@@ -32,18 +33,52 @@
  *   is read from a sensor at a desired frequency.
  */
 
+/** General imports. */
+#include <assert.h>
+
 /** Device specific imports. */
 #include <raslib/DistanceSensor/DistanceSensor.h>
-#include <lib/Timers/Timers.h>
 
 
-DistanceSensor_t * intSensor;
-void DistanceSensorReadInterrupt(void) {
-    DistanceSensorGetInt(&intSensor);
+#define NUM_ADC_MODULES 2
+#define NUM_ADC_SEQUENCERS 4
+
+/** @brief Settings used to manage all possible DistanceSensor configurations. */
+static struct DistanceSensorSettings {
+    /** @brief Sensor reference to feed the values into */
+    DistanceSensor_t * sensor;
+
+    /** @brief Whether DistanceSensorGetBool should be called. */
+    bool isThresholded;
+
+    /** @brief The thresholding value inserted into DistanceSensorGetBool. */
+    uint16_t threshold;
+
+} sensorSettings[NUM_ADC_MODULES * NUM_ADC_SEQUENCERS];
+
+/**
+ * @brief DistanceSensorReadInterrupt is the generic handler passed to the ADC timer
+ *        based interrupt function. It samples the ADC.
+ *
+ * @param args A pointer to a list of arguments. In this function, arg[0] should
+ *             be a pointer to an entry in sensorSettings.
+ */
+void DistanceSensorReadInterrupt(uint32_t * args) {
+    struct DistanceSensorSettings * setting = (struct DistanceSensorSettings *) args[0];
+    if (setting->isThresholded) {
+        /* Call DistanceSensorGetBoolArray. */
+        DistanceSensorGetBool(setting->sensor, setting->threshold);
+    } else {
+        /* Call DistanceSensorGetIntArray. */
+        DistanceSensorGetInt(setting->sensor);
+    }
 }
 
-// TODO: make generic where distance sensors can be instantiated w/o collision.
 DistanceSensor_t DistanceSensorInit(DistanceSensorConfig_t config) {
+    /* Initialization asserts. */
+    assert(config.repeatFrequency <= 100);
+    assert(config.threshold <= 4095);
+
     DistanceSensor_t sensor = {
         .value=0
     };
@@ -51,8 +86,8 @@ DistanceSensor_t DistanceSensorInit(DistanceSensorConfig_t config) {
     /* Set up the appropriate ADC. */
     ADCConfig_t adcConfig = {
         .pin=config.pin,
-        .module=ADC_MODULE_0,
-        .sequencer=ADC_SS_1,
+        .module=config.module,
+        .sequencer=config.sequencer,
         .position=ADC_SEQPOS_0,
         .isNotEndSample=false,
     };
@@ -61,17 +96,35 @@ DistanceSensor_t DistanceSensorInit(DistanceSensorConfig_t config) {
     
     /* Set up a recurring timer on TIMER_3 with priority 5. */
     if (1 <= config.repeatFrequency && config.repeatFrequency <= 100) {
-        intSensor = &sensor;
+        uint8_t idx = config.module * 4 + config.sequencer;
+
+        sensorSettings[idx].isThresholded = config.isThresholded;
+        sensorSettings[idx].threshold = config.threshold;
+        sensorSettings[idx].sensor = &sensor;
 
         /* Set up timer for interrupt. */
         TimerConfig_t timerConfig = {
-            .timerID=TIMER_3A,
+            .timerID=config.timer,
             .period=freqToPeriod(config.repeatFrequency, MAX_FREQ),
+            .timerTask=DistanceSensorReadInterrupt,
             .isPeriodic=true,
             .priority=5,
-            .handlerTask=DistanceSensorReadInterrupt
+            .timerArgs=((uint32_t *)&sensorSettings[idx])
         };
         TimerInit(timerConfig);
     }
     return sensor;
+}
+
+void DistanceSensorGetInt(DistanceSensor_t * sensor) {
+    ADCSampleSequencer(sensor->adc.module, sensor->adc.sequencer, &(sensor->value));
+}
+
+void DistanceSensorGetBool(DistanceSensor_t * sensor, uint16_t threshold) {
+    ADCSampleSequencer(sensor->adc.module, sensor->adc.sequencer, &(sensor->value));
+    if (sensor->value >= threshold) {
+        sensor->value = 1;
+    } else {
+        sensor->value = 0;
+    }
 }

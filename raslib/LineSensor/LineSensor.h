@@ -45,6 +45,7 @@
 
 /** Device specific imports. */
 #include <lib/ADC/ADC.h>
+#include <lib/Timer/Timer.h>
 
 
 /** @brief Number of total pins in QTR-8A Reflectance Sensor array. */
@@ -56,7 +57,8 @@
 
 /**
  * @brief LineSensorConfig_t is a user defined struct that specifies a line
- *        sensor configuration. */
+ *        sensor configuration.
+ */
 typedef struct LineSensorConfig {
     /**
      * @brief The ADC pins tied to each sensor in the QTR-8A reflectance sensor
@@ -104,8 +106,8 @@ typedef struct LineSensorConfig {
 
     /**
      * @brief If isThresholded is enabled, then the threshold value (fixed to
-     * (0, 4095]) tells the initializer to call LineSensorGetBoolArray instead
-     * of LineSensorGetIntArray at a fixed frequency.
+     * (0, 4095]) is provided to the ensuing LineSensorGetBoolArray interrupt
+     * call.
      * 
      * Default is 0.
      */
@@ -127,7 +129,7 @@ typedef struct LineSensorConfig {
      *
      * Default ADC_SS_0.
      */
-    enum ADCSequence sequence;
+    enum ADCSequencer sequencer;
 
     /**
      * @brief The timer ID used for this line sensor. B side timers and wide
@@ -138,6 +140,10 @@ typedef struct LineSensorConfig {
     TimerID_t timer;
 } LineSensorConfig_t;
 
+/**
+ * @brief The pregenerated struct used for containing the relevant info used for
+ *        manage the LineSensor instance.
+ */
 typedef struct LineSensor {
     /** 
      * @brief An array of ADC objects that are used in the line sensor. Empty

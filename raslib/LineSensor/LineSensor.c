@@ -43,21 +43,20 @@
 
 /** Device specific imports. */
 #include <raslib/LineSensor/LineSensor.h>
-#include <lib/Timers/Timers.h>
 
 
 #define NUM_ADC_MODULES 2
 #define NUM_ADC_SEQUENCERS 4
 
-/** @brief */
+/** @brief Settings used to manage all possible LineSensor configurations. */
 static struct LineSensorSettings {
-    /** @brief */
+    /** @brief Sensor reference to feed the values into */
     LineSensor_t * sensor;
 
-    /** @brief */
+    /** @brief Whether LineSensorGetBoolArray should be called. */
     bool isThresholded;
 
-    /** @brief */
+    /** @brief The thresholding value inserted into LineSensorGetBoolArray. */
     uint16_t threshold;
 
 } sensorSettings[NUM_ADC_MODULES * NUM_ADC_SEQUENCERS];
@@ -92,12 +91,13 @@ LineSensor_t LineSensorInit(LineSensorConfig_t config) {
     };
 
     /* For each pin. */
-    for (uint8_t i = 0; i < config.numPins; ++i) {
+    uint8_t i;
+    for (i = 0; i < config.numPins; ++i) {
         /* Set up the appropriate ADC. */
         ADCConfig_t adcConfig = {
             .pin=config.pins[i],
-            .module=ADC_MODULE_0,
-            .sequencer=ADC_SS_0,
+            .module=config.module,
+            .sequencer=config.sequencer,
             .position=(enum ADCSequencePosition)i,
             .isNotEndSample=i<(config.numPins-1),
         };
@@ -107,7 +107,7 @@ LineSensor_t LineSensorInit(LineSensorConfig_t config) {
     
     /* Set up a recurring timer on TIMER_3 with priority 5. */
     if (1 <= config.repeatFrequency && config.repeatFrequency <= 100) {
-        uint8_t idx = config.module * 4 + config.sequence;
+        uint8_t idx = config.module * 4 + config.sequencer;
 
         sensorSettings[idx].isThresholded = config.isThresholded;
         sensorSettings[idx].threshold = config.threshold;
@@ -120,7 +120,7 @@ LineSensor_t LineSensorInit(LineSensorConfig_t config) {
             .timerTask=LineSensorReadInterrupt,
             .isPeriodic=true,
             .priority=5,
-            .timerArgs=sensorSettings[idx]
+            .timerArgs=((uint32_t *)&sensorSettings[idx])
         };
         TimerInit(timerConfig);
     }
@@ -133,7 +133,8 @@ void LineSensorGetIntArray(LineSensor_t * sensor) {
 
 void LineSensorGetBoolArray(LineSensor_t * sensor, uint16_t threshold) {
     ADCSampleSequencer(sensor->adcs[0].module, sensor->adcs[0].sequencer, sensor->values);
-    for (uint8_t i = 0; i < sensor->numPins; ++i) {
+    uint8_t i;
+    for (i = 0; i < sensor->numPins; ++i) {
         if (sensor->values[i] >= threshold) {
             sensor->values[i] = 1;
         } else {

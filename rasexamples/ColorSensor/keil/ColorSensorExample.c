@@ -13,9 +13,9 @@
  * Device specific imports. Include files and library files are accessed like
  * the below examples.
  */
-#include <inc/PLL.h>
+#include <lib/PLL/PLL.h>
 #include <lib/GPIO/GPIO.h>
-#include <lib/Timers/Timers.h>
+#include <lib/Timer/Timer.h>
 #include <raslib/ColorSensor/ColorSensor.h>
 
 
@@ -37,14 +37,18 @@ int main(void) {
     /** Hardware and software initializations. */
 
     /* Clock setup. */
-    PLL_Init(Bus80MHz);
+    PLLInit(Bus80MHz);
     DisableInterrupts();
 
     ColorSensor_t sensor; //create instance of ColorSensor_t
 
     ColorSensor_init(&sensor); //initialize color sensor
 
-    GPIOConfig_t redLED = {PIN_F1, PULL_DOWN, true, false, 0, false};
+    GPIOConfig_t redLED = {
+        .pin=PIN_F1, 
+        .pull=GPIO_PULL_DOWN, 
+        .isOutput=true, 
+    };
 
     GPIOInit(redLED);
 
