@@ -71,7 +71,7 @@ I2C_t I2CInit(I2CConfig_t config) {
 
     /* 4. Set transmission mode. */
     /* Glitch filter is disabled, master mode enabled, and loopback mode is on. */
-    GET_REG(moduleBase + I2C_MCR_OFFSET) = 0x31;
+    GET_REG(moduleBase + I2C_MCR_OFFSET) = 0x10;
 
     // if in master mode.
     /* 5. Select clock speed. */
@@ -85,8 +85,8 @@ I2C_t I2CInit(I2CConfig_t config) {
     };
 
     // if in slave mode.
-    GET_REG(moduleBase + I2C_SOAR_OFFSET) = 0x3C;
-    GET_REG(moduleBase + I2C_SCSR_OFFSET) = 1;
+//    GET_REG(moduleBase + I2C_SOAR_OFFSET) = 0x3C;
+//    GET_REG(moduleBase + I2C_SCSR_OFFSET) = 1;
 
     return i2c;
 }
@@ -100,40 +100,42 @@ void I2CMasterTransmit(I2C_t i2c, uint8_t slaveAddress, uint8_t * bytes, uint8_t
     /* 2. Write data to I2CMDR. */
     GET_REG(moduleBase + I2C_MDR_OFFSET) = bytes[0];
 
+    GET_REG(moduleBase + I2C_MCS_OFFSET) = 0x7;
+
     /* 3. Busy wait on I2CMCS bus. */
     while ((GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x40)) {}
 
-    /* 4. Write start and run bits to I2CMCS. */
-    GET_REG(moduleBase + I2C_MCS_OFFSET) = 0x03;
+    // /* 4. Write start and run bits to I2CMCS. */
+    // GET_REG(moduleBase + I2C_MCS_OFFSET) = 0x03;
 
-    /* 5. For remaining bytes. */
-    for (uint8_t i = 1; i < numBytes; ++i) {
-        /* 5.1. Busy wait on I2CMCS. */
-        while ((GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x01)) {}
+    // /* 5. For remaining bytes. */
+    // for (uint8_t i = 1; i < numBytes; ++i) {
+    //     /* 5.1. Busy wait on I2CMCS. */
+    //     while ((GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x01)) {}
 
-        /* 5.2. Check for error. */
-        if (GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x02) {
-            if (!(GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x10)) {
-                GET_REG(moduleBase + I2C_MCS_OFFSET) = 0x04;
-            }
-            i2c.I2CErrorHandler();
-            return;
-        }
+    //     /* 5.2. Check for error. */
+    //     if (GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x02) {
+    //         if (!(GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x10)) {
+    //             GET_REG(moduleBase + I2C_MCS_OFFSET) = 0x04;
+    //         }
+    //         i2c.I2CErrorHandler();
+    //         return;
+    //     }
 
-        /* 5.3. Write data to I2CMDR. */
-        GET_REG(moduleBase + I2C_MDR_OFFSET) = bytes[i];
+    //     /* 5.3. Write data to I2CMDR. */
+    //     GET_REG(moduleBase + I2C_MDR_OFFSET) = bytes[i];
 
-        /* 5.4. If there are bytes left to write, write the run bit to I2CMCS. */
-        if (i < numBytes - 1) {
-            GET_REG(moduleBase + I2C_MCS_OFFSET) = 0x01;
-        }
-    }
+    //     /* 5.4. If there are bytes left to write, write the run bit to I2CMCS. */
+    //     if (i < numBytes - 1) {
+    //         GET_REG(moduleBase + I2C_MCS_OFFSET) = 0x01;
+    //     }
+    // }
 
-    /* 6. When done, write stop and run to I2CMCS. */
-    GET_REG(moduleBase + I2C_MCS_OFFSET) = 0x05;
+    // /* 6. When done, write stop and run to I2CMCS. */
+    // GET_REG(moduleBase + I2C_MCS_OFFSET) = 0x05;
 
-    /* 7. Busy wait on I2CMCS. */
-    while ((GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x01)) {}
+    // /* 7. Busy wait on I2CMCS. */
+    // while ((GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x01)) {}
 
     /* 8. On error, got to error service. */
     if (GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x02) {
