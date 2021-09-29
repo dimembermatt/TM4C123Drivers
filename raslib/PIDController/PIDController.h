@@ -1,9 +1,9 @@
 /**
  * @file PIDController.h
  * @author Matthew Yu (matthewjkyu@gmail.com)
- * @brief 
+ * @brief PID Controller driver.
  * @version 0.1
- * @date 2021-09-27
+ * @date 2021-09-28
  * @copyright Copyright (c) 2021
  */
 #pragma once
@@ -56,10 +56,10 @@ Where total error is defined as `error = output - target`.
 
 /** @brief Definition of a configuration for a PID controller. */
 typedef struct PIDConfig {
-    /** The maximum value a control output signal can be. */
+    /** @brief The maximum value a control output signal can be. */
     double max;
 
-    /** The minimum value a control output signal can be. */
+    /** @brief The minimum value a control output signal can be. */
     double min;
 
     /** Tuned by user or external algorithm. */
@@ -90,6 +90,8 @@ PIDConfig_t PIDControllerInit(
     double i,
     double d
 );
+	
+enum TuneMode { ACCURACY, SPEED };
 
 /**
  * @brief PIDControllerStep runs the system input and error into the controller
@@ -112,24 +114,27 @@ double PIDControllerStep(PIDConfig_t config, double desiredOutput, double actual
  *        constants for a closed loop system. Experimental.
  *
  * @param config         Initial parameters for the controller.
+ * @param tuneMode       Selects tuning for error or speed. Latter may cause
+ *                       overshooting. 
  * @param plantFunction  Pointer to a function to execute with the output of the
  *                       controller.
  * @param sensorFunction Pointer to a function to execute to get the output result
  *                       and thus the error. May include its own filter.
  * @param msCycleDelay   The amount of time to wait for the system to
  *                       propagate for the sensorFunction to work nominally.
- * @param numInterCycles The amount of iteration cycles the PID controller
- *                       should evaluate.
- * @param numCycles      The amount of iterations the PID controller should execute.
+ * @param numCycles      The amount of cycles in an iteration that the PID controller should evaluate.
  * @return Optimized PID configuration.
- * @note The approximate run time is numCycles * numInterCycles * msCycleDelay.
  * @note Including a filter in the sensorFunction is highly recommended to
  *       reduce sensor noise.
+ * @note Requires DelayInit from Timer.h.
  */
 PIDConfig_t PIDControllerTune(
     PIDConfig_t config,
-    void (*plantFunction)(double),
-    void (*sensorFunction)(double),
+    enum TuneMode mode,
+    void (*plantFunction)(double input),
+    double (*sensorFunction)(void),
+    double desiredOutput,
     uint32_t msCycleDelay,
-    uint32_t maxCycles
+    uint32_t numCycles
 );
+	
