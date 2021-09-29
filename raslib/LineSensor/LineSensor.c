@@ -69,7 +69,7 @@ static struct LineSensorSettings {
  *             be a pointer to an entry in sensorSettings.
  */
 void LineSensorReadInterrupt(uint32_t * args) {
-    struct LineSensorSettings * setting = (struct LineSensorSettings *) args[0];
+    struct LineSensorSettings * setting = ((struct DistanceSensorSettings *)args);
     if (setting->isThresholded) {
         /* Call LineSensorGetBoolArray. */
         LineSensorGetBoolArray(setting->sensor, setting->threshold);
@@ -120,7 +120,7 @@ LineSensor_t LineSensorInit(LineSensorConfig_t config) {
             .timerTask=LineSensorReadInterrupt,
             .isPeriodic=true,
             .priority=5,
-            .timerArgs=((uint32_t *)&sensorSettings[idx])
+            .timerArgs=(uint32_t *)&sensorSettings[idx]
         };
         TimerInit(timerConfig);
     }
