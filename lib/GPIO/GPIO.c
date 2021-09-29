@@ -3,7 +3,7 @@
  * @author Matthew Yu (matthewjkyu@gmail.com)
  * @brief GPIO peripheral driver.
  * @version 0.1
- * @date 2021-09-22
+ * @date 2021-09-28
  * @copyright Copyright (c) 2021
  * @note
  * Fast Mode. Use optional compilation flag (1) or define a preprocessor macro
@@ -13,7 +13,7 @@
  * This is high recommended for programs using interrupts that call these
  * functions to edit GPIO bits, or for high frequency operation programs. There
  * is a tradeoff of on the order of 100x speedup vs 1KB more lines of DATA.
- * 
+ *
  * Unsupported Features. This driver does not support DMA control.
  */
 
@@ -28,10 +28,10 @@
 #include <lib/GPIO/GPIO.h>
 
 
-/** 
+/**
  * @brief This field is either 0, 1, 2, 3, specifying the byte that the
- *        interrupt of priority X should be set to.  
- */ 
+ *        interrupt of priority X should be set to.
+ */
 enum InterruptPriorityIdx {INTA, INTB, INTC, INTD};
 
 /** @brief GPIOPortInterruptConfig is a set of structs defining configuration
@@ -84,43 +84,43 @@ GPIOPin_t GPIOInit(GPIOConfig_t config) {
     assert(config.drive < GPIO_DRIVE_8MA);
 
     /* 1. Activate the clock for the relevant port. */
-    GET_REG(SYSCTL_BASE + SYSCTL_RCGCGPIO_OFFSET) |= 
+    GET_REG(SYSCTL_BASE + SYSCTL_RCGCGPIO_OFFSET) |=
         1 << (config.pin / 8); /* 8 pins per port. */
 
     /* 2. Stall until clock is ready. */
-    while ((GET_REG(SYSCTL_BASE + SYSCTL_PRGPIO_OFFSET) & 
-           (1 << (config.pin / 8))) == 0) {};
+    while ((GET_REG(SYSCTL_BASE + SYSCTL_PRGPIO_OFFSET) &
+           (1 << (config.pin / 8))) == 0) {}
 
     /* 3. Generate the port offset to find the correct addresses.
           There are a couple components in this line:
-       
+
           Note (pin >= PIN_E0). This is a variation of a branchless programming
           technique. See https://www.youtube.com/watch?v=bVJ-mWWL7cE for more
           details.
-       
-         (((pin - XXX) >> 3) << 12) : 
+
+         (((pin - XXX) >> 3) << 12) :
                 Every group of eight pins belongs to the same port, and every
                 port has an offset of 0x1000 from each other (typically) (p.685
                 in the datasheet). This expression right shifts the pin to mask
                 the address (from 0 - 6 | A - F). It then left shifts it to get
                 the offset (1 << 12 is 0x1000). This is later appended to
                 GPIO_PORT_BASE to get the port address.
-       
+
                 The term `- XXX` is a conditional expanded to the following:
-       
+
                               XXX = ((pin >= PIN_E0) << 5)
-       
-                This conditional is similar to `(pin >= PIN_E0)`. If the pin is 
-                in Port E or Port F, we subtract the effective pin by 32 (the 
-                enum value of PIN_E0) to get the correct port offset. This is 
+
+                This conditional is similar to `(pin >= PIN_E0)`. If the pin is
+                in Port E or Port F, we subtract the effective pin by 32 (the
+                enum value of PIN_E0) to get the correct port offset. This is
                 equivalent to 1 << 5, where `(pin >= PIN_E0)` is 1 if true.
-       
-          + (pin >= PIN_E0) << 17 : 
+
+          + (pin >= PIN_E0) << 17 :
                 Port E and F are special in that they requires an
-                extra offset of 0x0002.0000; we add that base offset, which is 
+                extra offset of 0x0002.0000; we add that base offset, which is
                 equivalent to 1 << 7, where `(pin >= PIN_E0)` is 1 if true. */
-    uint32_t portOffset = 
-        (((config.pin - ((config.pin >= PIN_E0) << 5)) >> 3) << 12) + 
+    uint32_t portOffset =
+        (((config.pin - ((config.pin >= PIN_E0) << 5)) >> 3) << 12) +
         ((config.pin >= PIN_E0) << 17);
 
     /* 4. If PC0-3, PD7, PF0, unlock the port. */
@@ -134,8 +134,8 @@ GPIOPin_t GPIOInit(GPIOConfig_t config) {
     }
 
     /* 5. Determine the pin address. I.E. PF1 (41) % 8 = 1. */
-    uint8_t pinAddress = pow(2, config.pin % 8);
-    
+    uint8_t pinAddress = 1 << config.pin % 8;
+
     /* 6. Allow changes to selected pin. */
     GET_REG(GPIO_PORT_BASE + portOffset + GPIO_CR_OFFSET) |= pinAddress;
 
@@ -218,38 +218,38 @@ GPIOPin_t GPIOIntInit(GPIOConfig_t config, GPIOInterruptConfig_t intConfig) {
 
     /* 1. Generate the port offset to find the correct addresses.
           There are a couple components in this line:
-       
+
           Note (pin >= PIN_E0). This is a variation of a branchless programming
           technique. See https://www.youtube.com/watch?v=bVJ-mWWL7cE for more
           details.
-       
-         (((pin - XXX) >> 3) << 12) : 
+
+         (((pin - XXX) >> 3) << 12) :
                 Every group of eight pins belongs to the same port, and every
                 port has an offset of 0x1000 from each other (typically) (p.685
                 in the datasheet). This expression right shifts the pin to mask
                 the address (from 0 - 6 | A - F). It then left shifts it to get
                 the offset (1 << 12 is 0x1000). This is later appended to
                 GPIO_PORT_BASE to get the port address.
-       
+
                 The term `- XXX` is a conditional expanded to the following:
-       
+
                               XXX = ((pin >= PIN_E0) << 5)
-       
-                This conditional is similar to `(pin >= PIN_E0)`. If the pin is 
-                in Port E or Port F, we subtract the effective pin by 32 (the 
-                enum value of PIN_E0) to get the correct port offset. This is 
+
+                This conditional is similar to `(pin >= PIN_E0)`. If the pin is
+                in Port E or Port F, we subtract the effective pin by 32 (the
+                enum value of PIN_E0) to get the correct port offset. This is
                 equivalent to 1 << 5, where `(pin >= PIN_E0)` is 1 if true.
-       
-          + (pin >= PIN_E0) << 17 : 
+
+          + (pin >= PIN_E0) << 17 :
                 Port E and F are special in that they requires an
-                extra offset of 0x0002.0000; we add that base offset, which is 
+                extra offset of 0x0002.0000; we add that base offset, which is
                 equivalent to 1 << 7, where `(pin >= PIN_E0)` is 1 if true. */
-    uint32_t portOffset = 
-        (((config.pin - ((config.pin >= PIN_E0) << 5)) >> 3) << 12) + 
+    uint32_t portOffset =
+        (((config.pin - ((config.pin >= PIN_E0) << 5)) >> 3) << 12) +
         ((config.pin >= PIN_E0) << 17);
 
     /* 2. Determine the pin address. I.E. PF1 (41) % 8 = 1. */
-    uint8_t pinAddress = pow(2, config.pin % 8);
+    uint8_t pinAddress = 1 << config.pin % 8;
 
     /* 3. Enable interrupts if required. */
     if (intConfig.touchTask || intConfig.releaseTask) {
@@ -286,9 +286,9 @@ GPIOPin_t GPIOIntInit(GPIOConfig_t config, GPIOInterruptConfig_t intConfig) {
            something like this for priority 2: 0xFF00FFFF, 0x00400000. */
         mask &= ~(0xFF << (GPIOPortInterruptConfig[ID].priorityIdx * 8));
         intVal = intVal << (GPIOPortInterruptConfig[ID].priorityIdx * 8);
-        (*GPIOPortInterruptConfig[ID].NVIC_PRI_ADDR) = 
+        (*GPIOPortInterruptConfig[ID].NVIC_PRI_ADDR) =
             ((*GPIOPortInterruptConfig[ID].NVIC_PRI_ADDR)&mask)|intVal;
-        
+
         /* 12. Enable IRQ X in NVIC. */
         (*GPIOPortInterruptConfig[ID].NVIC_EN_ADDR) = 1 << GPIOPortInterruptConfig[ID].IRQ;
     }
@@ -298,49 +298,49 @@ GPIOPin_t GPIOIntInit(GPIOConfig_t config, GPIOInterruptConfig_t intConfig) {
     GPIOInterruptSettings[config.pin].touchArgs = intConfig.touchArgs;
     GPIOInterruptSettings[config.pin].releaseTask = intConfig.releaseTask;
     GPIOInterruptSettings[config.pin].releaseArgs = intConfig.releaseArgs;
-    
+
     return pin;
 }
 
-/** 
+/**
  * @brief Internal handler to manage GPIO interrupts.
- * 
+ *
  * @param pin GPIOPin_t base to handle from.
  */
-void GPIOGeneric_Handler(GPIOPin_t pin) {
+static void GPIOGeneric_Handler(GPIOPin_t pin) {
     /* Initialization asserts. */
     assert(pin < PIN_COUNT);
 
     /** 1. Generate the port offset to find the correct addresses.
      *    There are a couple components in this line:
-     * 
+     *
      *    Note (pin >= PIN_E0). This is a variation of a branchless programming
      *    technique. See https://www.youtube.com/watch?v=bVJ-mWWL7cE for more
      *    details.
-     * 
-     *    (((pin - XXX) >> 3) << 12) : 
+     *
+     *    (((pin - XXX) >> 3) << 12) :
      *          Every group of eight pins belongs to the same port, and every
      *          port has an offset of 0x1000 from each other (typically) (p.685
      *          in the datasheet). This expression right shifts the pin to mask
      *          the address (from 0 - 6 | A - F). It then left shifts it to get
      *          the offset (1 << 12 is 0x1000). This is later appended to
      *          GPIO_PORT_BASE to get the port address.
-     * 
+     *
      *          The term `- XXX` is a conditional expanded to the following:
-     * 
+     *
      *                        XXX = ((pin >= PIN_E0) << 5)
-     * 
-     *          This conditional is similar to `(pin >= PIN_E0)`. If the pin is 
-     *          in Port E or Port F, we subtract the effective pin by 32 (the 
-     *          enum value of PIN_E0) to get the correct port offset. This is 
+     *
+     *          This conditional is similar to `(pin >= PIN_E0)`. If the pin is
+     *          in Port E or Port F, we subtract the effective pin by 32 (the
+     *          enum value of PIN_E0) to get the correct port offset. This is
      *          equivalent to 1 << 5, where `(pin >= PIN_E0)` is 1 if true.
-     * 
-     *    + (pin >= PIN_E0) << 17 : 
+     *
+     *    + (pin >= PIN_E0) << 17 :
      *          Port E and F are special in that they requires an
-     *          extra offset of 0x0002.0000; we add that base offset, which is 
+     *          extra offset of 0x0002.0000; we add that base offset, which is
      *          equivalent to 1 << 7, where `(pin >= PIN_E0)` is 1 if true.
      */
-    uint32_t portOffset = 
+    uint32_t portOffset =
         (((pin - ((pin >= PIN_E0) << 5)) >> 3) << 12) + ((pin >= PIN_E0) << 17);
 
     /* 2. Find which pin triggered an interrupt. Could be multiple at once. */
@@ -349,7 +349,7 @@ void GPIOGeneric_Handler(GPIOPin_t pin) {
         if (GET_REG(GPIO_PORT_BASE + portOffset + GPIO_MIS_OFFSET) & (0x1 << i)) {
             /* Acknowledge interrupt flag. */
             GET_REG(GPIO_PORT_BASE + portOffset + GPIO_ICR_OFFSET) |= 0x1 << i;
-            
+
             /* Get pin number. */
             GPIOPin_t pinIdx = (GPIOPin_t)(pin + i);
 
@@ -380,17 +380,17 @@ void GPIOGeneric_Handler(GPIOPin_t pin) {
     }
 }
 
-void GPIOPortA_Handler(void) { GPIOGeneric_Handler(PIN_A0); }
+static void GPIOPortA_Handler(void) { GPIOGeneric_Handler(PIN_A0); }
 
-void GPIOPortB_Handler(void) { GPIOGeneric_Handler(PIN_B0); }
+static void GPIOPortB_Handler(void) { GPIOGeneric_Handler(PIN_B0); }
 
-void GPIOPortC_Handler(void) { GPIOGeneric_Handler(PIN_C0); }
+static void GPIOPortC_Handler(void) { GPIOGeneric_Handler(PIN_C0); }
 
-void GPIOPortD_Handler(void) { GPIOGeneric_Handler(PIN_D0); }
+static void GPIOPortD_Handler(void) { GPIOGeneric_Handler(PIN_D0); }
 
-void GPIOPortE_Handler(void) { GPIOGeneric_Handler(PIN_E0); }
+static void GPIOPortE_Handler(void) { GPIOGeneric_Handler(PIN_E0); }
 
-void GPIOPortF_Handler(void) { GPIOGeneric_Handler(PIN_F0); }
+static void GPIOPortF_Handler(void) { GPIOGeneric_Handler(PIN_F0); }
 
 #ifdef __FAST__
 void GPIOSetBit(GPIOPin_t pin, bool val) {
@@ -447,7 +447,7 @@ void GPIOSetBit(GPIOPin_t pin, bool val) {
         case PIN_B7:
             GET_REG(0x40005200) = val << 7;
             break;
-        
+
         case PIN_C0:
             GET_REG(0x40006004) = val;
             break;
@@ -547,13 +547,15 @@ void GPIOSetBit(GPIOPin_t pin, bool val) {
         case PIN_F7:
             GET_REG(0x40025200) = val << 7;
             break;
+        default:
+            assert(0); // Failure condition - this passed the initial assert.
     }
 }
 
 bool GPIOGetBit(GPIOPin_t pin) {
     /* Initialization asserts. */
     assert(pin < PIN_COUNT);
-    
+
     switch (pin) {
         case PIN_A0:
             return GET_REG(0x40004004);
@@ -588,7 +590,7 @@ bool GPIOGetBit(GPIOPin_t pin) {
             return GET_REG(0x40005100);
         case PIN_B7:
             return GET_REG(0x40005200);
-        
+
         case PIN_C0:
             return GET_REG(0x40006004);
         case PIN_C1:
@@ -656,9 +658,9 @@ bool GPIOGetBit(GPIOPin_t pin) {
             return GET_REG(0x40025100);
         case PIN_F7:
             return GET_REG(0x40025200);
-		default:
-			assert(0); // Failure condition - this passed the initial assert.
-			return false;
+        default:
+            assert(0); // Failure condition - this passed the initial assert.
+            return false;
     }
 }
 
@@ -670,33 +672,33 @@ void GPIOSetBit(GPIOPin_t pin, bool value) {
 
     /* 1. Generate the port offset to find the correct addresses.
           There are a couple components in this line:
-       
+
           Note (pin >= PIN_E0). This is a variation of a branchless programming
           technique. See https://www.youtube.com/watch?v=bVJ-mWWL7cE for more
           details.
-       
-         (((pin - XXX) >> 3) << 12) : 
+
+         (((pin - XXX) >> 3) << 12) :
                 Every group of eight pins belongs to the same port, and every
                 port has an offset of 0x1000 from each other (typically) (p.685
                 in the datasheet). This expression right shifts the pin to mask
                 the address (from 0 - 6 | A - F). It then left shifts it to get
                 the offset (1 << 12 is 0x1000). This is later appended to
                 GPIO_PORT_BASE to get the port address.
-       
+
                 The term `- XXX` is a conditional expanded to the following:
-       
+
                               XXX = ((pin >= PIN_E0) << 5)
-       
-                This conditional is similar to `(pin >= PIN_E0)`. If the pin is 
-                in Port E or Port F, we subtract the effective pin by 32 (the 
-                enum value of PIN_E0) to get the correct port offset. This is 
+
+                This conditional is similar to `(pin >= PIN_E0)`. If the pin is
+                in Port E or Port F, we subtract the effective pin by 32 (the
+                enum value of PIN_E0) to get the correct port offset. This is
                 equivalent to 1 << 5, where `(pin >= PIN_E0)` is 1 if true.
-       
-          + (pin >= PIN_E0) << 17 : 
+
+          + (pin >= PIN_E0) << 17 :
                 Port E and F are special in that they requires an
-                extra offset of 0x0002.0000; we add that base offset, which is 
+                extra offset of 0x0002.0000; we add that base offset, which is
                 equivalent to 1 << 7, where `(pin >= PIN_E0)` is 1 if true. */
-    uint32_t portOffset = 
+    uint32_t portOffset =
         (((pin - ((pin >= PIN_E0) << 5)) >> 3) << 12) + ((pin >= PIN_E0) << 17);
 
     /* 2. Determine the pin address. I.E. PF1 (41) % 8 = 1. */
@@ -710,34 +712,34 @@ bool GPIOGetBit(GPIOPin_t pin) {
 
     /** 1. Generate the port offset to find the correct addresses.
      *    There are a couple components in this line:
-     * 
+     *
      *    Note (pin >= PIN_E0). This is a variation of a branchless programming
      *    technique. See https://www.youtube.com/watch?v=bVJ-mWWL7cE for more
      *    details.
-     * 
-     *    (((pin - XXX >> 3) << 12) : 
+     *
+     *    (((pin - XXX >> 3) << 12) :
      *          Every group of eight pins belongs to the same port, and every
      *          port has an offset of 0x1000 from each other (typically) (p.685
      *          in the datasheet). This expression right shifts the pin to mask
      *          the address (from 0 - 6 | A - F). It then left shifts it to get
      *          the offset (1 << 12 is 0x1000). This is later appended to
      *          GPIO_PORT_BASE to get the port address.
-     * 
+     *
      *          The term `- XXX` is a conditional expanded to the following:
-     * 
+     *
      *                        XXX = ((pin >= PIN_E0) << 5)
-     * 
-     *          This conditional is similar to `(pin >= PIN_E0)`. If the pin is 
-     *          in Port E or Port F, we subtract the effective pin by 32 (the 
-     *          enum value of PIN_E0) to get the correct port offset. This is 
+     *
+     *          This conditional is similar to `(pin >= PIN_E0)`. If the pin is
+     *          in Port E or Port F, we subtract the effective pin by 32 (the
+     *          enum value of PIN_E0) to get the correct port offset. This is
      *          equivalent to 1 << 5, where `(pin >= PIN_E0)` is 1 if true.
-     * 
-     *    + (pin >= PIN_E0) << 17 : 
+     *
+     *    + (pin >= PIN_E0) << 17 :
      *          Port E and F are special in that they requires an
-     *          extra offset of 0x0002.0000; we add that base offset, which is 
+     *          extra offset of 0x0002.0000; we add that base offset, which is
      *          equivalent to 1 << 7, where `(pin >= PIN_E0)` is 1 if true.
      */
-    uint32_t portOffset = 
+    uint32_t portOffset =
         (((pin - ((pin >= PIN_E0) << 5)) >> 3) << 12) + ((pin >= PIN_E0) << 17);
 
     /* 2. Determine the pin address. I.E. PF1 (41) % 8 = 1. */

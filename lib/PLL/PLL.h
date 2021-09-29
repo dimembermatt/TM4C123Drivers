@@ -1,10 +1,11 @@
 /**
- * PLL.h
- * Devices: LM4F120; TM4C123
- * Description: PLL driver.
- * Authors: Matthew Yu.
- * Last Modified: 09/16/21
- * 
+ * @file PLL.h
+ * @author Jonathan Valvano (valvano@mail.utexas.edu), modified by Matthew Yu
+ *         (matthewjkyu@gmail.com) 
+ * @brief PLL driver.
+ * @version 0.1
+ * @date 2021-09-28
+ * @copyright
  * With modifications from:
  *      "Embedded Systems: Introduction to ARM Cortex M Microcontrollers",
  *          ISBN: 978-1469998749, Jonathan Valvano, copyright (c) 2020
@@ -26,6 +27,8 @@
  * For more information about my classes, my research, and my books, see
  * http://users.ece.utexas.edu/~valvano/
  */
+
+/** General imports. */
 #include <stdint.h>
 
 

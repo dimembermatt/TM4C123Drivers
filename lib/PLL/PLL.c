@@ -1,10 +1,11 @@
 /**
- * PLL.c
- * Devices: LM4F120; TM4C123
- * Description: PLL driver.
- * Authors: Matthew Yu.
- * Last Modified: 09/16/21
- * 
+ * @file PLL.c
+ * @author Jonathan Valvano (valvano@mail.utexas.edu), modified by Matthew Yu
+ *         (matthewjkyu@gmail.com) 
+ * @brief PLL driver.
+ * @version 0.1
+ * @date 2021-09-28
+ * @copyright
  * With modifications from:
  *      "Embedded Systems: Introduction to ARM Cortex M Microcontrollers",
  *          ISBN: 978-1469998749, Jonathan Valvano, copyright (c) 2020
@@ -26,17 +27,12 @@
  * For more information about my classes, my research, and my books, see
  * http://users.ece.utexas.edu/~valvano/
  */
-#include <stdint.h>
+
+/** Device specific imports. */
 #include <lib/PLL/PLL.h>
 #include <inc/RegDefs.h>
 
 
-/**
- * PLLInit sets up the internal clock at the provided frequency.
- * 
- * @param freq Frequency to drive the TM4C.
- * @note Use the defines defined in the header file.
- */
 void PLLInit(uint32_t freq) {
     /* 1. Configure the system to use RCC@ for advanced features. */
     GET_REG(SYSCTL_BASE + SYSCTL_RCC2_OFFSET) |= 0x80000000;
@@ -61,7 +57,7 @@ void PLLInit(uint32_t freq) {
     GET_REG(SYSCTL_BASE + SYSCTL_RCC2_OFFSET) |= freq << 22;
 
     /* 7. Wait for PLL to lock. */
-    while ((GET_REG(SYSCTL_BASE + SYSCTL_RIS_OFFSET) & 0x00000040) == 0) {};
+    while ((GET_REG(SYSCTL_BASE + SYSCTL_RIS_OFFSET) & 0x00000040) == 0) {}
 
     /* 8. Enable PLL. */
     GET_REG(SYSCTL_BASE + SYSCTL_RCC2_OFFSET) &= ~0x00000800;

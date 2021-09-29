@@ -3,7 +3,7 @@
  * @author Matthew Yu (matthewjkyu@gmail.com)
  * @brief GPIO peripheral driver.
  * @version 0.1
- * @date 2021-09-22
+ * @date 2021-09-28
  * @copyright Copyright (c) 2021
  * @note
  * Fast Mode. Use optional compilation flag (1) or define a preprocessor macro
@@ -13,7 +13,7 @@
  * This is high recommended for programs using interrupts that call these
  * functions to edit GPIO bits, or for high frequency operation programs. There
  * is a tradeoff of on the order of 100x speedup vs 1KB more lines of DATA.
- * 
+ *
  * Unsupported Features. This driver does not support DMA control.
  */
 
@@ -35,14 +35,14 @@ typedef enum GPIOPin {
     PIN_COUNT, PINS_PER_PORT = 8, PORT_COUNT = PIN_COUNT / PINS_PER_PORT,
 } GPIOPin_t;
 
-/** 
+/**
  * @brief GPIOConfig_t is a user defined struct that specifies a GPIO pin
  *        configuration.
  */
 typedef struct GPIOConfig {
     /**
      * @brief The GPIO Pin to enable.
-     * 
+     *
      * Default is PIN_A0.
      */
     GPIOPin_t pin;
@@ -52,39 +52,39 @@ typedef struct GPIOConfig {
     /**
      * @brief Whether the GPIO activates the internal pullup or pulldown
      *        resistor, or is open drain.
-     * 
+     *
      * Default is TRI_STATE.
      */
     enum GPIOPull { GPIO_TRI_STATE, GPIO_PULL_UP, GPIO_PULL_DOWN, GPIO_OPEN_DRAIN } pull;
 
     /**
      * @brief Direction of the pin. True for output, false for input.
-     * 
+     *
      * Default is false (Input).
      */
     bool isOutput;
 
-    /** 
+    /**
      * @brief Alternate function encoding from 1 to 15. A zero value indicates
      *        that alternate function is off. See Table 23-5. GPIO Pins and
      *        Alternative Functions on p. 1351 of the TM4C Datasheet for more
-     *        details. 
-     * 
+     *        details.
+     *
      * Default is 0 (Alternate function is disabled).
      */
     uint8_t alternateFunction;
 
-    /** 
+    /**
      * @brief Whether the pin is digital or analog. True for analog, false for
      *        digital.
-     *  
+     *
      * Default is false (Digital mode).
      */
     bool isAnalog;
 
     /**
      * @brief The drive strength of the pin.
-     * 
+     *
      * Default is 2-mA drive.
      */
     enum GPIODrive { GPIO_DRIVE_2MA, GPIO_DRIVE_4MA, GPIO_DRIVE_8MA } drive;
@@ -92,31 +92,31 @@ typedef struct GPIOConfig {
     /**
      * @brief Used for 8-mA drive strength; whether slew rate control is enabled.
      *        Essentially increases the GPIO rise and fall time by a couple ns
-     *        on 8-mA drive. 
-     * 
+     *        on 8-mA drive.
+     *
      * Default is false (Slew rate control is disabled).
      */
     bool enableSlew;
 } GPIOConfig_t;
 
-/** 
+/**
  * @brief GPIOInterruptConfig_t is a user defined struct that specifies a GPIO
  *        pin interrupt configuration.
- */ 
+ */
 typedef struct GPIOInterruptConfig {
-    /** 
+    /**
      * @brief GPIO edge interrupt priority. From 0 - 7. Lower value is higher
      *        priority.
-     * 
+     *
      * Default is 0 (Highest priority).
      */
     uint8_t priority;
 
-    /** 
+    /**
      * @brief Pointer to function called on rising edge interrupts. Accepts any
      *        number of arguments, but they must be handled as pointers by the
-     *        function. 
-     * 
+     *        function.
+     *
      * Default is NULL (No function defined).
      */
     void (*touchTask)(uint32_t *args);
@@ -124,18 +124,18 @@ typedef struct GPIOInterruptConfig {
     /**
      * @brief The pointer to an array of uint32_t arguments that fed into
      *        touchTask upon being called.
-     * 
+     *
      * Default is NULL (No pointer to any arguments is defined).
-     * 
+     *
      * @note Use with caution. The programmer is responsible for handling
      *       touchArgs inside of their touchTask function implementation.
      */
     uint32_t * touchArgs;
-    
-    /** 
+
+    /**
      * @brief Pointer to function called on falling edge interrupts. Accepts any
      *        number of arguments, but they must be handled as pointers by the function.
-     * 
+     *
      * Default is NULL (No function defined).
      */
     void (*releaseTask)(uint32_t *args);
@@ -143,18 +143,18 @@ typedef struct GPIOInterruptConfig {
     /**
      * @brief The pointer to an array of uint32_t arguments that fed into
      *        releaseTask upon being called.
-     * 
+     *
      * Default is NULL (No pointer to any arguments is defined).
-     * 
+     *
      * @note Use with caution. The programmer is responsible for handling
      *       releaseArgs inside of their releaseTask function implementation.
      */
     uint32_t * releaseArgs;
 
-    /** 
+    /**
      * @brief Whether an input pin was previously raised or lowered. Used for
-     *        debouncing. 
-     * 
+     *        debouncing.
+     *
      * Default is LOWERED.
      */
     enum GPIOIntPinStatus {LOWERED, RAISED} pinStatus;
@@ -162,7 +162,7 @@ typedef struct GPIOInterruptConfig {
 
 /**
  * @brief GPIOInit initializes a GPIO pin given a configuration.
- * 
+ *
  * @param config Configuration for pin.
  * @return A GPIOPin_t pin.
  * @note By default, this driver does not support slew rate or drive strength.
@@ -171,8 +171,8 @@ GPIOPin_t GPIOInit(GPIOConfig_t config);
 
 /**
  * @brief GPIOIntInit is a version of the initializer that provides interrupt
- *        capability. 
- * 
+ *        capability.
+ *
  * @param config Configuration for pin.
  * @param intConfig Configuration for pin interrupt.
  * @return A GPIOPin_t pin.
@@ -182,7 +182,7 @@ GPIOPin_t GPIOIntInit(GPIOConfig_t config, GPIOInterruptConfig_t intConfig);
 
 /**
  * @brief GPIOSetBit sets the bit for an (assumed) output GPIO pin.
- * 
+ *
  * @param pin GPIOPin_t to set.
  * @param value 0 (false) or 1 (true) value to set pin to.
  * @note This method assumes that the GPIO was configured as an output.
@@ -191,7 +191,7 @@ void GPIOSetBit(GPIOPin_t pin, bool value);
 
 /**
  * @brief GPIOGetBit returns the value of the bit at the specified GPIO pin.
- * 
+ *
  * @param pin GPIOPin_t to set.
  * @return value 0 (false) or 1 (true) value of the pin.
  */

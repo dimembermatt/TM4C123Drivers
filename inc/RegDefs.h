@@ -1,9 +1,10 @@
 /**
- * RegDefs.h
- * Devices: LM4F120; TM4C123
- * Description: TM4C123GH6PM Register definitions for drivers.
- * Authors: Matthew Yu.
- * Last Modified: 09/16/21
+ * @file RegDefs.h
+ * @author Matthew Yu (matthewjkyu@gmail.com)
+ * @brief TM4C123GH6PM register definitions for drivers.
+ * @version 0.2
+ * @date 2021-09-28
+ * @copyright Copyright (c) 2021
  */
 #pragma once
 
@@ -11,7 +12,7 @@
  * Function for generating code for getting a register. Left hand side of
  * assignment only. 
  */
-#define GET_REG(addr) (*((volatile uint32_t *)(addr)))
+#define GET_REG(addr) (*((volatile int32_t *)(addr)))
 
 /**
  * See Table 11-12. Timers Register Map on p. 726 of the TM4C Datasheet for

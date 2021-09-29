@@ -94,10 +94,10 @@ int main(void) {
 }
 
 #elif __MAIN__ == 1
-Timer_t timer;
+static Timer_t timer;
 
 /** This dummy task increments an internal counter and toggles an LED. */
-void dummyTask(uint32_t * args) {
+static void dummyTask(uint32_t * args) {
     static uint32_t counter = 0;
     ++counter;
     GPIOSetBit(PIN_F1, !GPIOGetBit(PIN_F1));
