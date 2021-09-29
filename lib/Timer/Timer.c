@@ -21,6 +21,8 @@
 #include <lib/Timer/Timer.h>
 
 
+void WaitForInterrupt(void);    // Defined in startup.s
+
 /**
  * @brief This field is either 0, 1, 2, 3, specifying the byte that the
  *        interrupt of priority X should be set to.
@@ -73,7 +75,7 @@ static struct TimerInterruptSettings {
     // {}, /* WTimer 5A. */
     // {}, /* WTimer 5B. */
 
-    {INTA, 0, 0, 0, NULL}, /* SYSTICK. */
+    {INTA, 0, 0, 0, NULL, NULL}, /* SYSTICK. */
 };
 
 Timer_t TimerInit(TimerConfig_t config) {
@@ -128,12 +130,12 @@ Timer_t TimerInit(TimerConfig_t config) {
     if (ID <= TIMER_5B) { /* 16/32 bit normal timers. */
         GET_REG(SYSCTL_BASE + SYSCTL_RCGCTIMER_OFFSET) |= (0x01 << (uint32_t)(ID >> 1));
         while ((GET_REG(SYSCTL_BASE + SYSCTL_PRTIMER_OFFSET) &
-            (0x01 << (uint32_t)(ID >> 1))) == 0) {};
+            (0x01 << (uint32_t)(ID >> 1))) == 0) {}
     } else { /* 32/64 bit wide timers. */
         /* Our magic number 12, is the enumerated value of WTIMER_0A. */
         GET_REG(SYSCTL_BASE + SYSCTL_RCGCWTIMER_OFFSET) |= (0x01 << (uint32_t)((ID-12) >> 1));
         while ((GET_REG(SYSCTL_BASE + SYSCTL_PRWTIMER_OFFSET) &
-            (0x01 << (uint32_t)((ID-12) >> 1))) == 0) {};
+            (0x01 << (uint32_t)((ID-12) >> 1))) == 0) {}
     }
 
     /* 2. Disable timer during setup. */
@@ -191,6 +193,7 @@ Timer_t TimerInit(TimerConfig_t config) {
 void TimerUpdatePeriod(Timer_t timer) {
     /* Initialization asserts. */
     assert(timer.timerID < TIMER_COUNT);
+    assert(0 < timer.period);
 
     uint8_t ID = timer.timerID;
 
@@ -353,11 +356,11 @@ void WideTimer5A_Handler(void) {}
 void WideTimer5B_Handler(void) {}
 
 /** @brief System clock ticks since program start. Used for delay functions. */
-static uint64_t tick = 0;
+static uint64_t systick = 0;
 
 void SysTick_Handler(void) {
     /* Note: This will roll over at 0xFFFFFFFFFFFFFFFF. Be warned. */
-    ++tick;
+    ++systick;
 
     if (TimerInterruptSettings[24].timerTask != NULL) {
         TimerInterruptSettings[24].timerTask(TimerInterruptSettings[24].timerArgs);
@@ -365,7 +368,7 @@ void SysTick_Handler(void) {
 }
 
 uint64_t SysTickGetTick(void) {
-    return tick;
+    return systick;
 }
 
 void DelayInit(void) {
@@ -381,15 +384,15 @@ void DelayInit(void) {
 }
 
 void DelayMillisec(uint32_t n) {
-    uint64_t tick = SysTickGetTick();
+    uint64_t tick = systick;
 
     /* 1_000 ticks is 1 ms. Tuned to 1 MHz SysTick. */
-    while (SysTickGetTick() - tick < 1000 * n);
+    while (systick - tick < 1000 * n) { WaitForInterrupt(); }
 }
 
 void DelayMicrosec(uint32_t n) {
-    uint64_t tick = SysTickGetTick();
+    uint64_t tick = systick;
 
     /* 1 tick is 1 us. Tuned to 1 MHz SysTick. */
-    while (SysTickGetTick() - tick < n);
+    while (systick - tick < n) { WaitForInterrupt(); }
 }

@@ -28,7 +28,7 @@ SSIModule_t SSIInit(SSIConfig_t config) {
 
     /* 1. Enable the SSI module clock and stall until ready. */
     GET_REG(SYSCTL_BASE + SYSCTL_RCGCSSI_OFFSET) |= (1 << (config.ssi%4));
-    while ((GET_REG(SYSCTL_BASE + SYSCTL_PRSSI_OFFSET) & 
+    while ((GET_REG(SYSCTL_BASE + SYSCTL_PRSSI_OFFSET) &
            (1 << (config.ssi%4))) == 0) {};
 
     /* 2. Enable the appropriate GPIO pins. */
@@ -67,6 +67,8 @@ SSIModule_t SSIInit(SSIConfig_t config) {
             configs[2].pin = PIN_F2;
             configs[3].pin = PIN_F3;
             break;
+        default:
+            break;
     }
     GPIOInit(configs[0]);
     GPIOInit(configs[1]);
@@ -86,25 +88,25 @@ SSIModule_t SSIInit(SSIConfig_t config) {
 
     /* 5. Set SSI to primary/secondary and set loopback mode. */
     GET_REG(SSI_BASE + SSIOffset + SSI_CR1_OFFSET) &= ~0x1F;
-    GET_REG(SSI_BASE + SSIOffset + SSI_CR1_OFFSET) |= 
+    GET_REG(SSI_BASE + SSIOffset + SSI_CR1_OFFSET) |=
         /* TODO: (config.endOfTransmit << 4) | */
-        (config.isSecondary << 2) | 
+        (config.isSecondary << 2) |
         (config.isLoopback);
 
     /* 6. Configure SSI clock source. */
     GET_REG(SSI_BASE + SSIOffset + SSI_CC_OFFSET) = 0x00000000;
 
     /* 7. Configure clock prescale divisor. By default, 10MHz with an 80MHz
-       SysClk. */ 
+       SysClk. */
     GET_REG(SSI_BASE + SSIOffset + SSI_CPSR_OFFSET) = config.ssiPrescaler;
 
     /* 8. Set clock phase, clock polarity, frame format, and data size. */
     GET_REG(SSI_BASE + SSIOffset + SSI_CR0_OFFSET) &= ~(0x0000FFFF);
-    GET_REG(SSI_BASE + SSIOffset + SSI_CR0_OFFSET) |= 
+    GET_REG(SSI_BASE + SSIOffset + SSI_CR0_OFFSET) |=
         (config.ssiClockModifier << 8) |
         (config.polarity << 7) |
-        (!config.isClockLow << 6) | 
-        (config.frameFormat << 4) | 
+        (!config.isClockLow << 6) |
+        (config.frameFormat << 4) |
         config.dataSize;
 
     /* 9. Re-enable SSI operation. */
@@ -123,9 +125,9 @@ uint16_t SPIRead(SSIModule_t ssi) {
        SSI module. */
     uint32_t SSIOffset = 0x1000 * (ssi%4);
 
-    /* Poll until Receive FIFO is not empty. */ 
+    /* Poll until Receive FIFO is not empty. */
     while (!(GET_REG(SSI_BASE + SSIOffset + SSI_SR_OFFSET) & 0x4)) {}
-		
+
     return GET_REG(SSI_BASE + SSIOffset + SSI_DR_OFFSET) & 0xFFFF;
 }
 
