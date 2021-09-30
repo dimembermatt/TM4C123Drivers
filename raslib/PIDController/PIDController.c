@@ -142,8 +142,18 @@ PIDConfig_t PIDControllerTune(
                     /* Delay the cycle by msCycleDelay for the new input to propagate. */
                     DelayMillisec(msCycleDelay);
 
+					double outputHist[5] = {0.0};
                     uint32_t iter;
                     for (iter = 0; iter < numCycles; ++iter) {
+						outputHist[iter%5] = sensorFunction();
+						double outputHistTailAvg = 
+							(outputHist[0] + 
+							 outputHist[1] + 
+							 outputHist[2] + 
+							 outputHist[3] + 
+							 outputHist[4]) / 5;
+
+					
 						/* This function does three things at once. 
 						   1. It captures the current sensor value
 						   2. Iterates the PID controller to generate a new setpoint
@@ -154,7 +164,7 @@ PIDConfig_t PIDControllerTune(
                         DelayMillisec(msCycleDelay);
 	
                         /* Evaluate convergence speed. */
-                        if (fabs(desiredOutput - sensorFunction()) / desiredOutput < 0.05 && iter < convergenceCycles) {
+                        if (fabs(desiredOutput - outputHistTailAvg) / desiredOutput < 0.05 && iter < convergenceCycles) {
                             convergenceID = p << 16 | i << 8 | d;
                             convergenceCycles = iter;
                             break;

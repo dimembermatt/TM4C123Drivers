@@ -57,15 +57,15 @@ int main(void) {
 
     PIDConfig_t pidConfig = PIDControllerInit(1000.0, 0.0, 0.0, 0.5, 0.1);
 
-	EnableInterrupts();
+    EnableInterrupts();
     uint8_t iteration = 0;
     while (1) {
         if (iteration < MAX_ITERATIONS) {
             history[iteration] = sensorFunction();
             ++iteration;
         } else {
-			while (1) {}
-		}
+            while (1) {}
+        }
 
         /* This function does three things at once. 
            1. It captures the current sensor value
@@ -86,9 +86,12 @@ int main(void) {
 
     PIDConfig_t pidConfig = PIDControllerInit(1000.0, 0.0, 0.0, 0.0, 0.0);
 
-	EnableInterrupts();
-	
-	pidConfig = PIDControllerTune(pidConfig, ACCURACY, plantFunction, sensorFunction, target, 0, 50);
+    EnableInterrupts();
+    
+    /* Try with SPEED and ACCURACY modes and see what results you get. Try
+       modifying the plantFunction and making the new sensorValue a 
+       derivative result of the input. */
+    pidConfig = PIDControllerTune(pidConfig, SPEED, plantFunction, sensorFunction, target, 0, 50);
     while (1) {}
 }
 #endif

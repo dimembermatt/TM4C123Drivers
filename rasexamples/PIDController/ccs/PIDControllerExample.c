@@ -88,7 +88,10 @@ int main(void) {
 
 	EnableInterrupts();
 	
-	pidConfig = PIDControllerTune(pidConfig, ACCURACY, plantFunction, sensorFunction, target, 0, 50);
+	/* Try with SPEED and ACCURACY modes and see what results you get. Try
+	   modifying the plantFunction and making the new sensorValue a 
+	   derivative result of the input. */
+	pidConfig = PIDControllerTune(pidConfig, SPEED, plantFunction, sensorFunction, target, 0, 50);
     while (1) {}
 }
 #endif
