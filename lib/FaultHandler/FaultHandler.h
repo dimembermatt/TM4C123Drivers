@@ -4,7 +4,7 @@
  * @brief This file contains user implementations of fault handlers such as
  *        HardFault_Handler, __aeabi_assert, and so on.
  * @version 0.1
- * @date 2021-09-23
+ * @date 2021-09-28
  * @copyright Copyright (c) 2021
  */
 
@@ -22,7 +22,7 @@
  * @note Users are encouraged to override the implementation of __aeabi_assert
  *       in FaultHandler.c for their programs.
  */
-void __aeabi_assert(const char *expr, const char *file, int line);
+void __aeabi_assert(const char *expr, const char *file, int line) __attribute__((noreturn));
 
 /**
  * @brief HardFault_Handler is executed when either: a developer calls this
@@ -37,4 +37,4 @@ void __aeabi_assert(const char *expr, const char *file, int line);
  * @note Users are encouraged to override the implementation of HardFault_Handler
  *       in FaultHandler.c for their programs.
  */
-void HardFault_Handler(void);
+void HardFault_Handler(void) __attribute__((noreturn));
