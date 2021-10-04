@@ -21,7 +21,10 @@ Options:
 
 
 run_build() {
+  echo "Building documentation..."
   bundle exec middleman build --clean
+  echo "Copying build files to docs folder.."
+  cp -r build/* ..
 }
 
 parse_args() {

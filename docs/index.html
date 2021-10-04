@@ -1,0 +1,1105 @@
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta
+            name="description"
+            content="RASware Documentation"
+        >
+    <title>API Reference</title>
+
+    <style media="screen">
+      .highlight table td { padding: 5px; }
+.highlight table pre { margin: 0; }
+.highlight .gh {
+  color: #999999;
+}
+.highlight .sr {
+  color: #f6aa11;
+}
+.highlight .go {
+  color: #888888;
+}
+.highlight .gp {
+  color: #555555;
+}
+.highlight .gs {
+}
+.highlight .gu {
+  color: #aaaaaa;
+}
+.highlight .nb {
+  color: #f6aa11;
+}
+.highlight .cm {
+  color: #75715e;
+}
+.highlight .cp {
+  color: #75715e;
+}
+.highlight .c1 {
+  color: #75715e;
+}
+.highlight .cs {
+  color: #75715e;
+}
+.highlight .c, .highlight .ch, .highlight .cd, .highlight .cpf {
+  color: #75715e;
+}
+.highlight .err {
+  color: #960050;
+}
+.highlight .gr {
+  color: #960050;
+}
+.highlight .gt {
+  color: #960050;
+}
+.highlight .gd {
+  color: #49483e;
+}
+.highlight .gi {
+  color: #49483e;
+}
+.highlight .ge {
+  color: #49483e;
+}
+.highlight .kc {
+  color: #66d9ef;
+}
+.highlight .kd {
+  color: #66d9ef;
+}
+.highlight .kr {
+  color: #66d9ef;
+}
+.highlight .no {
+  color: #66d9ef;
+}
+.highlight .kt {
+  color: #66d9ef;
+}
+.highlight .mf {
+  color: #ae81ff;
+}
+.highlight .mh {
+  color: #ae81ff;
+}
+.highlight .il {
+  color: #ae81ff;
+}
+.highlight .mi {
+  color: #ae81ff;
+}
+.highlight .mo {
+  color: #ae81ff;
+}
+.highlight .m, .highlight .mb, .highlight .mx {
+  color: #ae81ff;
+}
+.highlight .sc {
+  color: #ae81ff;
+}
+.highlight .se {
+  color: #ae81ff;
+}
+.highlight .ss {
+  color: #ae81ff;
+}
+.highlight .sd {
+  color: #e6db74;
+}
+.highlight .s2 {
+  color: #e6db74;
+}
+.highlight .sb {
+  color: #e6db74;
+}
+.highlight .sh {
+  color: #e6db74;
+}
+.highlight .si {
+  color: #e6db74;
+}
+.highlight .sx {
+  color: #e6db74;
+}
+.highlight .s1 {
+  color: #e6db74;
+}
+.highlight .s, .highlight .sa, .highlight .dl {
+  color: #e6db74;
+}
+.highlight .na {
+  color: #a6e22e;
+}
+.highlight .nc {
+  color: #a6e22e;
+}
+.highlight .nd {
+  color: #a6e22e;
+}
+.highlight .ne {
+  color: #a6e22e;
+}
+.highlight .nf, .highlight .fm {
+  color: #a6e22e;
+}
+.highlight .vc {
+  color: #ffffff;
+}
+.highlight .nn {
+  color: #ffffff;
+}
+.highlight .ni {
+  color: #ffffff;
+}
+.highlight .bp {
+  color: #ffffff;
+}
+.highlight .vg {
+  color: #ffffff;
+}
+.highlight .vi {
+  color: #ffffff;
+}
+.highlight .nv, .highlight .vm {
+  color: #ffffff;
+}
+.highlight .w {
+  color: #ffffff;
+}
+.highlight {
+  color: #ffffff;
+}
+.highlight .n, .highlight .py, .highlight .nx {
+  color: #ffffff;
+}
+.highlight .nl {
+  color: #f92672;
+}
+.highlight .ow {
+  color: #f92672;
+}
+.highlight .nt {
+  color: #f92672;
+}
+.highlight .k, .highlight .kv {
+  color: #f92672;
+}
+.highlight .kn {
+  color: #f92672;
+}
+.highlight .kp {
+  color: #f92672;
+}
+.highlight .o {
+  color: #f92672;
+}
+    </style>
+    <style media="print">
+      * {
+        -webkit-transition:none!important;
+        transition:none!important;
+      }
+      .highlight table td { padding: 5px; }
+.highlight table pre { margin: 0; }
+.highlight, .highlight .w {
+  color: #586e75;
+}
+.highlight .err {
+  color: #002b36;
+  background-color: #dc322f;
+}
+.highlight .c, .highlight .ch, .highlight .cd, .highlight .cm, .highlight .cpf, .highlight .c1, .highlight .cs {
+  color: #657b83;
+}
+.highlight .cp {
+  color: #b58900;
+}
+.highlight .nt {
+  color: #b58900;
+}
+.highlight .o, .highlight .ow {
+  color: #93a1a1;
+}
+.highlight .p, .highlight .pi {
+  color: #93a1a1;
+}
+.highlight .gi {
+  color: #859900;
+}
+.highlight .gd {
+  color: #dc322f;
+}
+.highlight .gh {
+  color: #268bd2;
+  background-color: #002b36;
+  font-weight: bold;
+}
+.highlight .k, .highlight .kn, .highlight .kp, .highlight .kr, .highlight .kv {
+  color: #6c71c4;
+}
+.highlight .kc {
+  color: #cb4b16;
+}
+.highlight .kt {
+  color: #cb4b16;
+}
+.highlight .kd {
+  color: #cb4b16;
+}
+.highlight .s, .highlight .sb, .highlight .sc, .highlight .dl, .highlight .sd, .highlight .s2, .highlight .sh, .highlight .sx, .highlight .s1 {
+  color: #859900;
+}
+.highlight .sa {
+  color: #6c71c4;
+}
+.highlight .sr {
+  color: #2aa198;
+}
+.highlight .si {
+  color: #d33682;
+}
+.highlight .se {
+  color: #d33682;
+}
+.highlight .nn {
+  color: #b58900;
+}
+.highlight .nc {
+  color: #b58900;
+}
+.highlight .no {
+  color: #b58900;
+}
+.highlight .na {
+  color: #268bd2;
+}
+.highlight .m, .highlight .mb, .highlight .mf, .highlight .mh, .highlight .mi, .highlight .il, .highlight .mo, .highlight .mx {
+  color: #859900;
+}
+.highlight .ss {
+  color: #859900;
+}
+    </style>
+    <link href="stylesheets/screen-a5d0f6cd.css" rel="stylesheet" media="screen" />
+    <link href="stylesheets/print-953e3353.css" rel="stylesheet" media="print" />
+      <script src="javascripts/all-83b11cfd.js"></script>
+
+    <script>
+      $(function() { setupCodeCopy(); });
+    </script>
+  </head>
+
+  <body class="index" data-languages="[&quot;c&quot;]">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="images/navbar-cad8cdcb.png" alt="" />
+      </span>
+    </a>
+    <div class="toc-wrapper">
+      <img src="images/logo-1e815a84.png" class="logo" alt="" />
+        <div class="lang-selector">
+              <a href="#" data-language-name="c">c</a>
+        </div>
+        <div class="search">
+          <input type="text" class="search" id="input-search" placeholder="Search">
+        </div>
+        <ul class="search-results"></ul>
+      <ul id="toc" class="toc-list-h1">
+          <li>
+            <a href="#introduction" class="toc-h1 toc-link" data-title="Introduction">Introduction</a>
+          </li>
+          <li>
+            <a href="#contributors" class="toc-h1 toc-link" data-title="Contributors">Contributors</a>
+          </li>
+          <li>
+            <a href="#copyright" class="toc-h1 toc-link" data-title="Copyright">Copyright</a>
+          </li>
+          <li>
+            <a href="#setup" class="toc-h1 toc-link" data-title="Setup">Setup</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#installing-git" class="toc-h2 toc-link" data-title="Installing Git">Installing Git</a>
+                  </li>
+                  <li>
+                    <a href="#creating-a-github-account" class="toc-h2 toc-link" data-title="Creating a Github Account">Creating a Github Account</a>
+                  </li>
+                  <li>
+                    <a href="#downloading-the-rasware-repository" class="toc-h2 toc-link" data-title="Downloading the RASware repository">Downloading the RASware repository</a>
+                  </li>
+                  <li>
+                    <a href="#github-desktop" class="toc-h2 toc-link" data-title="Github Desktop">Github Desktop</a>
+                  </li>
+                  <li>
+                    <a href="#ccs-windows-mac-linux" class="toc-h2 toc-link" data-title="CCS (Windows/Mac/Linux)">CCS (Windows/Mac/Linux)</a>
+                  </li>
+                  <li>
+                    <a href="#alt-keil-windows" class="toc-h2 toc-link" data-title="Alt:Keil (Windows)">Alt:Keil (Windows)</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#running-a-demo-project" class="toc-h1 toc-link" data-title="Running A Demo Project">Running A Demo Project</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#setup" class="toc-h2 toc-link" data-title="Setup">Setup</a>
+                  </li>
+                  <li>
+                    <a href="#code-structure" class="toc-h2 toc-link" data-title="Code Structure">Code Structure</a>
+                  </li>
+                  <li>
+                    <a href="#final-note" class="toc-h2 toc-link" data-title="Final Note">Final Note</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#creating-your-first-project" class="toc-h1 toc-link" data-title="Creating Your First Project">Creating Your First Project</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#setup" class="toc-h2 toc-link" data-title="Setup">Setup</a>
+                  </li>
+                  <li>
+                    <a href="#code-structure" class="toc-h2 toc-link" data-title="Code Structure">Code Structure</a>
+                      <ul class="toc-list-h3">
+                          <li>
+                            <a href="#adding-includes" class="toc-h3 toc-link" data-title="Adding Includes">Adding Includes</a>
+                          </li>
+                          <li>
+                            <a href="#adding-the-include-path" class="toc-h3 toc-link" data-title="Adding the Include Path">Adding the Include Path</a>
+                          </li>
+                          <li>
+                            <a href="#adding-leds" class="toc-h3 toc-link" data-title="Adding LEDs">Adding LEDs</a>
+                          </li>
+                          <li>
+                            <a href="#adding-source-files" class="toc-h3 toc-link" data-title="Adding Source Files">Adding Source Files</a>
+                          </li>
+                          <li>
+                            <a href="#giving-the-tm4c-a-heart-beat" class="toc-h3 toc-link" data-title="Giving the TM4C a Heart(beat)">Giving the TM4C a Heart(beat)</a>
+                          </li>
+                          <li>
+                            <a href="#adding-startup-files" class="toc-h3 toc-link" data-title="Adding Startup Files">Adding Startup Files</a>
+                          </li>
+                          <li>
+                            <a href="#making-the-rascar-move" class="toc-h3 toc-link" data-title="Making the rascar Move">Making the rascar Move</a>
+                          </li>
+                      </ul>
+                  </li>
+                  <li>
+                    <a href="#final-note" class="toc-h2 toc-link" data-title="Final Note">Final Note</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#version-control" class="toc-h1 toc-link" data-title="Version Control">Version Control</a>
+          </li>
+          <li>
+            <a href="#tuning" class="toc-h1 toc-link" data-title="Tuning">Tuning</a>
+          </li>
+          <li>
+            <a href="#gpio-drivers" class="toc-h1 toc-link" data-title="GPIO Drivers">GPIO Drivers</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#summary" class="toc-h2 toc-link" data-title="Summary">Summary</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
+            <a href="#adc-drivers" class="toc-h1 toc-link" data-title="ADC Drivers">ADC Drivers</a>
+          </li>
+      </ul>
+        <ul class="toc-footer">
+            <li><a href='https://github.com/dimembermatt/TM4C123Drivers'>Base TM4C123Drivers Repo</a></li>
+            <li><a href='https://github.com/slatedocs/slate'>Documentation Powered by Slate</a></li>
+        </ul>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id='introduction'>Introduction</h1>
+<p>Welcome to the Robotathon UTRASware documentation!</p>
+
+<p>Here, you&#39;ll find programming tutorials, spanning the peripherals of the TM4C
+and for various devices that are used as sensors and actuators for your robot. </p>
+<h1 id='contributors'>Contributors</h1>
+<ul>
+<li>Matthew Yu (matthewjkyu@gmail.com)</li>
+<li>Dario Jimenez</li>
+</ul>
+<h1 id='copyright'>Copyright</h1>
+<p>Copyright 2021 Matthew Yu</p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the &quot;Software&quot;), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions: </p>
+
+<p>The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software. </p>
+
+<p>THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. </p>
+<h1 id='setup'>Setup</h1>
+<p>These drivers have been built with the Keil (pronounced <code>kill</code> in <code>kill me</code>) and
+Code Composer Studio (CCS) IDEs in mind. Officially, RAS supports CCS, but
+example projects have been built for both platforms. </p>
+<h2 id='installing-git'>Installing Git</h2>
+<p>&quot;Git is a free and open source [FOSS] distributed version control system&quot;
+designed for managing projects and files of all types. Git is particularly used
+in programming to help students and professionals manage their code and
+collaborate with other people across the internet. </p>
+
+<p>You can install git either <a href="https://git-scm.com/downloads">manually</a> to use via
+CLI (a.k.a Powershell, bash, zsh, etc) or with a third party GUI. For the
+latter, we recommend <a href="https://desktop.github.com/">GitHub Desktop</a>, which works
+for both macOS and Windows. </p>
+
+<p>A tutorial for Github Desktop can be found
+<a href="https://docs.github.com/en/desktop">here</a>. For CLI users who want to learn git
+commands, here&#39;s a <a href="https://rogerdudler.github.io/git-guide/">simple visual
+guide</a> and Github&#39;s <a href="https://education.github.com/git-cheat-sheet-education.pdf">Git
+cheatsheet</a>. </p>
+<h2 id='creating-a-github-account'>Creating a Github Account</h2>
+<p>The next thing to do is to create your own Github account.
+<a href="https://github.com/">Github</a> is a remote server application that stores your
+code and allows you to collaborate with others. For many people, Github can also
+be used to store your projects between machines, advertise your portfolio to
+companies, <a href="https://dimembermatt.github.io/">and</a> <a href="https://jason-math.github.io/">to</a> <a href="https://pyrito.github.io/">host</a> <a href="https://jmoore34.github.io/">your</a> <a href="https://stefandebruyn.github.io/">own</a> <a href="https://tianshu.io/">website</a> <a href="http://www.brianqhnguyen.me/">for</a> <a href="https://alextekle.com/">free</a>. </p>
+<h2 id='downloading-the-rasware-repository'>Downloading the RASware repository</h2>
+<p>After you create your Github account, then you can download
+<a href="https://github.com/ut-ras/UTRASWare">RASware</a> onto your computer to begin
+playing with it. </p>
+
+<p>Command line users can clone the repository with the URL
+<code>https://github.com/ut-ras/UTRASWare.git</code>.  </p>
+<h2 id='github-desktop'>Github Desktop</h2>
+<p>Github Desktop users can take the RASware
+<a href="https://github.com/ut-ras/UTRASWare">url</a> and go to the Code -&gt; Open with
+GitHub Desktop button. Here&#39;s the specific tutorial
+<a href="https://docs.github.com/en/desktop/contributing-and-collaborating-using-github-desktop/adding-and-cloning-repositories/cloning-a-repository-from-github-to-github-desktop">guide</a>
+to get you going. </p>
+<h2 id='ccs-windows-mac-linux'>CCS (Windows/Mac/Linux)</h2>
+<p>Now that your repository has been cloned (preferable in a place you know, such
+as <code>C:/users/xxx/Documents/Github</code> or <code>~/Documents/Github</code>), it&#39;s time to
+install CCS. </p>
+
+<p>Here&#39;s the CCS install
+<a href="https://software-dl.ti.com/ccs/esd/documents/users_guide/ccs_installation.html">tutorial</a>,
+and here is the download <a href="https://www.ti.com/tool/download/CCSTUDIO">page</a>. </p>
+<h2 id='alt-keil-windows'>Alt:Keil (Windows)</h2>
+<p>Those looking to install Keil (pronounced <code>kill</code> as in <code>kill me</code>), can follow
+Professor Valvano&#39;s <a href="http://users.ece.utexas.edu/~valvano/Volume1/">guide</a> for
+setting it up. </p>
+<h1 id='running-a-demo-project'>Running A Demo Project</h1>
+<p>Let&#39;s start off with a fun example project to flash with to the TM4C. We&#39;ll be
+flashing the RGB project in UTRASWare/rasexamples/RGB with CCS.</p>
+<h2 id='setup'>Setup</h2>
+<p>1) Import projects from UTRASWare.</p>
+
+<p><img src="images/CCS_import_projects-a5400228.png" alt="Import Projects" /></p>
+
+<p>2) Select the directory that has your UTRASWare project.</p>
+
+<p><img src="images/CCS_select_directory-60fe1b9b.png" alt="Select Directory" /></p>
+
+<p>3) Select the specific project you want to import (or select all of them, you&#39;ll
+   need them later on).</p>
+
+<p><img src="images/CCS_select_projects-e6e7730c.png" alt="Select Projects" /></p>
+
+<p>4) Click finish! The projects will load on the sidebar.</p>
+
+<p><img src="images/CCS_load_projects-922eb085.png" alt="Load Projects" /></p>
+
+<p>A couple things to notice here:</p>
+
+<ul>
+<li><em>The project viewer on the left side:</em> this shows your projects in your
+workspace, and within each project are all the files needed to build and run
+your project. These project are typically .c files, or implementation files.
+The build system uses File &gt; Properties &gt; Build &gt; Include Options to search
+for the relevant header files which defines functions and links them together
+into a single binary.</li>
+<li><em>The file viewer on the right side:</em> This shows the code inside of each of your
+files. You write your code here!</li>
+<li><em>Build/Compile button.</em> Whenever you want to test your code, the first thing to
+do is compile it, and check for any errors!</li>
+<li>Errors will show up in the <em>Compiler and debug view</em> on the bottom. It&#39;ll show
+syntax errors or warnings, and so forth.</li>
+<li>Once your project compiles successfully, you can press either the <em>Flash or
+Debug button.</em> The former directly writes the compiled program to your TM4C,
+and the other writes the compiled program, then enters it so you can step
+through the program execution.</li>
+</ul>
+
+<p>5) After building the program, here is what a successful build output should
+   look like. A <code>*.out</code> file is generated in a local Binaries folder, and this
+   is the machine code that the TM4C reads.</p>
+
+<p><img src="images/CCS_build_project-65852520.png" alt="Build project" /></p>
+
+<p>6) Now we press the flash button... And then your TM4C should now spurt out
+   rainbow colors at the LEDs next to your reset switch!</p>
+<h2 id='code-structure'>Code Structure</h2>
+<blockquote>
+<p>RGBExample.c</p>
+</blockquote>
+<div class="highlight"><pre class="highlight c tab-c"><code><span class="cm">/**
+ * (1)
+ * @file RGBExample.c
+ * @author Matthew Yu (matthewjkyu@gmail.com)
+ * @brief TM4C goes wild with RGB lighting.
+ * @version 0.1
+ * @date 2021-09-27
+ * @copyright Copyright (c) 2021
+ * @note Warning to users who have epilepsy - bright flashing colors.
+ */</span>
+
+<span class="cm">/** (2) General imports. */</span>
+<span class="cp">#include &lt;stdlib.h&gt;
+</span>
+<span class="cm">/** (3) Device specific imports. */</span>
+<span class="cp">#include &lt;lib/PLL/PLL.h&gt;
+#include &lt;raslib/RGB/RGB.h&gt;
+</span>
+<span class="cm">/* (4) */</span>
+<span class="kt">void</span> <span class="nf">EnableInterrupts</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>    <span class="c1">// Defined in startup.s</span>
+<span class="kt">void</span> <span class="nf">DisableInterrupts</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>   <span class="c1">// Defined in startup.s</span>
+<span class="kt">void</span> <span class="nf">WaitForInterrupt</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>    <span class="c1">// Defined in startup.s</span>
+
+<span class="cm">/* (5) */</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/* (6) */</span>
+    <span class="n">PLLInit</span><span class="p">(</span><span class="n">BUS_80_MHZ</span><span class="p">);</span>
+
+    <span class="cm">/* (7) */</span>
+    <span class="n">DisableInterrupts</span><span class="p">();</span>
+
+    <span class="cm">/* (8) Initialize the RGB LEDs! */</span>
+    <span class="n">RGBInit</span><span class="p">();</span>
+
+    <span class="cm">/* (9) */</span>
+    <span class="n">EnableInterrupts</span><span class="p">();</span>
+
+    <span class="cm">/* (10) */</span>
+    <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="cm">/* (11) */</span>
+        <span class="n">WaitForInterrupt</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Alright, now that you&#39;ve flashed your baby&#39;s first TM4C code and have gotten it
+(supposedly) to work, let&#39;s actually dig into <em>what</em> your program does to make
+it change colors on the LEDs.</p>
+
+<p>Our main code consists of the following:</p>
+
+<ol>
+<li>This is the documentation header for your file. Here, you should include
+important things like &quot;<em>what does this file do?</em>&quot;, &quot;<em>what does this project
+do?</em>&quot;, &quot;<em>are there any preconditions to use this project?</em>&quot;, &quot;<em>who should be
+contacted if my TM4C is on fire trying to run this project?</em>&quot;.</li>
+<li>General imports generally include files such as <code>stdlib.h</code>, <code>stdint.h</code>
+<code>stdbool.h</code> and so on. They are useful for providing abstractions like <code>NULL</code>
+and <code>bool</code> for use in the program.</li>
+<li>Device specific imports include the specific driver files required to run the
+main program. Every <code>.c</code> or <code>.h</code> file may include device dependencies (e.g.
+<code>Switch.h</code> depends on <code>GPIO.h</code>). These must be defined or otherwise your
+compiler will throw an error that some symbols (e.g. PLLInit) are undefined,
+which means that it cannot find them.</li>
+<li>These function declarations are defined in the <code>startup.s</code> /
+<code>tm4c123gh6pm_startup_ccs.c</code> assembly file for managing interrupts.</li>
+<li>Our main routine. This is the entry point that all programs must have in
+C/C++. </li>
+<li><code>PLLInit</code> starts up our internal clock. The TM4C can run at a maximum of 80
+MHZ. Looking into the header file (<code>PLL.h</code>) itself, we can see definitions
+for many types of clock frequencies.<br></li>
+<li>Peripherals including timers and switches and so forth can generate
+interrupts. Turn them off during initialization so interrupts do not cause
+unintended effects in initialization routines.</li>
+<li>This is our initializer for an RGB lighting struct. Looking at
+<code>raslib/RGB/RGB.h</code>, we can see from the header declaration documentation that
+the RGB struct uses pins PF1, PF2, PF3, as well as TIMER_5A to run interrupts.</li>
+<li>Enable the interrupts. This allows the RGB struct to begin stepping through
+color states.</li>
+<li>Our infinite loop to keep the device from shutting down.</li>
+<li>This function simply does nothing until an interrupt is triggered.</li>
+</ol>
+<h2 id='final-note'>Final Note</h2>
+<p>As a final note, there are many examples presented in <code>UTRASWare/examples</code> and
+<code>UTRASWare/rasexamples</code> that you can import as projects, both in Keil and in CCS
+for you to experiment, test, and play with. They utilise some of the essential
+APIs required for you to put together a functioning robot for competition, so it
+is <strong>HIGHLY</strong> recommended to visit them! </p>
+
+<p>Further API documentation for each driver can be found on this site, explaining
+their inputs, preconditions, and so forth.</p>
+<h1 id='creating-your-first-project'>Creating Your First Project</h1>
+<p>Alright, congrats on running the RGB program! The next step is to create your
+own program and begin to modify it to do what you want.</p>
+<h2 id='setup'>Setup</h2>
+<p>Using CCS, let&#39;s create a new project.</p>
+
+<p><img src="images/CCS_new_project-19227e4d.png" alt="New Project" /></p>
+
+<p>Let&#39;s now set it up. For this project, I&#39;ll be calling it <code>rascar</code> - this was the
+theme of the 2017 Robotathon competition!</p>
+
+<p><img src="images/CCS_new_project_setup-7c2adbd2.png" alt="Project Setup" /></p>
+
+<p>Note that I also filled in a couple more interesting things. </p>
+
+<ul>
+<li>Our target device - the TM4C Launchpad that you&#39;ll be programming with, is the
+tm4c123gh6pm chip.</li>
+<li>We&#39;ll be using TI&#39;s Stellaric ICDI, otherwise known as In-Circuit Debug
+Interface. This is for debugging and flashing the Launchpad.<br></li>
+<li>You&#39;ll want to create your project folder in the UTRASWare folder - this makes
+access to the libraries and such much easier.</li>
+<li>Finally, you&#39;ll want to createan empty project with the main.c file included.
+This contains the <code>main()</code> function - the same one in the <code>RGBExample.c</code> file
+in the previous tutorial, <strong>Creating Your First Project</strong>.</li>
+</ul>
+<h2 id='code-structure'>Code Structure</h2>
+<blockquote>
+<p>main.c</p>
+</blockquote>
+<div class="highlight"><pre class="highlight c tab-c"><code><span class="cm">/**
+ * @file main.c
+ * @author Matthew Yu (matthewjkyu@gmail.com)
+ * @brief Main driver for RASCar - our moving poptart box.
+ * @version 1.0
+ * @date 2021-09-30
+ * @copyright Copyright (c) 2021
+ */</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Alright, upon creating the new project, we&#39;re presented with the following view:</p>
+
+<p><img src="images/CCS_new_project_empty-e951218a.png" alt="Empty Project" /></p>
+
+<p>Let&#39;s clean up the header and replace it with something more descriptive.</p>
+<h3 id='adding-includes'>Adding Includes</h3>
+<blockquote>
+<p>main.c (Revision 1)</p>
+</blockquote>
+<div class="highlight"><pre class="highlight c tab-c"><code><span class="cm">/**
+ * @file main.c
+ * @author Matthew Yu (matthewjkyu@gmail.com)
+ * @brief Main driver for RASCar - our moving poptart box.
+ * @version 1.0
+ * @date 2021-09-30
+ * @copyright Copyright (c) 2021
+ */</span>
+
+<span class="cm">/** Device specific imports. */</span>
+<span class="cp">#include &lt;lib/PLL/PLL.h&gt;
+#include &lt;lib/GPIO/GPIO.h&gt;
+#include &lt;lib/Timer/Timer.h&gt;
+#include &lt;raslib/Servo/Servo.h&gt;
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Alright, let&#39;s include them into our project.</p>
+
+<p>The next step is to figure out what we&#39;re going to do. In this project, we&#39;ll
+define our RASCar as a poptart box with the TM4C and two servo motors - one on
+each side of the poptart box. We&#39;ll also add indicator lights on the TM4C: one
+to show that the &quot;car&quot; is active, and two to show whether the &quot;car&quot; should be
+going forwards or backwards.</p>
+
+<p>After a bit of searching in our driver libraries, I&#39;ve identified that we need
+the following drivers:</p>
+
+<ul>
+<li>PLL: To set our system clocks on the Launchpad to 80 MHz (bad things happen if
+we don&#39;t do this!)</li>
+<li>GPIO: For turning on our indicator LEDs</li>
+<li>Timer: For creating a heartbeat LED that blinks at 1 Hz</li>
+<li>Servo: For driving our car servo motors</li>
+</ul>
+
+<p>Note that our include calls use angle brackets and a path relative to
+<code>UTRASWare</code>. We could use quotes, but in this case we did not, for <em>reasons</em>. A
+dicussion on why you might want to use one or the other can be found on this <a href="https://stackoverflow.com/questions/21593/what-is-the-difference-between-include-filename-and-include-filename">SO
+post</a>.
+The important part is that the file paths start with <code>lib</code>, or <code>raslib</code>, which
+are direct descendants of UTRASWare&#39;s root directory.</p>
+
+<p>Alright, let&#39;s compile this!</p>
+<h3 id='adding-the-include-path'>Adding the Include Path</h3>
+<p><img src="images/CCS_new_project_source_inclusion_error-576f65f3.png" alt="Compiler Error" /></p>
+
+<p>Aww, it&#39;s a dud.</p>
+
+<p>This is because we haven&#39;t set up the include path to find files at <code>lib/...</code>.
+If we go to the project properties window and add in the path <code>../..</code> (assuming
+the project is in <code>UTRASWare/rascar/.</code>), our error will now go away and the
+project will build successfully.</p>
+
+<p><img src="images/CCS_new_project_add_include_path-a3676aa4.png" alt="Adding Include Path" /></p>
+<h3 id='adding-leds'>Adding LEDs</h3>
+<blockquote>
+<p>main.c (Revision 2)</p>
+</blockquote>
+<div class="highlight"><pre class="highlight c tab-c"><code><span class="cm">/**
+ * @file main.c
+ * @author Matthew Yu (matthewjkyu@gmail.com)
+ * @brief Main driver for RASCar - our moving poptart box.
+ * @version 1.0
+ * @date 2021-09-30
+ * @copyright Copyright (c) 2021
+ */</span>
+
+<span class="cm">/** Device specific imports. */</span>
+<span class="cp">#include &lt;lib/PLL/PLL.h&gt;
+#include &lt;lib/GPIO/GPIO.h&gt;
+#include &lt;lib/Timer/Timer.h&gt;
+#include &lt;raslib/Servo/Servo.h&gt;
+</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">PLLInit</span><span class="p">(</span><span class="n">BUS_80_MHZ</span><span class="p">);</span>
+
+    <span class="n">GPIOConfig_t</span> <span class="n">PF1Config</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="p">.</span><span class="n">pin</span><span class="o">=</span><span class="n">PIN_F1</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">pull</span><span class="o">=</span><span class="n">GPIO_PULL_DOWN</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">isOutput</span><span class="o">=</span><span class="nb">true</span>
+    <span class="p">};</span>
+    <span class="n">GPIOConfig_t</span> <span class="n">PF2Config</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="p">.</span><span class="n">pin</span><span class="o">=</span><span class="n">PIN_F2</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">pull</span><span class="o">=</span><span class="n">GPIO_PULL_DOWN</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">isOutput</span><span class="o">=</span><span class="nb">true</span>
+    <span class="p">};</span>
+    <span class="n">GPIOConfig_t</span> <span class="n">PF3Config</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="p">.</span><span class="n">pin</span><span class="o">=</span><span class="n">PIN_F3</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">pull</span><span class="o">=</span><span class="n">GPIO_PULL_DOWN</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">isOutput</span><span class="o">=</span><span class="nb">true</span>
+    <span class="p">};</span>
+
+
+    <span class="n">GPIOInit</span><span class="p">(</span><span class="n">PF1Config</span><span class="p">);</span>
+    <span class="n">GPIOInit</span><span class="p">(</span><span class="n">PF2Config</span><span class="p">);</span>
+    <span class="n">GPIOInit</span><span class="p">(</span><span class="n">PF3Config</span><span class="p">);</span>
+
+    <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">GPIOSetBit</span><span class="p">(</span><span class="n">PIN_F2</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The next step to do is to add initializers for the drivers we are using.</p>
+
+<p>This code initializes the system bus clock to 80 MHz. This means that every
+atomic operation in the microcontroller runs at 12.5 ns. Reminder that your
+computer has a CPU speed of 3.5 GHz!</p>
+
+<p>It also configures three LEDs on pins F1, F2, and F3, corresponding to the Red,
+Blue, and Green LEDs respectively. They are set to be internally pulled down,
+which means that by default the state of the pin is at 0 V. They are also set to
+be outputs, which means that they source current to other devices, up to 8 mA.
+Check out GPIO.h for more configuration options, of which there are a lot!</p>
+
+<p>Finally, we set PF2 (blue) to output logic level 1, which is 3.3 V. This should
+turn your blue LED on!</p>
+
+<p>Let&#39;s try to build the project again.</p>
+<h3 id='adding-source-files'>Adding Source Files</h3>
+<p>Drats! It failed again!</p>
+
+<p><img src="images/CCS_new_project_source_files_missing_error-8a8cb3b2.png" alt="Missing Source Files" /></p>
+
+<p>This is because we don&#39;t have the relevant implementation files required in the
+project. If we go to the file explorer and link them in, like so:</p>
+
+<p><img src="images/CCS_new_project_add_source_files-ca73e71e.png" alt="Source Inclusion" /></p>
+
+<p>Let&#39;s do this for PLL.c, GPIO.c, Timer.c, Servo.c, and FaultHandler.c. The last
+file is useful (but not necessary) since it adds internal asserts for some
+drivers. When an assert condition is violated during run time, the falls into a
+fault handler and turns on the red LED on the TM4C, finally stalling
+indefinitely. This is great during testing to make sure your code is configured
+properly! It also provides context in the debugger like line numbers, code, etc
+that caused the failure.</p>
+
+<p><img src="images/CCS_new_project_success_LEDs-f6618213.png" alt="Compile Success" /></p>
+
+<p>Alright. The next thing to do is plug in your TM4C, switch the power switch from
+DEVICE to DEBUG (make sure no other power supplies are attached to the VBUS
+pin), and press the flash button.</p>
+
+<p>If the blue LED turns on, then we&#39;ve passed part 1 of this tutorial!</p>
+<h3 id='giving-the-tm4c-a-heart-beat'>Giving the TM4C a Heart(beat)</h3>
+<blockquote>
+<p>main.c (Revision 3)</p>
+</blockquote>
+<div class="highlight"><pre class="highlight c tab-c"><code><span class="cm">/**
+ * @file main.c
+ * @author Matthew Yu (matthewjkyu@gmail.com)
+ * @brief Main driver for RASCar - our moving poptart box.
+ * @version 1.0
+ * @date 2021-09-30
+ * @copyright Copyright (c) 2021
+ */</span>
+
+<span class="cm">/** Device specific imports. */</span>
+<span class="cp">#include &lt;lib/PLL/PLL.h&gt;
+#include &lt;lib/GPIO/GPIO.h&gt;
+#include &lt;lib/Timer/Timer.h&gt;
+#include &lt;raslib/Servo/Servo.h&gt;
+</span>
+
+<span class="kt">void</span> <span class="nf">EnableInterrupts</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>    <span class="c1">// Defined in startup.s</span>
+<span class="kt">void</span> <span class="nf">DisableInterrupts</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>   <span class="c1">// Defined in startup.s</span>
+<span class="kt">void</span> <span class="nf">WaitForInterrupt</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>    <span class="c1">// Defined in startup.s</span>
+
+<span class="kt">void</span> <span class="nf">heartbeat</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="o">*</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">GPIOSetBit</span><span class="p">(</span><span class="n">PIN_F1</span><span class="p">,</span> <span class="o">!</span><span class="n">GPIOGetBit</span><span class="p">(</span><span class="n">PIN_F1</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">PLLInit</span><span class="p">(</span><span class="n">BUS_80_MHZ</span><span class="p">);</span>
+    <span class="n">DisableInterrupts</span><span class="p">();</span>
+
+    <span class="n">GPIOConfig_t</span> <span class="n">PF1Config</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="p">.</span><span class="n">pin</span><span class="o">=</span><span class="n">PIN_F1</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">pull</span><span class="o">=</span><span class="n">GPIO_PULL_DOWN</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">isOutput</span><span class="o">=</span><span class="nb">true</span>
+    <span class="p">};</span>
+    <span class="n">GPIOConfig_t</span> <span class="n">PF2Config</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="p">.</span><span class="n">pin</span><span class="o">=</span><span class="n">PIN_F2</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">pull</span><span class="o">=</span><span class="n">GPIO_PULL_DOWN</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">isOutput</span><span class="o">=</span><span class="nb">true</span>
+    <span class="p">};</span>
+    <span class="n">GPIOConfig_t</span> <span class="n">PF3Config</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="p">.</span><span class="n">pin</span><span class="o">=</span><span class="n">PIN_F3</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">pull</span><span class="o">=</span><span class="n">GPIO_PULL_DOWN</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">isOutput</span><span class="o">=</span><span class="nb">true</span>
+    <span class="p">};</span>
+
+    <span class="n">GPIOInit</span><span class="p">(</span><span class="n">PF1Config</span><span class="p">);</span>
+    <span class="n">GPIOInit</span><span class="p">(</span><span class="n">PF2Config</span><span class="p">);</span>
+    <span class="n">GPIOInit</span><span class="p">(</span><span class="n">PF3Config</span><span class="p">);</span>
+
+    <span class="n">TimerConfig_t</span> <span class="n">heartbeatConfig</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="p">.</span><span class="n">period</span><span class="o">=</span><span class="n">freqToPeriod</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">MAX_FREQ</span><span class="p">),</span>
+        <span class="p">.</span><span class="n">timerTask</span><span class="o">=</span><span class="n">heartbeat</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">isPeriodic</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span>
+    <span class="p">};</span>
+    <span class="n">TimerInit</span><span class="p">(</span><span class="n">heartbeatConfig</span><span class="p">);</span>
+
+    <span class="n">EnableInterrupts</span><span class="p">();</span>
+    <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">WaitForInterrupt</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The next step is to give the TM4C a heartbeat to make sure it&#39;s operating
+nominally. Heartbeats are great to see if your TM4C is stalling at any point in
+time.</p>
+
+<p>This code has added a couple new sections to it. </p>
+
+<p>1) The first of which is a set of declarations for interrupts. These are assembly
+   defined declarations found in the <code>inc/tm4c123gh6pm_startup_ccs.c</code> file used
+   for starting, stopping, and waiting for interrupts.
+2) The second of which is a function called <code>heartbeat</code>. This is used by a Timer
+   interrupt to toggle the red LED at pin F1. More specifically, in the
+   <code>heartbeat</code> function, we are setting the bit state (0 for off, 1 for on) of
+   pin F1 by reading the current state of pin F1 and negating it with the <code>!</code>
+   symbol.
+3) The third of which is a new config called <code>heartbeatConfig</code>. In this
+   configuration, we defined the period of the interrupt (how long until an
+   interrupt occurs) to be every 2 Hz. Why? Because our heartbeat function only
+   toggles the LED. If we want the LED to run at 1 Hz, we need to toggle it
+   twice! The next step is to assign the <code>heartbeat</code> function address to the
+   <code>timerTask</code> field, and finally assign <code>true</code> to <code>isPeriodic</code>. Overall, this
+   configuration indicates that we will call <code>heartbeat</code> at 2 Hz repeatedly
+   until stopped.</p>
+
+<p>We then initialize this configuration on the next line, then enable interrupts
+and wait for the TM4C to hit the interrupt, until the end of time.</p>
+
+<p>Time to compile!</p>
+<h3 id='adding-startup-files'>Adding Startup Files</h3>
+<p>This time we get another error:</p>
+
+<p><img src="images/CCS_new_project_startup_files_missing-dc9d0f59.png" alt="Missing Startup Functions" /></p>
+
+<p>Despite the fact that TI gives us autogenerated startup files,
+<code>tm4c123gh6pm_startup_ccs.c</code> and <code>tm4c123gh6pm.cmd</code>, these files are incomplete
+and are missing a couple things. We have generously provided complete startup
+files (<code>inc/startup.s</code> for Keil, <code>inc/tm4c123gh6pm_startup_ccs.c</code> and
+<code>inc/tm4c123gh6pm.cmd</code> for CCS). Let&#39;s remove the current files and replace them
+with our included files.</p>
+
+<p>Rebuilding the project leads to no compiler errors, and flashing it leads to a
+red blinking LED!</p>
+<h3 id='making-the-rascar-move'>Making the rascar Move</h3>
+<blockquote>
+<p>main.c (Revision 4)</p>
+</blockquote>
+<div class="highlight"><pre class="highlight c tab-c"><code><span class="cm">/**
+ * @file main.c
+ * @author Matthew Yu (matthewjkyu@gmail.com)
+ * @brief Main driver for RASCar - our moving poptart box.
+ * @version 1.0
+ * @date 2021-09-30
+ * @copyright Copyright (c) 2021
+ */</span>
+
+<span class="cm">/** Device specific imports. */</span>
+<span class="cp">#include &lt;lib/PLL/PLL.h&gt;
+#include &lt;lib/GPIO/GPIO.h&gt;
+#include &lt;lib/Timer/Timer.h&gt;
+#include &lt;raslib/Servo/Servo.h&gt;
+</span>
+
+<span class="kt">void</span> <span class="nf">EnableInterrupts</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>    <span class="c1">// Defined in startup.s</span>
+<span class="kt">void</span> <span class="nf">DisableInterrupts</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>   <span class="c1">// Defined in startup.s</span>
+<span class="kt">void</span> <span class="nf">WaitForInterrupt</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>    <span class="c1">// Defined in startup.s</span>
+
+<span class="kt">void</span> <span class="nf">heartbeat</span><span class="p">(</span><span class="kt">uint32_t</span> <span class="o">*</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">GPIOSetBit</span><span class="p">(</span><span class="n">PIN_F1</span><span class="p">,</span> <span class="o">!</span><span class="n">GPIOGetBit</span><span class="p">(</span><span class="n">PIN_F1</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">PLLInit</span><span class="p">(</span><span class="n">BUS_80_MHZ</span><span class="p">);</span>
+    <span class="n">DisableInterrupts</span><span class="p">();</span>
+
+    <span class="n">GPIOConfig_t</span> <span class="n">PF1Config</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="p">.</span><span class="n">pin</span><span class="o">=</span><span class="n">PIN_F1</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">pull</span><span class="o">=</span><span class="n">GPIO_PULL_DOWN</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">isOutput</span><span class="o">=</span><span class="nb">true</span>
+    <span class="p">};</span>
+    <span class="n">GPIOConfig_t</span> <span class="n">PF2Config</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="p">.</span><span class="n">pin</span><span class="o">=</span><span class="n">PIN_F2</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">pull</span><span class="o">=</span><span class="n">GPIO_PULL_DOWN</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">isOutput</span><span class="o">=</span><span class="nb">true</span>
+    <span class="p">};</span>
+    <span class="n">GPIOConfig_t</span> <span class="n">PF3Config</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="p">.</span><span class="n">pin</span><span class="o">=</span><span class="n">PIN_F3</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">pull</span><span class="o">=</span><span class="n">GPIO_PULL_DOWN</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">isOutput</span><span class="o">=</span><span class="nb">true</span>
+    <span class="p">};</span>
+
+    <span class="n">GPIOInit</span><span class="p">(</span><span class="n">PF1Config</span><span class="p">);</span>
+    <span class="n">GPIOInit</span><span class="p">(</span><span class="n">PF2Config</span><span class="p">);</span>
+    <span class="n">GPIOInit</span><span class="p">(</span><span class="n">PF3Config</span><span class="p">);</span>
+
+    <span class="n">TimerConfig_t</span> <span class="n">heartbeatConfig</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="p">.</span><span class="n">period</span><span class="o">=</span><span class="n">freqToPeriod</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">MAX_FREQ</span><span class="p">),</span>
+        <span class="p">.</span><span class="n">timerTask</span><span class="o">=</span><span class="n">heartbeat</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">isPeriodic</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span>
+    <span class="p">};</span>
+    <span class="n">TimerInit</span><span class="p">(</span><span class="n">heartbeatConfig</span><span class="p">);</span>
+
+    <span class="n">ServoConfig_t</span> <span class="n">leftServoConfig</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="p">.</span><span class="n">pin</span><span class="o">=</span><span class="n">PIN_B6</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">timerID</span><span class="o">=</span><span class="n">TIMER_1A</span>
+    <span class="p">};</span>
+    <span class="n">PWM_t</span> <span class="n">leftServo</span> <span class="o">=</span> <span class="n">ServoInit</span><span class="p">(</span><span class="n">leftServoConfig</span><span class="p">);</span>
+
+    <span class="n">ServoConfig_t</span> <span class="n">rightServoConfig</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="p">.</span><span class="n">pin</span><span class="o">=</span><span class="n">PIN_B1</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">timerID</span><span class="o">=</span><span class="n">TIMER_2A</span>
+    <span class="p">};</span>
+    <span class="n">PWM_t</span> <span class="n">rightServo</span> <span class="o">=</span> <span class="n">ServoInit</span><span class="p">(</span><span class="n">rightServoConfig</span><span class="p">);</span>
+
+    <span class="n">ServoSetSpeed</span><span class="p">(</span><span class="n">leftServo</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span>
+    <span class="n">ServoSetSpeed</span><span class="p">(</span><span class="n">rightServo</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span>
+
+    <span class="n">EnableInterrupts</span><span class="p">();</span>
+    <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">WaitForInterrupt</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Okay, the final step is to add servo code to the program and get the rascar to
+move forward.</p>
+
+<p>We&#39;ve added two more configurations, a <code>leftServoConfig</code> and <code>rightServoConfig</code>,
+on pin B1 and B6, and timers 1A and 2A. Note that we don&#39;t use timer 0A since by
+default the heartbeatConfig uses timer 0A.</p>
+
+<p>We then initialize the servo configurations into two structs, <code>leftServo</code> and
+<code>rightServo</code>, and set their speeds to 100 each. This should be the maximum forward
+speed for both motors.</p>
+
+<p>Alright, off to the races we go!</p>
+
+<p>...</p>
+
+<p>Okay, I lied, you&#39;ll get another error: unresolved symbols for <code>PWMxxx</code>. </p>
+
+<p>Remember what I said earlier about adding source files? Well, we also need to
+add all dependency source files! This includes PWM.c, which is used by Servo.h
+and Servo.c. Add that in and we&#39;ll finish this up.</p>
+<h2 id='final-note'>Final Note</h2>
+<p><img src="images/coming_together-0598d880.jpg" alt="Coming Together" /></p>
+
+<p>Our rascar base can now blink and move forwards and backwards. This is the first
+step in getting a competitive robot for our 2017 competition. The next step
+could be a couple of different things, including writing higher level drivers
+to make the robot turn, adding sensors to follow the environment, or trying to
+optimize the speed, straightness, and precision of movement.</p>
+
+<p>I hope this introductory tutorial on how to use CCS and UTRASWare to get a
+functional robot is helpful for you and your team! I look forward to seeing your
+robot compete in this year&#39;s Robotathon!</p>
+
+<p>~ Matthew Y.</p>
+<h1 id='version-control'>Version Control</h1><h1 id='tuning'>Tuning</h1><h1 id='gpio-drivers'>GPIO Drivers</h1>
+<p>This driver API version is 0.1 and is in <strong>BETA</strong>. Those building software on this version may experience breaking changes when migrating to the next minor or major reason.</p>
+<h2 id='summary'>Summary</h2>
+<p>GPIO pins, or General Purpose Input Output pins, are user configurable pins that can be controlled to operate as a number of functional peripherals. A couple of potential uses are provided below.</p>
+
+<ul>
+<li>Analog to digital input pin (ADC)</li>
+<li>Edge or Level based interrupt signaller</li>
+<li>Communication hardware pins, such as for I2C, SPI, UART, CAN, etc.</li>
+</ul>
+
+<p>This driver is one of the base pillars of TM4C123Drivers and UTRASWare, and is used in many other drivers.</p>
+
+<aside class="notice">
+The GPIO driver as of 10/01/21, does not support the following:
+- DMA control.
+</aside>
+
+<aside class="notice">
+The GPIO driver has an optional compilation flag, `__FAST__`, that toggles between a fast and normal version of `GPIOSetBit` and `GPIOGetBit`. The tradoff is on the order of 100x speedup vs 1kB more lines of DATA. Check the 
+</aside>
+
+<blockquote>
+<p>GPIOPin_t</p>
+</blockquote>
+<h1 id='adc-drivers'>ADC Drivers</h1>
+      </div>
+      <div class="dark-box">
+          <div class="lang-selector">
+                <a href="#" data-language-name="c">c</a>
+          </div>
+      </div>
+    </div>
+  </body>
+</html>
