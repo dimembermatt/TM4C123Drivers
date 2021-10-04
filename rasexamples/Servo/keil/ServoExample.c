@@ -39,7 +39,7 @@ int main(void) {
     };
     GPIOInit(PF2);
 
-    /* Warning to users who have epilepsy - bright flashing colors. */
+    /* Servo configuration. */
     ServoConfig_t config = {
         .pin=PIN_B6,
         .timerID=TIMER_0A

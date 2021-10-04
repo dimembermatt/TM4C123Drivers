@@ -46,30 +46,30 @@ void RGBInit(void) {
         PIN_F1,
         GPIO_PULL_DOWN,
         true,
-		0,
-		false,
-		GPIO_DRIVE_2MA,
-		false
+        0,
+        false,
+        GPIO_DRIVE_2MA,
+        false
     };
 
     GPIOConfig_t pf2 = { // BLUE
         PIN_F2,
         GPIO_PULL_DOWN,
         true,
-		0,
-		false,
-		GPIO_DRIVE_2MA,
-		false
+        0,
+        false,
+        GPIO_DRIVE_2MA,
+        false
     };
 
     GPIOConfig_t pf3 = { // GREEN
         PIN_F3,
         GPIO_PULL_DOWN,
         true,
-		0,
-		false,
-		GPIO_DRIVE_2MA,
-		false
+        0,
+        false,
+        GPIO_DRIVE_2MA,
+        false
     };
 
     GPIOInit(pf1);
@@ -79,7 +79,7 @@ void RGBInit(void) {
     TimerConfig_t tConf = {
         TIMER_5A,
         freqToPeriod(15, MAX_FREQ),
-		RGBStep,
+        RGBStep,
         true,
         7,
         NULL
