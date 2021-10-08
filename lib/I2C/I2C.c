@@ -150,7 +150,8 @@ bool I2CMasterTransmit(I2C_t i2c, uint8_t slaveAddress, uint8_t * bytes, uint8_t
     GET_REG(moduleBase + I2C_MSA_OFFSET) = (slaveAddress << 1) & 0xFE;
 
     /* For each byte of data to send. */
-    for (uint8_t i = 0; i < numBytes; ++i) {
+    uint8_t i;
+    for (i = 0; i < numBytes; ++i) {
         /* 3. Write data to I2CMDR. */
         GET_REG(moduleBase + I2C_MDR_OFFSET) = bytes[i];
 
@@ -200,7 +201,8 @@ bool I2CMasterReceive(I2C_t i2c, uint8_t slaveAddress, uint8_t bytes[], uint8_t 
     GET_REG(moduleBase + I2C_MSA_OFFSET) = ((slaveAddress << 1) & 0xFE) | 0x1;
 
     /* For each byte of data to receive. */
-    for (uint8_t i = 0; i < numBytes; ++i) {
+    uint8_t i;
+    for (i = 0; i < numBytes; ++i) {
         if (i == 0) {
             /* First byte. */
             if (numBytes == 1) {
