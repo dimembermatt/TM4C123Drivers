@@ -145,3 +145,6 @@ RemoteSystemsTempFiles/
 .settings/
 .launches/
 /.metadata/
+
+# API autogen documentation.
+resources/Documentation
