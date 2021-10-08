@@ -26,7 +26,23 @@ Note that I also filled in a couple more interesting things.
   This contains the `main()` function - the same one in the `RGBExample.c` file
   in the previous tutorial, __Creating Your First Project__.
 
-## Code Structure
+## Hardware Setup
+
+For this project, we'll be using the onboard LEDs of the TM4C. There are three
+LEDs, Red, Blue, and Green, tied to pins PF1 - PF3 respectively.
+
+We'll also be using two servo motors, one tied to pin PB1 and the other to PB6.
+The signal lines (white) of the servo go to these pins, while the red lines go
+to 5V and the black lines go to ground. 5V can be supplied from a battery tied
+to your 5V regulator.
+
+<aside class="notice">
+Do <b>NOT</b> have the battery plugged in at the same time as the USB cable. This may
+result in your TM4C, USB port, 5V regulator, battery, or some combination of 
+the above blow out.
+</aside>
+
+## Code Setup
 
 > main.c
 
@@ -426,9 +442,16 @@ Okay, I lied, you'll get another error: unresolved symbols for `PWMxxx`.
 
 Remember what I said earlier about adding source files? Well, we also need to
 add all dependency source files! This includes PWM.c, which is used by Servo.h
-and Servo.c. Add that in and we'll finish this up.
+and Servo.c. Add that in and we'll finish this up. Recompile the project, and
+flash the output binary to the TM4C. 
 
-## Final Note
+The servo should now move forward. If it doesn't, there is a screw driver shaped
+slot on the side of the servo. Turning this adjusts the setpoint of the motor
+used to determine the speed and direction of movement.
+
+For further troubleshooting, see the [tuning](#tuning) page of this site.
+
+## Final Notes
 
 ![Coming Together](./images/coming_together.jpg)
 
@@ -442,4 +465,4 @@ I hope this introductory tutorial on how to use CCS and UTRASWare to get a
 functional robot is helpful for you and your team! I look forward to seeing your
 robot compete in this year's Robotathon!
 
-~ Matthew Y.
+~ Matthew Yu (2021).

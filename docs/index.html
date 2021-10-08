@@ -295,7 +295,7 @@
     </script>
   </head>
 
-  <body class="index" data-languages="[&quot;c&quot;]">
+  <body class="index" data-languages="[]">
     <a href="#" id="nav-button">
       <span>
         NAV
@@ -304,9 +304,6 @@
     </a>
     <div class="toc-wrapper">
       <img src="images/logo-1e815a84.png" class="logo" alt="" />
-        <div class="lang-selector">
-              <a href="#" data-language-name="c">c</a>
-        </div>
         <div class="search">
           <input type="text" class="search" id="input-search" placeholder="Search">
         </div>
@@ -345,6 +342,40 @@
               </ul>
           </li>
           <li>
+            <a href="#version-control" class="toc-h1 toc-link" data-title="Version Control">Version Control</a>
+              <ul class="toc-list-h2">
+                  <li>
+                    <a href="#installation" class="toc-h2 toc-link" data-title="Installation">Installation</a>
+                  </li>
+                  <li>
+                    <a href="#cloning-a-repo" class="toc-h2 toc-link" data-title="Cloning a Repo">Cloning a Repo</a>
+                  </li>
+                  <li>
+                    <a href="#repository-structure" class="toc-h2 toc-link" data-title="Repository Structure">Repository Structure</a>
+                  </li>
+                  <li>
+                    <a href="#making-changes-to-the-repository-and-publishing-it" class="toc-h2 toc-link" data-title="Making Changes to the Repository and Publishing It">Making Changes to the Repository and Publishing It</a>
+                      <ul class="toc-list-h3">
+                          <li>
+                            <a href="#git-status" class="toc-h3 toc-link" data-title="Git Status">Git Status</a>
+                          </li>
+                          <li>
+                            <a href="#git-add" class="toc-h3 toc-link" data-title="Git Add">Git Add</a>
+                          </li>
+                          <li>
+                            <a href="#git-commit" class="toc-h3 toc-link" data-title="Git Commit">Git Commit</a>
+                          </li>
+                          <li>
+                            <a href="#git-push" class="toc-h3 toc-link" data-title="Git Push">Git Push</a>
+                          </li>
+                      </ul>
+                  </li>
+                  <li>
+                    <a href="#final-notes" class="toc-h2 toc-link" data-title="Final Notes">Final Notes</a>
+                  </li>
+              </ul>
+          </li>
+          <li>
             <a href="#running-a-demo-project" class="toc-h1 toc-link" data-title="Running A Demo Project">Running A Demo Project</a>
               <ul class="toc-list-h2">
                   <li>
@@ -365,7 +396,10 @@
                     <a href="#setup" class="toc-h2 toc-link" data-title="Setup">Setup</a>
                   </li>
                   <li>
-                    <a href="#code-structure" class="toc-h2 toc-link" data-title="Code Structure">Code Structure</a>
+                    <a href="#hardware-setup" class="toc-h2 toc-link" data-title="Hardware Setup">Hardware Setup</a>
+                  </li>
+                  <li>
+                    <a href="#code-setup" class="toc-h2 toc-link" data-title="Code Setup">Code Setup</a>
                       <ul class="toc-list-h3">
                           <li>
                             <a href="#adding-includes" class="toc-h3 toc-link" data-title="Adding Includes">Adding Includes</a>
@@ -391,12 +425,12 @@
                       </ul>
                   </li>
                   <li>
-                    <a href="#final-note" class="toc-h2 toc-link" data-title="Final Note">Final Note</a>
+                    <a href="#final-notes" class="toc-h2 toc-link" data-title="Final Notes">Final Notes</a>
                   </li>
               </ul>
           </li>
           <li>
-            <a href="#version-control" class="toc-h1 toc-link" data-title="Version Control">Version Control</a>
+            <a href="#debugging" class="toc-h1 toc-link" data-title="Debugging">Debugging</a>
           </li>
           <li>
             <a href="#tuning" class="toc-h1 toc-link" data-title="Tuning">Tuning</a>
@@ -421,11 +455,81 @@
     <div class="page-wrapper">
       <div class="dark-box"></div>
       <div class="content">
-        <h1 id='introduction'>Introduction</h1>
+        <h1 id='introduction'>Introduction</h1><div class="highlight"><pre class="highlight rust tab-rust"><code> <span class="mi">__</span>   <span class="mi">__</span>    <span class="mi">_______</span>    <span class="mi">___</span>        <span class="mi">___</span>        <span class="mi">_______</span>  
+<span class="p">|</span>  <span class="p">|</span> <span class="p">|</span>  <span class="p">|</span>  <span class="p">|</span>       <span class="p">|</span>  <span class="p">|</span>   <span class="p">|</span>      <span class="p">|</span>   <span class="p">|</span>      <span class="p">|</span>       <span class="p">|</span> 
+<span class="p">|</span>  <span class="p">|</span><span class="mi">_</span><span class="p">|</span>  <span class="p">|</span>  <span class="p">|</span>    <span class="mi">___</span><span class="p">|</span>  <span class="p">|</span>   <span class="p">|</span>      <span class="p">|</span>   <span class="p">|</span>      <span class="p">|</span>   <span class="mi">_</span>   <span class="p">|</span> 
+<span class="p">|</span>       <span class="p">|</span>  <span class="p">|</span>   <span class="p">|</span><span class="mi">___</span>   <span class="p">|</span>   <span class="p">|</span>      <span class="p">|</span>   <span class="p">|</span>      <span class="p">|</span>  <span class="p">|</span> <span class="p">|</span>  <span class="p">|</span> 
+<span class="p">|</span>       <span class="p">|</span>  <span class="p">|</span>    <span class="mi">___</span><span class="p">|</span>  <span class="p">|</span>   <span class="p">|</span><span class="mi">___</span>   <span class="p">|</span>   <span class="p">|</span><span class="mi">___</span>   <span class="p">|</span>  <span class="p">|</span><span class="mi">_</span><span class="p">|</span>  <span class="p">|</span> 
+<span class="p">|</span>   <span class="mi">_</span>   <span class="p">|</span>  <span class="p">|</span>   <span class="p">|</span><span class="mi">___</span>   <span class="p">|</span>       <span class="p">|</span>  <span class="p">|</span>       <span class="p">|</span>  <span class="p">|</span>       <span class="p">|</span> 
+<span class="p">|</span><span class="mi">__</span><span class="p">|</span> <span class="p">|</span><span class="mi">__</span><span class="p">|</span>  <span class="p">|</span><span class="mi">_______</span><span class="p">|</span>  <span class="p">|</span><span class="mi">_______</span><span class="p">|</span>  <span class="p">|</span><span class="mi">_______</span><span class="p">|</span>  <span class="p">|</span><span class="mi">_______</span><span class="p">|</span> 
+ <span class="mi">_</span>     <span class="mi">_</span>    <span class="mi">_______</span>    <span class="mi">______</span>      <span class="mi">___</span>        <span class="mi">______</span>  
+<span class="p">|</span> <span class="p">|</span> <span class="mi">_</span> <span class="p">|</span> <span class="p">|</span>  <span class="p">|</span>       <span class="p">|</span>  <span class="p">|</span>    <span class="mi">_</span> <span class="p">|</span>    <span class="p">|</span>   <span class="p">|</span>      <span class="p">|</span>      <span class="p">|</span> 
+<span class="p">|</span> <span class="p">||</span> <span class="p">||</span> <span class="p">|</span>  <span class="p">|</span>   <span class="mi">_</span>   <span class="p">|</span>  <span class="p">|</span>   <span class="p">|</span> <span class="p">||</span>    <span class="p">|</span>   <span class="p">|</span>      <span class="p">|</span>  <span class="mi">_</span>    <span class="p">|</span>
+<span class="p">|</span>       <span class="p">|</span>  <span class="p">|</span>  <span class="p">|</span> <span class="p">|</span>  <span class="p">|</span>  <span class="p">|</span>   <span class="p">|</span><span class="mi">_</span><span class="p">||</span><span class="mi">_</span>   <span class="p">|</span>   <span class="p">|</span>      <span class="p">|</span> <span class="p">|</span> <span class="p">|</span>   <span class="p">|</span>
+<span class="p">|</span>       <span class="p">|</span>  <span class="p">|</span>  <span class="p">|</span><span class="mi">_</span><span class="p">|</span>  <span class="p">|</span>  <span class="p">|</span>    <span class="mi">__</span>  <span class="p">|</span>  <span class="p">|</span>   <span class="p">|</span><span class="mi">___</span>   <span class="p">|</span> <span class="p">|</span><span class="mi">_</span><span class="p">|</span>   <span class="p">|</span>
+<span class="p">|</span>   <span class="mi">_</span>   <span class="p">|</span>  <span class="p">|</span>       <span class="p">|</span>  <span class="p">|</span>   <span class="p">|</span>  <span class="p">|</span> <span class="p">|</span>  <span class="p">|</span>       <span class="p">|</span>  <span class="p">|</span>       <span class="p">|</span>
+<span class="p">|</span><span class="mi">__</span><span class="p">|</span> <span class="p">|</span><span class="mi">__</span><span class="p">|</span>  <span class="p">|</span><span class="mi">_______</span><span class="p">|</span>  <span class="p">|</span><span class="mi">___</span><span class="p">|</span>  <span class="p">|</span><span class="mi">_</span><span class="p">|</span>  <span class="p">|</span><span class="mi">_______</span><span class="p">|</span>  <span class="p">|</span><span class="mi">______</span><span class="p">|</span> 
+
+               <span class="mi">________</span>
+          <span class="mi">_</span><span class="p">,</span><span class="err">.</span><span class="o">-</span><span class="n">Y</span>  <span class="p">|</span>  <span class="p">|</span>  <span class="n">Y</span><span class="o">-</span><span class="py">._</span>    <span class="o">-</span><span class="nf">Row</span>  <span class="p">(</span><span class="n">the</span> <span class="n">Ascii</span><span class="o">-</span><span class="n">Wizard</span> <span class="n">of</span> <span class="n">Oz</span><span class="p">)</span>
+      <span class="err">.</span><span class="o">-~</span><span class="s">"   ||  |  |  |   "</span><span class="o">-</span><span class="py">.
+      I</span><span class="s">" ""=="</span><span class="p">|</span><span class="s">" !""! "</span><span class="p">|</span><span class="s">"[]""|     _____
+      L__  [] |..------|:   _[----I"</span> <span class="err">.</span><span class="o">-</span><span class="p">{</span><span class="s">"-.
+     I___|  ..| l______|l_ [__L]_[I_/r(=}=-P -------------------
+    [L______L_[________]______j~  '-=c_]/=-^
+     </span><span class="err">\</span><span class="s">_I_j.--.</span><span class="err">\</span><span class="s">==I|I==_/.--L_]
+       [_((==)[`-----"</span><span class="p">](</span><span class="o">==</span><span class="p">)</span><span class="n">j</span>
+          <span class="n">I</span><span class="o">--</span><span class="n">I</span><span class="s">"~~"""</span><span class="o">~~</span><span class="s">"I--I     .---.     
+          |[]|         |[]|    } 0 0 {    
+          l__j         l__j    } 0 0 {    
+          |!!|         |!!|     </span><span class="err">\</span><span class="s">_@_/     
+          |..|         |..|    ,=|x|=.    
+          ([])         ([])    'c/_</span><span class="err">\</span><span class="s">  'c  
+          ]--[         ]--[     (   )     
+          [_L]         [_L]    __) (__    
+         /|..|</span><span class="err">\</span><span class="s">       /|..|</span><span class="err">\</span><span class="s">
+        `=}--{='     `=}--{='
+       .-^--r-^-.   .-^--r-^-.
+
+     .---.          .===./`   
+    } n n {        /.d b.</span><span class="err">\</span><span class="s">    
+     </span><span class="err">\</span><span class="s">_-_/         "</span><span class="err">\</span><span class="mi">_</span><span class="n">v_</span><span class="o">/</span><span class="s">"    
+.'c ."</span><span class="p">|</span><span class="mi">_</span><span class="p">|</span><span class="s">". n`.   .=(+++)=.   
+'--'  /_</span><span class="err">\</span><span class="s">  `--'o="</span>  <span class="p">(</span><span class="mi">___</span><span class="p">)</span>  <span class="s">"=o
+     /| |</span><span class="err">\</span><span class="s">         . </span><span class="err">\</span><span class="s">_/  .   
+    [_] [_]        . .:::.. .   
+</span></code></pre></div>
 <p>Welcome to the Robotathon UTRASware documentation!</p>
 
-<p>Here, you&#39;ll find programming tutorials, spanning the peripherals of the TM4C
-and for various devices that are used as sensors and actuators for your robot. </p>
+<p>Here, you&#39;ll find various programming and software tutorials, spanning from how
+to use the integrated development environment (IDE) software to writing drivers
+for the peripherals of the TM4C and for various devices that are used as sensors
+and actuators for your robot.</p>
+
+<p>The following pages on this site are recommended reads, preferably in order. If
+you already know how to do the topic, it can be skipped.</p>
+
+<ol>
+<li><a href="#setup">Setup</a>. This page provides the list of prerequisites for Robotathon,
+and how to install them and set them up. Some overlap with the next tutorial,
+<a href="#version-control">Version Control</a>.</li>
+<li><a href="#version-control">Version Control</a>. This tutorial guides you through cloning
+the UTRASWare software library and how to maintain changes to the library for
+your own purposes.</li>
+<li><a href="#running-a-demo-project">Running a Demo Project</a>. This tutorial guides you
+into running the RGB LED example in UTRASWare. Prereqs include actually
+having CCS and UTRASWare installed. </li>
+<li><a href="#creating-your-first-project">Creating a New Project</a>. This tutorial guides
+you on creating a new project from scratch. In particular, we&#39;ll manipulate
+some servos as a first step towards making a moving robot base. It references
+<code>rascar</code> from <a href="#version-control">Version Control</a>.</li>
+<li><a href="#debugging">Debugging</a>. TBD</li>
+<li><a href="#tuning">Tuning</a>. TBD</li>
+</ol>
+
+<p>Past these pages are a list of all the drivers, both the low level drivers in
+TM4C123Drivers and the high level drivers in UTRASWare. Each page will describe
+their functionality, API, and usage.</p>
 <h1 id='contributors'>Contributors</h1>
 <ul>
 <li>Matthew Yu (matthewjkyu@gmail.com)</li>
@@ -501,6 +605,212 @@ and here is the download <a href="https://www.ti.com/tool/download/CCSTUDIO">pag
 <p>Those looking to install Keil (pronounced <code>kill</code> as in <code>kill me</code>), can follow
 Professor Valvano&#39;s <a href="http://users.ece.utexas.edu/~valvano/Volume1/">guide</a> for
 setting it up. </p>
+<h1 id='version-control'>Version Control</h1>
+<p>Version control systems are very helpful when developing software and hardware
+with teams. By using version control systems, users can see when and what
+changes were introduced to the project. They can audit changes, test different
+versions of the project (this is called <em>feature branches</em>), and rollback
+breaking changes to the project! Finally, version control allows everyone to
+standardize their version of the project so everyone is on the same page.</p>
+
+<p>Our version control system of choice is <a href="https://git-scm.com/"><em>Git</em></a>. There is
+a Git <a href="https://git-scm.com/book/en/v2">book</a> - I highly recommend reading this
+if you want to learn the insides and outsides on how Git works and how you can
+leverage it for maximum productivity.</p>
+
+<p>Other than Git, we need a remote hosting server to store versions of our
+software. We use <a href="https://github.com/">Github</a>, which is one of the biggest hubs
+of free and open source software (FOSS) projects in the world.</p>
+<h2 id='installation'>Installation</h2>
+<blockquote>
+<p>Install Git on Arch</p>
+</blockquote>
+<div class="highlight"><pre class="highlight shell"><code><span class="nb">sudo </span>pacman <span class="nt">-S</span> git <span class="c"># This will prompt for your password</span>
+git config <span class="nt">--global</span> user.name <span class="s2">"Your Name"</span>
+git config <span class="nt">--global</span> user.email <span class="s2">"your_email@gmail.com"</span>
+</code></pre></div>
+<blockquote>
+<p>Install Git on Ubuntu</p>
+</blockquote>
+<div class="highlight"><pre class="highlight shell"><code><span class="nb">sudo </span>apt <span class="nb">install </span>git-all <span class="c"># This will prompt for your password</span>
+git config <span class="nt">--global</span> user.name <span class="s2">"Your Name"</span>
+git config <span class="nt">--global</span> user.email <span class="s2">"your_email@gmail.com"</span>
+</code></pre></div>
+<p>This tutorial will install Git via command line on ArchLinux and Ubuntu. Windows users may
+download <a href="https://git-scm.com/">Git for Windows</a> that can be used from the
+Command Prompt or Powershell, or use a Bash emulation shell such as <a href="https://gitforwindows.org/">Git
+BASH</a> (recommended). macOS users may use <code>homebrew</code>.</p>
+<h2 id='cloning-a-repo'>Cloning a Repo</h2>
+<p>After you&#39;ve installed Git and made an account on Github, the first thing you
+can do is grab your own version of
+<a href="https://github.com/ut-ras/UTRASWare">UTRASWare</a>, which is our custom software
+library for Robotathon 2021. In particular, we&#39;d like for you to create a new
+repository from UTRASWare, using the template button. It&#39;ll prompt you to give a
+name for it, and then it&#39;ll generate a new repository for you with the relevant
+files.</p>
+
+<p><img src="images/UTRASWare_new_template-484468fe.png" alt="UTRASWare template button" />
+<img src="images/UTRASWare_new_template2-55e1e1cd.png" alt="UTRASWare template page" /></p>
+
+<p>After copying the HTTPS URL, we can then clone the repository with the following
+command:</p>
+
+<blockquote>
+<p>Cloning a Repo</p>
+</blockquote>
+<div class="highlight"><pre class="highlight shell"><code>git clone https://github.com/ut-ras/UTRASWare-Example.git
+</code></pre></div>
+<p><img src="images/UTRASWare_cloning-b855db2a.png" alt="Cloning UTRASWare" /></p>
+
+<p>Our output should look something like above. When we <code>clone</code> a repository, we
+are essentially downloading the project into our current directory and setting
+it up to be used with Git.</p>
+<h2 id='repository-structure'>Repository Structure</h2>
+<p>Let&#39;s look inside!</p>
+
+<blockquote>
+<p>Repository Structure</p>
+</blockquote>
+<div class="highlight"><pre class="highlight shell"><code><span class="nb">cd </span>UTRASWare-Example <span class="c"># Change directory into the repo we just cloned.</span>
+<span class="nb">ls</span> <span class="nt">-all</span>      <span class="c"># Look inside and view details</span>
+</code></pre></div>
+<p><img src="images/UTRASWare_structure-49a0fa5d.png" alt="UTRASWare structure" /></p>
+
+<p>Inside, we can see both folders and files. In particular, we see a <code>README.md</code>
+file, a <code>.gitignore</code> file, and a <code>.git</code> folder.</p>
+
+<p>A <code>README.md</code> file is the introduction to the repository. It describes what&#39;s in
+the repository, what is the purpose of the repository, and instructions on how
+to install and use it.</p>
+
+<p>A <code>.gitignore</code> file tells Git what files and folders to <em>ignore</em> when committing
+changes to the repository. We&#39;ll talk more about this later.</p>
+
+<p>The <code>.git</code> folder is how Git tracks and manages the project. Don&#39;t delete this
+folder! </p>
+
+<p>Besides these, our software is organized into several folders:</p>
+
+<ul>
+<li><code>docs</code>: This is where the developers of UTRASWare will publish our
+documentation. Github finds the files in here and builds a static website, the
+one you are reading right now!</li>
+<li><code>examples</code>: This folder contains Keil and CCS example projects that show how
+to use the low level driver APIs provided in TM4C123Drivers, which is the core
+subset of drivers used for UTRASWare. Our higher level drivers are built on
+these, and anyone is welcome to use them for Robotathon!</li>
+<li><code>inc</code>: This includes folder contains important files that are needed for building
+TM4C123Drivers and UTRASWare. The <code>RegDefs.h</code> file provides definitions for
+TM4C peripheral registers, and the other files are startup files that generate
+our interrupt vector table (IVT) (ECE students will learn more about this in
+EE 306, EE 319K, EE 460N, and EE 445L).</li>
+<li><code>lib</code>: This library folder contains the TM4C123Drivers source code. They are
+grouped by peripheral, such as <code>lib/GPIO/</code> or <code>lib/Timer</code> or <code>lib/I2C</code>, and
+each folder contains a header and implementation file. The header files are
+particularly important in software design, since they provide the application
+programming interface (API) for programmers to use. This contains function and
+object definitions, prerequisites and warnings, and usage instructions.</li>
+<li><code>rasexamples</code>, <code>rasinc</code>, and <code>raslib</code>: These folders are the UTRASWare higher
+level driver equivalents of <code>examples</code>, <code>inc</code>, and <code>lib</code>. In here, you&#39;ll find
+all you need to get your robot in working shape without resorting to write the
+higher level drivers yourself.</li>
+<li><code>resources</code>: This last folder provides some extra documentation and notes for
+those who want to dive deeper on how this library works, how drivers were
+developed, how the TM4C works, and how to contribute to the project.</li>
+</ul>
+
+<p>You&#39;ll find that the way we structured this repository is one of many different
+ways; there&#39;s a lot of people out there, and they all have different ideas on
+what is a good file structure. Nethertheless, we hope that you understand why we
+organized it this way and that it helps simplify your project design.</p>
+<h2 id='making-changes-to-the-repository-and-publishing-it'>Making Changes to the Repository and Publishing It</h2>
+<p>Now that you&#39;ve taken a look at the repository, the next natural thing is to
+make your changes to it for your purposes!</p>
+
+<p>This could be by creating a new folder called <code>src</code> (or source) and creating a
+new CCS or Keil project. </p>
+
+<p><img src="images/UTRASWare_new_files-19f7e5a7.png" alt="Adding files to the project" /></p>
+
+<p>As can be seen here, I&#39;ve added a new project called <code>rascar</code> (We&#39;ll show you
+how to make this project in the <a href="#creating-your-first-project">Creating Your First Project</a>
+tutorial).</p>
+<h3 id='git-status'>Git Status</h3>
+<blockquote>
+<p>Checking the Git Project</p>
+</blockquote>
+<div class="highlight"><pre class="highlight shell"><code>git status
+</code></pre></div>
+<p>Running <code>git status</code>, we can see that there is an untracked full of stuff.
+<code>git status</code> tells us the current state of the repository. We&#39;ll use this
+command a couple more times in this process to track where we&#39;re at.</p>
+<h3 id='git-add'>Git Add</h3>
+<p>The next step to do is to add the files to our Git project.</p>
+
+<blockquote>
+<p>Adding files to Git</p>
+</blockquote>
+<div class="highlight"><pre class="highlight shell"><code>git add rascar
+</code></pre></div>
+<p><img src="images/UTRASWare_git_add-c2436c1f.png" alt="Git Add results" /></p>
+
+<p>We can see now with another <code>git status</code> call that we&#39;ve added some new files to
+the project. </p>
+<h3 id='git-commit'>Git Commit</h3>
+<p>Now that the files are added/staged to the project, we need to now commit them,
+or tell Git that we want to perform a savestate at this point. By committing the
+files, we generate a local savestate denoted by a hash that we can roll back to
+at any time if we want.</p>
+
+<blockquote>
+<p>Committing files to Git</p>
+</blockquote>
+<div class="highlight"><pre class="highlight shell"><code>git commit <span class="nt">-m</span> <span class="s2">"My commit message"</span>
+</code></pre></div>
+<p><img src="images/UTRASWare_git_commit-5a9c669a.png" alt="Git Commit results" /></p>
+
+<p>The added files were now committed, and we can see on another <code>git status</code> that
+we&#39;re ahead of the Github remote server version by 1 commit. We can also use
+<code>git log</code> to tell us the commit history (both local and remote). We can see that
+hash <code>ad7e32d</code> belongs to the commit we just did.</p>
+<h3 id='git-push'>Git Push</h3>
+<p>Finally, the last step is to merge our changed code back to the remote codebase.
+This way, other users of the repository can see our changes and pull them!</p>
+
+<blockquote>
+<p>Pushing files to Github</p>
+</blockquote>
+<div class="highlight"><pre class="highlight shell"><code>git push
+</code></pre></div>
+<p><img src="images/UTRASWare_git_push-e244ec60.png" alt="Git Push results" /></p>
+
+<p>We can see that after logging into Github with our username and password, we
+pushed our local version of the repository with the remote server and
+synchronized it. If we check the Github page for our repo, we can find our new
+commit and changes!</p>
+
+<p><img src="images/UTRASWare_github_update-3794a8e3.png" alt="Github update" /></p>
+<h2 id='final-notes'>Final Notes</h2>
+<p>This is the end of the Git version control tutorial. We&#39;ve only scratched the
+surface of what Git and Github can do, and as you use the technology more,
+you&#39;ll dicscover dozens of tricks to speed up your workflow or to make software
+development more convenient.</p>
+
+<p>A couple of things that weren&#39;t covered, but warrant a google search down the
+road:</p>
+
+<ul>
+<li>Merge conflicts and how to resolve them</li>
+<li>Pulling the latest version of the repository after someone else has made a
+change </li>
+<li>Rewriting history by removing personally identifiable information (PII) or
+passwords from a repository</li>
+<li>Adding git hooks to automate software testing</li>
+<li>Publishing your own website for free using Github Pages</li>
+<li>Creating Feature Branches for new drivers</li>
+<li>Auditing and reviewing other people&#39;s code using Pull Requests (PRs)</li>
+<li>And more...</li>
+</ul>
 <h1 id='running-a-demo-project'>Running A Demo Project</h1>
 <p>Let&#39;s start off with a fun example project to flash with to the TM4C. We&#39;ll be
 flashing the RGB project in UTRASWare/rasexamples/RGB with CCS.</p>
@@ -671,7 +981,21 @@ access to the libraries and such much easier.</li>
 This contains the <code>main()</code> function - the same one in the <code>RGBExample.c</code> file
 in the previous tutorial, <strong>Creating Your First Project</strong>.</li>
 </ul>
-<h2 id='code-structure'>Code Structure</h2>
+<h2 id='hardware-setup'>Hardware Setup</h2>
+<p>For this project, we&#39;ll be using the onboard LEDs of the TM4C. There are three
+LEDs, Red, Blue, and Green, tied to pins PF1 - PF3 respectively.</p>
+
+<p>We&#39;ll also be using two servo motors, one tied to pin PB1 and the other to PB6.
+The signal lines (white) of the servo go to these pins, while the red lines go
+to 5V and the black lines go to ground. 5V can be supplied from a battery tied
+to your 5V regulator.</p>
+
+<aside class="notice">
+Do <b>NOT</b> have the battery plugged in at the same time as the USB cable. This may
+result in your TM4C, USB port, 5V regulator, battery, or some combination of 
+the above blow out.
+</aside>
+<h2 id='code-setup'>Code Setup</h2>
 <blockquote>
 <p>main.c</p>
 </blockquote>
@@ -1053,8 +1377,15 @@ speed for both motors.</p>
 
 <p>Remember what I said earlier about adding source files? Well, we also need to
 add all dependency source files! This includes PWM.c, which is used by Servo.h
-and Servo.c. Add that in and we&#39;ll finish this up.</p>
-<h2 id='final-note'>Final Note</h2>
+and Servo.c. Add that in and we&#39;ll finish this up. Recompile the project, and
+flash the output binary to the TM4C. </p>
+
+<p>The servo should now move forward. If it doesn&#39;t, there is a screw driver shaped
+slot on the side of the servo. Turning this adjusts the setpoint of the motor
+used to determine the speed and direction of movement.</p>
+
+<p>For further troubleshooting, see the <a href="#tuning">tuning</a> page of this site.</p>
+<h2 id='final-notes'>Final Notes</h2>
 <p><img src="images/coming_together-0598d880.jpg" alt="Coming Together" /></p>
 
 <p>Our rascar base can now blink and move forwards and backwards. This is the first
@@ -1067,8 +1398,8 @@ optimize the speed, straightness, and precision of movement.</p>
 functional robot is helpful for you and your team! I look forward to seeing your
 robot compete in this year&#39;s Robotathon!</p>
 
-<p>~ Matthew Y.</p>
-<h1 id='version-control'>Version Control</h1><h1 id='tuning'>Tuning</h1><h1 id='gpio-drivers'>GPIO Drivers</h1>
+<p>~ Matthew Yu (2021).</p>
+<h1 id='debugging'>Debugging</h1><h1 id='tuning'>Tuning</h1><h1 id='gpio-drivers'>GPIO Drivers</h1>
 <p>This driver API version is 0.1 and is in <strong>BETA</strong>. Those building software on this version may experience breaking changes when migrating to the next minor or major reason.</p>
 <h2 id='summary'>Summary</h2>
 <p>GPIO pins, or General Purpose Input Output pins, are user configurable pins that can be controlled to operate as a number of functional peripherals. A couple of potential uses are provided below.</p>
@@ -1096,9 +1427,6 @@ The GPIO driver has an optional compilation flag, `__FAST__`, that toggles betwe
 <h1 id='adc-drivers'>ADC Drivers</h1>
       </div>
       <div class="dark-box">
-          <div class="lang-selector">
-                <a href="#" data-language-name="c">c</a>
-          </div>
       </div>
     </div>
   </body>
