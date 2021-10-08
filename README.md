@@ -57,7 +57,7 @@ Please see [RESOURCES.md](resources/RESOURCES.md) for additional content that ma
 ![dependency_graph](resources/driver_dependencies.drawio.png)
 
 ## Driver Status
-> Under construction as of 09/28/21.
+> Under construction as of 10/07/21.
 
 C: Completed
 I: Implementing
@@ -74,10 +74,10 @@ N: Needs Changes
 | DAC               | C         | 09/24/21         | Working as expected.                                                                               |
 | ADC               | C         | 09/24/21         | Working as expected.                                                                               |
 | PWM               | C         | 09/24/21         | Working as expected.                                                                               |
-| I2C               | I         | 09/27/21         | Working on driver implementation.                                                                  |
-| UART              | N         |                  | Needs driver implementation. 1st in queue.                                                         |
-| USB               | N         |                  | Needs driver implementation. See HapticMouse src. 2nd in queue.                                    |
-| CAN               | N         |                  | Needs driver implementation. 3rd in queue.                                                         |
-| DMA               | N         |                  | Needs driver implementation.                                                                       |
+| I2C               | C         | 10/07/21         | Working as expected.                                                                               |
+| UART              | I         |                  | Currently researching and designing.                                                               |
+| USB               | N         |                  | Needs driver implementation. See HapticMouse src. 1st in queue.                                    |
+| CAN               | N         |                  | Needs driver implementation. 2nd in queue.                                                         |
+| DMA               | N         |                  | Needs driver implementation. 3rd in queue.                                                         |
 | Low Power Mode    | N         |                  | In planning.                                                                                       |
 
