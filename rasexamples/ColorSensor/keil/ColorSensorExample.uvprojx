@@ -10,7 +10,7 @@
       <TargetName>Example</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6150000::V6.15::ARMCLANG</pCCUsed>
+      <pCCUsed>6160000::V6.16::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -313,7 +313,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>0</interw>
-            <Optim>2</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -394,16 +394,6 @@
               <FilePath>..\..\..\raslib\ColorSensor\ColorSensor.c</FilePath>
             </File>
             <File>
-              <FileName>I2C3.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\rasinc\I2C3.c</FilePath>
-            </File>
-            <File>
-              <FileName>PLL.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\lib\PLL\PLL.c</FilePath>
-            </File>
-            <File>
               <FileName>Timer.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\lib\Timer\Timer.c</FilePath>
@@ -417,6 +407,21 @@
               <FileName>startup.s</FileName>
               <FileType>2</FileType>
               <FilePath>..\..\..\inc\startup.s</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\lib\I2C\I2C.c</FilePath>
+            </File>
+            <File>
+              <FileName>PLL.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\lib\PLL\PLL.c</FilePath>
+            </File>
+            <File>
+              <FileName>I2C3.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\rasinc\I2C3.c</FilePath>
             </File>
           </Files>
         </Group>

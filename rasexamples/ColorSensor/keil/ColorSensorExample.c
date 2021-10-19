@@ -17,10 +17,7 @@
 #include <lib/GPIO/GPIO.h>
 #include <lib/Timer/Timer.h>
 #include <raslib/ColorSensor/ColorSensor.h>
-
-
-#define Bus80MHz     4 //temporary
-
+#include <lib/I2C/I2C.h>
 
 
 /** 
@@ -37,32 +34,26 @@ int main(void) {
     /** Hardware and software initializations. */
 
     /* Clock setup. */
-    PLLInit(Bus80MHz);
+    PLLInit(BUS_80_MHZ);
     DisableInterrupts();
 
-    ColorSensor_t sensor; //create instance of ColorSensor_t
-
-    ColorSensor_init(&sensor); //initialize color sensor
-
-    GPIOConfig_t redLED = {
-        .pin=PIN_F1, 
-        .pull=GPIO_PULL_DOWN, 
-        .isOutput=true, 
-    };
-
-    GPIOInit(redLED);
-
-    /* sets up an interrupt that updates and checks if values from red sensor surpassed thresholds */
-    ColorSensor_SetInterrupt(&sensor, 0, 250, RED, TIMER_0A); //redInterrupt field in sensor will be set to 1 if red value > 250
-
-    EnableInterrupts();
+    I2CConfig_t i2ccon =  {
+				.module=I2C_MODULE_0, // This uses pins PB2 (SCL) and PB3 (SDA).
+				.speed=I2C_SPEED_400_KBPS};
+		
+		TCS34725Config_t config = {
+		.I2CConfig= i2ccon, 
+		.Gain=TCS34725_Gain_1X, 
+		.IntegrationTime=TCS34725_INT_TIME_2MS,
+		.isLong=false};
+		
+		TCS34725_t sensor = TCS34725Init(config);
     
     /** Main loop. Put your program here! */
     while (1) {
 
-        // if interrupt flag for red color sensor is set turn on red on board LED
-        if(sensor.redInterrupt == 1) GPIOSetBit(PIN_F1, 1); //turn on red LED            
-
-        else GPIOSetBit(PIN_F1, 0); //turn off LED if not set
+      TCS34725Read(&sensor);
+			//DelayMillisec(500);
+			 
     }
 }

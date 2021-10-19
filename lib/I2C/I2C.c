@@ -1,21 +1,26 @@
 /**
- * I2C.c
- * Devices: LM4F120; TM4C123
- * Description: Low level drivers for I2C management.
- * Authors: Matthew Yu.
- * Last Modified: 09/20/21
+ * @file I2C.c
+ * @author Matthew Yu (matthewjkyu@gmail.com)
+ * @brief Low level drivers for I2C management.
+ * @version 0.1
+ * @date 2021-10-07
+ * @copyright Copyright (c) 2021
+ * @note
+ * Unsupported Features. This driver does not support the TM4C as a slave
+ * device. This device does not support interrupts. This device does not support
+ * loopback mode, glitch filters, high speed mode, or simultaneous master/slave
+ * mode.
  */
 
 /** General Imports. */
 #include <stdlib.h>
-#include <stdbool.h>
 #include <assert.h>
 
 /** Device specific imports. */
 #include <inc/RegDefs.h>
 #include <lib/I2C/I2C.h>
+#include <lib/GPIO/GPIO.h>
 
-void HardFault_Handler(void);    // Defined in startup.s
 
 static GPIOPin_t I2CPinMapping[4][2] = {
     //SCL    //SDA
@@ -73,150 +78,214 @@ I2C_t I2CInit(I2CConfig_t config) {
     /* Glitch filter is disabled, master mode enabled, and loopback mode is on. */
     GET_REG(moduleBase + I2C_MCR_OFFSET) = 0x10;
 
-    // if in master mode.
+    /* If in master mode. */
     /* 5. Select clock speed. */
     /* Default 80 MHz. */
     uint8_t tpr = 80000000 / (20 * I2CSpeedMapping[config.speed]) - 1;
     GET_REG(moduleBase + I2C_MTPR_OFFSET) = tpr;
 
     I2C_t i2c = {
-        config.module,
-        (config.I2CErrorHandler != NULL) ? config.I2CErrorHandler : &HardFault_Handler
+        .module=config.module
     };
 
-    // if in slave mode.
-//    GET_REG(moduleBase + I2C_SOAR_OFFSET) = 0x3C;
-//    GET_REG(moduleBase + I2C_SCSR_OFFSET) = 1;
+    /* If in slave mode. */
+    // GET_REG(moduleBase + I2C_SOAR_OFFSET) = 0x3C;
+    // GET_REG(moduleBase + I2C_SCSR_OFFSET) = 1;
 
     return i2c;
 }
 
-void I2CMasterTransmit(I2C_t i2c, uint8_t slaveAddress, uint8_t * bytes, uint8_t numBytes) {
+/* Hidden test methods. Remove eventually. */
+bool I2CTx1(I2C_t i2c, uint8_t slaveAddress, uint8_t byte) {
     uint32_t moduleBase = i2c.module * 1000 + I2C0_BASE;
 
-    /* 1. Write slave address to I2CMSA. */
-    GET_REG(moduleBase + I2C_MSA_OFFSET) = (slaveAddress << 1) & 0xFE; // last bit is 0 for transmit.
+    /* 1. Wait for I2C ready. */
+    while (GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x1) {}
 
-    /* 2. Write data to I2CMDR. */
-    GET_REG(moduleBase + I2C_MDR_OFFSET) = bytes[0];
+    /* 2. Write slave address to I2CMSA in transmit mode. */
+    GET_REG(moduleBase + I2C_MSA_OFFSET) = (slaveAddress << 1) & 0xFE;
 
+    /* 3. Write data to I2CMDR. */
+    GET_REG(moduleBase + I2C_MDR_OFFSET) = byte;
+
+    /* 4. Generate stop, start, run bits. */
+    GET_REG(moduleBase + I2C_MCS_OFFSET) = 0b0111;
+
+    /* 5. Wait for I2C ready. */
+    while (GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x1) {}
+
+    /* 6. Return result. False is failure. */ 
+    return !(GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x0E);
+}
+
+bool I2CRx1(I2C_t i2c, uint8_t slaveAddress, uint8_t * byte) {
+    uint32_t moduleBase = i2c.module * 1000 + I2C0_BASE;
+
+    /* 1. Wait for I2C ready. */
+    while (GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x1) {}
+
+    /* 2. Write slave address to I2CMSA in receive mode. */
+    GET_REG(moduleBase + I2C_MSA_OFFSET) = ((slaveAddress << 1) & 0xFE) | 0x1;
+    
+    /* 3. Generate stop, start, run bits. */
     GET_REG(moduleBase + I2C_MCS_OFFSET) = 0x7;
 
-    /* 3. Busy wait on I2CMCS bus. */
-    while ((GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x40)) {}
+    /* 4. Wait for I2C ready. */
+    while (GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x1) {}
 
-    // /* 4. Write start and run bits to I2CMCS. */
-    // GET_REG(moduleBase + I2C_MCS_OFFSET) = 0x03;
+    /* 3. Read data from I2CMDR, regardless if correct or not. */
+    *byte = GET_REG(moduleBase + I2C_MDR_OFFSET) & 0xFF;
 
-    // /* 5. For remaining bytes. */
-    // for (uint8_t i = 1; i < numBytes; ++i) {
-    //     /* 5.1. Busy wait on I2CMCS. */
-    //     while ((GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x01)) {}
-
-    //     /* 5.2. Check for error. */
-    //     if (GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x02) {
-    //         if (!(GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x10)) {
-    //             GET_REG(moduleBase + I2C_MCS_OFFSET) = 0x04;
-    //         }
-    //         i2c.I2CErrorHandler();
-    //         return;
-    //     }
-
-    //     /* 5.3. Write data to I2CMDR. */
-    //     GET_REG(moduleBase + I2C_MDR_OFFSET) = bytes[i];
-
-    //     /* 5.4. If there are bytes left to write, write the run bit to I2CMCS. */
-    //     if (i < numBytes - 1) {
-    //         GET_REG(moduleBase + I2C_MCS_OFFSET) = 0x01;
-    //     }
-    // }
-
-    // /* 6. When done, write stop and run to I2CMCS. */
-    // GET_REG(moduleBase + I2C_MCS_OFFSET) = 0x05;
-
-    // /* 7. Busy wait on I2CMCS. */
-    // while ((GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x01)) {}
-
-    /* 8. On error, got to error service. */
-    if (GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x02) {
-        i2c.I2CErrorHandler();
-    }
+    /* 6. Return result. False is failure. */ 
+    return !(GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x06);
 }
 
-void I2CMasterReceive(I2C_t i2c, uint8_t slaveAddress, uint8_t bytes[], uint8_t numBytes) {
+bool I2CMasterTransmit(I2C_t i2c, uint8_t slaveAddress, uint8_t * bytes, uint8_t numBytes) {
     uint32_t moduleBase = i2c.module * 1000 + I2C0_BASE;
 
-    /* 1. Write slave address to I2CMSA. */
-    GET_REG(moduleBase + I2C_MSA_OFFSET) = (slaveAddress << 1) | 0x1; // last bit is 1 for receive.
+    /* 1. Wait for I2C ready. */
+    while (GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x1) {}
 
-    /* 2. Busy wait on I2CMCS bus. */
-    while ((GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x40)) {}
+    /* 2. Write slave address to I2CMSA in transmit mode. */
+    GET_REG(moduleBase + I2C_MSA_OFFSET) = (slaveAddress << 1) & 0xFE;
 
-    /* 3. Write ack, start, and run bits to I2CMCS. */
-    GET_REG(moduleBase + I2C_MCS_OFFSET) = 0x0B;
+    /* For each byte of data to send. */
+    uint8_t i;
+    for (i = 0; i < numBytes; ++i) {
+        /* 3. Write data to I2CMDR. */
+        GET_REG(moduleBase + I2C_MDR_OFFSET) = bytes[i];
 
-    /* 4. For all bytes. */
-    for (uint8_t i = 0; i < numBytes; ++i) {
-        /* 4.1. Busy wait on I2CMCS. */
-        while ((GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x01)) {}
-
-        /* 4.2. Check for error. */
-        if (GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x02) {
-            if (!(GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x10)) {
-                GET_REG(moduleBase + I2C_MCS_OFFSET) = 0x04;
+        if (i == 0) {
+            /* First byte. */
+            if (numBytes == 1) {
+                /* Special case of a single byte. */
+                /* 4a. Generate stop, start, run bits. */
+                GET_REG(moduleBase + I2C_MCS_OFFSET) = 0b0111;
+            } else {
+                /* 4a. Generate start, run bits. */
+                GET_REG(moduleBase + I2C_MCS_OFFSET) = 0b0011;
             }
-            i2c.I2CErrorHandler();
-            return;
+        } else if (i == numBytes - 1) {
+            /* Nth byte. */
+            /* 4b. Generate stop, run bits. */
+            GET_REG(moduleBase + I2C_MCS_OFFSET) = 0b0101;
+        } else {
+            /* Kth byte. */
+            /* 4c. Generate run bit. */
+            GET_REG(moduleBase + I2C_MCS_OFFSET) = 0b0001;
         }
 
-        /* 4.3. Read data from I2CMDR. */
-        bytes[i] = GET_REG(moduleBase + I2C_MDR_OFFSET);
+        /* 5. Wait for transmission completion. */
+        while (GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x1) {}
 
-        /* 5.4. If there are bytes left to write, write the run bit to I2CMCS. */
-        if (i < numBytes - 1) {
-            GET_REG(moduleBase + I2C_MCS_OFFSET) = 0x11;
+        /* 6. Check for error. */
+        bool error = GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x0E;
+        if (error) {
+            /* Generate stop bit. */
+            GET_REG(moduleBase + I2C_MCS_OFFSET) = 0b0100;
+            while (GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x1) {}
+            return false;
         }
     }
 
-    /* 5. When done, write ack and run bits to I2CMCS. */
-    GET_REG(moduleBase + I2C_MCS_OFFSET) = 0x05;
-
-    /* 6. Busy wait on I2CMCS. */
-    while ((GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x01)) {}
-
-    /* 7. On error, got to error service. */
-    if (GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x02) {
-        i2c.I2CErrorHandler();
-    }
+    return true;
 }
 
-void I2CSlaveProcess(I2C_t i2c, uint8_t slaveAddress, void (*readTask)(uint8_t), uint8_t (*writeTask)(void)) {
+bool I2CMasterReceive(I2C_t i2c, uint8_t slaveAddress, uint8_t bytes[], uint8_t numBytes) {
     uint32_t moduleBase = i2c.module * 1000 + I2C0_BASE;
 
-    /* Write own slave address to I2CSOAR. */
-    GET_REG(moduleBase + I2C_SOAR_OFFSET) = slaveAddress << 1;
+    /* 1. Wait for I2C ready. */
+    while (GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x1) {}
 
-    /* Write to device activate bit I2CSCSR. */
-    GET_REG(moduleBase + I2C_SCSR_OFFSET) = 1;
+    /* 2. Write slave address to I2CMSA in receive mode. */
+    GET_REG(moduleBase + I2C_MSA_OFFSET) = ((slaveAddress << 1) & 0xFE) | 0x1;
 
-    /* Determine Read request or write request. */
-    while (!(GET_REG(moduleBase + I2C_SCSR_OFFSET) & 0x03)) {}
-    if (GET_REG(moduleBase + I2C_SCSR_OFFSET) & 0x01) {
-        /* Upon read request, read data from I2CSDR. */
-        uint8_t data = GET_REG(moduleBase + I2C_SDR_OFFSET) & 0xFF;
-        if (readTask != NULL)
-            readTask(data);
-    } else if (GET_REG(moduleBase + I2C_SCSR_OFFSET & 0x02)) {
-        /* Upon transmit request, write data to I2CSDR. */
-
-        if (writeTask != NULL) {
-            uint8_t data = writeTask();
-            GET_REG(moduleBase + I2C_SDR_OFFSET) = data;
+    /* For each byte of data to receive. */
+    uint8_t i;
+    for (i = 0; i < numBytes; ++i) {
+        if (i == 0) {
+            /* First byte. */
+            if (numBytes == 1) {
+                /* Special case of a single byte. */
+                /* 3a. Generate stop, start, run bits. */
+                GET_REG(moduleBase + I2C_MCS_OFFSET) = 0b0111;
+            } else {
+                /* 3a. Generate ack, start, run bits. */
+                GET_REG(moduleBase + I2C_MCS_OFFSET) = 0b1011;
+            }
+        } else if (i == numBytes - 1) {
+            /* Nth byte. */
+            /* 3b. Generate stop, run bit. */
+            GET_REG(moduleBase + I2C_MCS_OFFSET) = 0b0101;
         } else {
-            GET_REG(moduleBase + I2C_SDR_OFFSET) = 0xFF;
+            /* Kth byte. */
+            /* 3c. Generate ack, run bits. */
+            GET_REG(moduleBase + I2C_MCS_OFFSET) = 0b1001;
         }
-    } else {
-        /* Illegal state. Goto error handler. */
-        i2c.I2CErrorHandler();
+
+        /* 4. Wait for transmission completion. */
+        while (GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x1) {}
+
+        /* 5. Write data to I2CMDR, regardless if correct or not. */
+        bytes[i] = GET_REG(moduleBase + I2C_MDR_OFFSET) & 0xFF;
+
+        /* 6. Check for error. */
+        bool error = GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x6;
+        if (error) {
+            /* Generate stop bit. */
+            GET_REG(moduleBase + I2C_MCS_OFFSET) = 0b0100;
+            while (GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x1) {}
+            return false;
+        }
     }
+
+    return true;
 }
+
+
+/**
+ * I2CSlaveProcess manages a single byte request across the I2C line.
+ * 
+ * @param i2c The I2C module to talk with.
+ * @param slaveAddress I2C address of the self.
+ * @param readTask  Pointer to a function to call when reading the byte from the
+ *                  I2C line.
+ * @param writeTask Pointer to a function to call to generate the data to write
+ *                  across the I2C line.
+ * @note readTask and writeTask, when undefined, will do nothing with the read
+ *       data or will write 0xFF to the I2C line, respectively.
+ * @note It is recommended that readTask and writeTask are written to be
+ *       nonintrusive and FAST. Ideally, the function moves data from another
+ *       place and performs more CPU intensive calculations outside of the
+ *       I2CSlaveProcess parent call.
+ */
+// void I2CSlaveProcess(I2C_t i2c, uint8_t slaveAddress, void (*readTask)(uint8_t), uint8_t (*writeTask)(void)) {
+//     uint32_t moduleBase = i2c.module * 1000 + I2C0_BASE;
+
+//     /* Write own slave address to I2CSOAR. */
+//     GET_REG(moduleBase + I2C_SOAR_OFFSET) = slaveAddress << 1;
+
+//     /* Write to device activate bit I2CSCSR. */
+//     GET_REG(moduleBase + I2C_SCSR_OFFSET) = 1;
+
+//     /* Determine Read request or write request. */
+//     while (!(GET_REG(moduleBase + I2C_SCSR_OFFSET) & 0x03)) {}
+//     if (GET_REG(moduleBase + I2C_SCSR_OFFSET) & 0x01) {
+//         /* Upon read request, read data from I2CSDR. */
+//         uint8_t data = GET_REG(moduleBase + I2C_SDR_OFFSET) & 0xFF;
+//         if (readTask != NULL)
+//             readTask(data);
+//     } else if (GET_REG(moduleBase + I2C_SCSR_OFFSET & 0x02)) {
+//         /* Upon transmit request, write data to I2CSDR. */
+
+//         if (writeTask != NULL) {
+//             uint8_t data = writeTask();
+//             GET_REG(moduleBase + I2C_SDR_OFFSET) = data;
+//         } else {
+//             GET_REG(moduleBase + I2C_SDR_OFFSET) = 0xFF;
+//         }
+//     } else {
+//         /* Illegal state. Goto error handler. */
+//         i2c.I2CErrorHandler();
+//     }
+// }
