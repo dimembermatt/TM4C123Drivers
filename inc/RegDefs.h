@@ -14,39 +14,6 @@
  */
 #define GET_REG(addr) (*((volatile int32_t *)(addr)))
 
-/**
- * See Table 11-12. Timers Register Map on p. 726 of the TM4C Datasheet for
- * more details.
- */
-#define GPTM_BASE           0x40030000
-#define GPTMCFG_OFFSET      0x000
-#define GPTMTAMR_OFFSET     0x004
-#define GPTMTBMR_OFFSET     0x008
-#define GPTMCTL_OFFSET      0x00C
-#define GPTMSYNC_OFFSET     0x010
-#define GPTMIMR_OFFSET      0x018
-#define GPTMRIS_OFFSET      0x01C
-#define GPTMMIS_OFFSET      0x020
-#define GPTMICR_OFFSET      0x024
-#define GPTMTAILR_OFFSET    0x028
-#define GPTMTBILR_OFFSET    0x02C
-#define GPTMTAMATCHR_OFFSET 0x030
-#define GPTMTBMATCHR_OFFSET 0x034
-#define GPTMTAPR_OFFSET     0x038
-#define GPTMTBPR_OFFSET     0x03C
-#define GPTMTAPMR_OFFSET    0x040
-#define GPTMTBPMR_OFFSET    0x044
-#define GPTMTAR_OFFSET      0x048
-#define GPTMTBR_OFFSET      0x04C
-#define GPTMTAV_OFFSET      0x050
-#define GPTMTBV_OFFSET      0x054
-#define GPTMRTCPD_OFFSET    0x058
-#define GPTMTAPS_OFFSET     0x05C
-#define GPTMTBPS_OFFSET     0x060
-#define GPTMTAPV_OFFSET     0x064
-#define GPTMTBPV_OFFSET     0x068
-#define GPTMPP_OFFSET       0xFC0
-
 /** Used for acknowledging Timer A and Timer B interrupt flag. */
 #define TIMERXA_ICR_TATOCINT 0x00000001
 #define TIMERXB_ICR_TATOCINT 0x00000100
@@ -163,40 +130,38 @@
  * As of 03/09/21, Peripheral ID and PrimeCell ID registers are not supported.
  */
 
-/** 
- * See Table 15-2. SSI Register Map on p. 967 of the TM4C Datasheet for
+/**
+ * See Table 11-12. Timers Register Map on p. 726 of the TM4C Datasheet for
  * more details.
  */
-#define SSI_BASE            0x40008000
-#define SSI_CR0_OFFSET      0x000
-#define SSI_CR1_OFFSET      0x004
-#define SSI_DR_OFFSET       0x008
-#define SSI_SR_OFFSET       0x00C
-#define SSI_CPSR_OFFSET     0x010
-#define SSI_IM_OFFSET       0x014
-#define SSI_RIS_OFFSET      0x018
-#define SSI_MIS_OFFSET      0x01C
-#define SSI_ICR_OFFSET      0x020
-#define SSI_DMACTL_OFFSET   0x024
-#define SSI_CC_OFFSET       0xFC8
-/** 
- * As of 03/09/21, Peripheral ID and PrimeCell ID registers are not supported.
- */
-
-/**
- * See table 20-2. PWM Register Map on p. 1240 of the TM4C Datasheet for more
- * details.
- */
-#define PWM0_BASE           0x40028000
-#define PWM1_BASE           0x40029000
-#define PWM_OFFSET          0x040
-#define PWM_ENABLE_OFFSET   0x008
-#define PWM_CTL_OFFSET      0x040
-#define PWM_LOAD_OFFSET     0x050
-#define PWM_CMPA_OFFSET     0x058
-#define PWM_CMPB_OFFSET     0x05C
-#define PWM_GENA_OFFSET     0x060
-#define PWM_GENB_OFFSET     0x064
+#define GPTM_BASE           0x40030000
+#define GPTMCFG_OFFSET      0x000
+#define GPTMTAMR_OFFSET     0x004
+#define GPTMTBMR_OFFSET     0x008
+#define GPTMCTL_OFFSET      0x00C
+#define GPTMSYNC_OFFSET     0x010
+#define GPTMIMR_OFFSET      0x018
+#define GPTMRIS_OFFSET      0x01C
+#define GPTMMIS_OFFSET      0x020
+#define GPTMICR_OFFSET      0x024
+#define GPTMTAILR_OFFSET    0x028
+#define GPTMTBILR_OFFSET    0x02C
+#define GPTMTAMATCHR_OFFSET 0x030
+#define GPTMTBMATCHR_OFFSET 0x034
+#define GPTMTAPR_OFFSET     0x038
+#define GPTMTBPR_OFFSET     0x03C
+#define GPTMTAPMR_OFFSET    0x040
+#define GPTMTBPMR_OFFSET    0x044
+#define GPTMTAR_OFFSET      0x048
+#define GPTMTBR_OFFSET      0x04C
+#define GPTMTAV_OFFSET      0x050
+#define GPTMTBV_OFFSET      0x054
+#define GPTMRTCPD_OFFSET    0x058
+#define GPTMTAPS_OFFSET     0x05C
+#define GPTMTBPS_OFFSET     0x060
+#define GPTMTAPV_OFFSET     0x064
+#define GPTMTBPV_OFFSET     0x068
+#define GPTMPP_OFFSET       0xFC0
 
 /**
  * See table 13-5. ADC Register Map on p. 818 of the TM4C Datasheet for more
@@ -236,6 +201,50 @@
 #define ADC_CC              0xFC8
 
 /**
+ * See table 14-3. UART Interface Register Map on p. 904 of the TM4C Datasheet
+ * for more details.
+ */
+#define UART_BASE           0x4000C000
+#define UART_DR_OFFSET      0x000
+#define UART_SR_ECR_OFFSET  0x004
+#define UART_FR_OFFSET      0x018
+#define UART_ILPR_OFFSET    0x020
+#define UART_IBRD_OFFSET    0x024
+#define UART_FBRD_OFFSET    0x028
+#define UART_LCRH_OFFSET    0x02C
+#define UART_CTL_OFFSET     0x030
+#define UART_IFLS_OFFSET    0x034
+#define UART_IM_OFFSET      0x038
+#define UART_RIS_OFFSET     0x03C
+#define UART_MIS_OFFSET     0x040
+#define UART_ICR_OFFSET     0x044
+#define UART_DMACTL_OFFSET  0x048
+#define UART_9BADDR_OFFSET  0x0A4
+#define UART_9BAMASK_OFFSET 0x0A8
+#define UART_PP_OFFSET      0xFC0
+#define UART_CC_OFFSET      0xFC8
+
+/** 
+ * See Table 15-2. SSI Register Map on p. 967 of the TM4C Datasheet for
+ * more details.
+ */
+#define SSI_BASE            0x40008000
+#define SSI_CR0_OFFSET      0x000
+#define SSI_CR1_OFFSET      0x004
+#define SSI_DR_OFFSET       0x008
+#define SSI_SR_OFFSET       0x00C
+#define SSI_CPSR_OFFSET     0x010
+#define SSI_IM_OFFSET       0x014
+#define SSI_RIS_OFFSET      0x018
+#define SSI_MIS_OFFSET      0x01C
+#define SSI_ICR_OFFSET      0x020
+#define SSI_DMACTL_OFFSET   0x024
+#define SSI_CC_OFFSET       0xFC8
+/** 
+ * As of 03/09/21, Peripheral ID and PrimeCell ID registers are not supported.
+ */
+
+/**
  * See table 16-4. I2C Interface Register Map on p. 1017 of the TM4C Datasheet
  * for more details. 
  */
@@ -267,3 +276,17 @@
 #define I2C_PP_OFFSET       0xFC0
 #define I2C_PC_OFFSET       0xFC4
 
+/**
+ * See table 20-2. PWM Register Map on p. 1240 of the TM4C Datasheet for more
+ * details.
+ */
+#define PWM0_BASE           0x40028000
+#define PWM1_BASE           0x40029000
+#define PWM_OFFSET          0x040
+#define PWM_ENABLE_OFFSET   0x008
+#define PWM_CTL_OFFSET      0x040
+#define PWM_LOAD_OFFSET     0x050
+#define PWM_CMPA_OFFSET     0x058
+#define PWM_CMPB_OFFSET     0x05C
+#define PWM_GENA_OFFSET     0x060
+#define PWM_GENB_OFFSET     0x064

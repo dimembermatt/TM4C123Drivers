@@ -22,7 +22,7 @@
 /**
  * @brief I2CModule is an enumeration specifying a set of pins used for I2C
  *        communication. */
-typedef enum I2CModule {
+enum I2CModule {
     I2C_MODULE_0,   // PB2 SCL
                     // PB3 SDA
 
@@ -34,7 +34,7 @@ typedef enum I2CModule {
 
     I2C_MODULE_3    // PD0 SCL
                     // PD1 SDA
-} I2CModule_t;
+};
 
 /** @brief I2CMode is an enumeration specifying the I2C function. */
 enum I2CMode {
@@ -61,7 +61,7 @@ typedef struct I2CConfig {
      *
      * Default I2C_MODULE_0.
      */
-    I2CModule_t module;
+    enum I2CModule module;
 
     /**
      * @brief The data transmission speed for the I2C module.
@@ -97,7 +97,7 @@ I2C_t I2CInit(I2CConfig_t config);
 
 /**
  * @brief I2CMasterTransmit transmits a specified number of bytes across the
- * data line of a provided I2C.
+ *        data line of a provided I2C.
  * 
  * @param i2c The I2C module to transmit across.
  * @param slaveAddress Address of the slave device to contact.
@@ -109,7 +109,7 @@ bool I2CMasterTransmit(I2C_t i2c, uint8_t slaveAddress, uint8_t * bytes, uint8_t
 
 /**
  * @brief I2CMasterReceive receives a specified number of bytes across the data
- * line of a provided I2C.
+ *        line of a provided I2C.
  * 
  * @param i2c The I2C module to receive across.
  * @param slaveAddress Address of the slave device to get data from.
