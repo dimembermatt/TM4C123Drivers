@@ -29,16 +29,17 @@
  *             duty cycle, from [0, 100].
  */
 void PWMTimerHandler(uint32_t * args) {
-    static uint8_t idx = 0;
-    static bool on = false;
-    
+    GPIOPin_t pin = args[0];
+    uint8_t dutyCycle = args[1];
+    uint8_t idx = args[2];
+    bool on = args[3];
 
     /* i.e. 0 - 69: ON; 70 - 99: OFF for a 70% duty cycle. */
-    if (on != idx <= (uint8_t) args[1])
-        GPIOSetBit((GPIOPin_t) args[0], on);
+    if (on != idx <= dutyCycle)
+        GPIOSetBit(pin, on);
 
-    on = idx <= (uint8_t) args[1];
-    idx = (idx + 1) % 100;
+    args[3] = idx <= dutyCycle;
+    args[2] = (idx + 1) % 100;
 }
 
 /** @brief pwmSettings is a set of PWM configurations. */
@@ -73,8 +74,9 @@ static struct PWMSettings {
 };
 
 /** @brief pwmTimerSettings hold the args for the timer interrupt handler. Index
- *         0 holds the GPIOPin_t and index 1 holds the duty cycle. */
-static uint32_t pwmTimerSettings[TIMER_COUNT][2];
+ *         0 holds the GPIOPin_t and index 1 holds the duty cycle. Index 2 holds
+ *         the idx of the PWM and index 3 holds the boolean state of the PWM. */
+static uint32_t pwmTimerSettings[TIMER_COUNT][4] = {0};
 
 PWM_t PWMInit(PWMConfig_t config) {
     /* Initialization asserts. */
