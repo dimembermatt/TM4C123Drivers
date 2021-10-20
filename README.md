@@ -1,10 +1,10 @@
 # TM4C123Drivers
 
 This repository contains a selection of drivers developed by Matthew Yu. This
-project spans all of the drivers defined in the TM4C123GH6PM datasheet, and is
-meant to be as generically accessible as possible. Some inspiration for the
+project spans all of the peripherals defined in the TM4C123GH6PM datasheet, and
+is meant to be as generically accessible as possible. Some inspiration for the
 implementation of these drivers was taken from Jonathan Valvano's Valvanoware
-and from IEEE RAS' [RASWare](https://github.com/ut-ras/Rasware). Their
+and from IEEE RAS' [RASWare](https://github.com/ut-ras/Rasware). Their direct
 contributions have been noted as such in specific files, including their
 copyrights (i.e. PLL.h). 
 
@@ -20,11 +20,9 @@ few are provided here:
   Technology for Embedded Internet of Things graduate class. 
 * And others...
 
-Altogether, this library contains drivers for all sets of peripherals for the
-TM4C123GH6PM chip, including timers, ADCs, GPIOs, PWM, and so on. A list of
-driver statuses are found below. These drivers each contain example projects
-that can be run on Keil or Code Composer Studio with minimal effort, and will
-accompany a yet to be created set of API documentation that should help
+A list of driver statuses are found below. These drivers each contain example
+projects that can be run on Keil or Code Composer Studio with minimal effort,
+and will accompany a yet to be created set of API documentation that should help
 developers like myself use this library. 
 
 ---
@@ -48,7 +46,8 @@ Source code documentation can be found at...
 
 ## Resources
 
-Please see [RESOURCES.md](resources/RESOURCES.md) for additional content that may help with bufgixing, device documentation, and so on.
+Please see [RESOURCES.md](resources/RESOURCES.md) for additional content that
+may help with bugfixing, device documentation, and so on.
 
 ---
 
@@ -57,7 +56,7 @@ Please see [RESOURCES.md](resources/RESOURCES.md) for additional content that ma
 ![dependency_graph](resources/driver_dependencies.drawio.png)
 
 ## Driver Status
-> Under construction as of 10/07/21.
+> Under construction as of 10/19/21.
 
 C: Completed
 I: Implementing
@@ -65,19 +64,21 @@ D: Debugging
 P: Changes Proposed
 N: Needs Changes
 
-| Name              | Status    | Last Modified    | Further Details                                                                                    |
-|-------------------|-----------|------------------|----------------------------------------------------------------------------------------------------|
-| Example           | C         | 09/24/21         | Working as expected.                                                                               |
-| GPIO              | C         | 09/24/21         | Working as expected.                                                                               |
-| Timers            | C         | 09/24/21         | Working as expected.                                                                               |
-| SSI               | C         | 09/24/21         | Working as expected.                                                                               |
-| DAC               | C         | 09/24/21         | Working as expected.                                                                               |
-| ADC               | C         | 09/24/21         | Working as expected.                                                                               |
-| PWM               | C         | 09/24/21         | Working as expected.                                                                               |
-| I2C               | C         | 10/07/21         | Working as expected.                                                                               |
-| UART              | I         |                  | Currently researching and designing.                                                               |
-| USB               | N         |                  | Needs driver implementation. See HapticMouse src. 1st in queue.                                    |
-| CAN               | N         |                  | Needs driver implementation. 2nd in queue.                                                         |
-| DMA               | N         |                  | Needs driver implementation. 3rd in queue.                                                         |
-| Low Power Mode    | N         |                  | In planning.                                                                                       |
+| Name              | Status    | Last Modified    | Further Details                                                   |
+|-------------------|-----------|------------------|-------------------------------------------------------------------|
+| Example           | C         | 09/24/21         | Working as expected.                                              |
+| GPIO              | C         | 09/24/21         | Working as expected.                                              |
+| Timers            | C         | 09/24/21         | Working as expected.                                              |
+| SSI               | C         | 09/24/21         | Working as expected.                                              |
+| DAC               | C         | 09/24/21         | Working as expected.                                              |
+| ADC               | C         | 09/24/21         | Working as expected.                                              |
+| PWM               | C         | 09/24/21         | Working as expected.                                              |
+| I2C               | C         | 10/07/21         | Working as expected.                                              |
+| UART              | C         | 10/19/21         | Working as expected.                                              |
+| USB               | I         |                  | Reading documentation and MVP. See HapticMouse src.               |
+| CAN               | N         |                  | Needs driver implementation. 1st in queue.                        |
+| DMA               | N         |                  | Needs driver implementation. 2nd in queue.                        |
+| Low Power Mode    | N         |                  | Needs driver implementation. 3nd in queue.                        |
+| QEI               | N         |                  | Under consideration.                                              |
+| Watchdog Timer    | N         |                  | Under consideration.                                              |
 

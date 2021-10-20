@@ -6,8 +6,9 @@ GPIO->ADC
 GPIO->DAC
 GPIO->SSI
 GPIO->PWM
-Timer->PWM
+GPIO->UART
 GPIO->I2C
-UART
+Timer->PWM
 CAN
+QEI
 startup
