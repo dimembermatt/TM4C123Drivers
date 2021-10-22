@@ -91,7 +91,7 @@ static struct ColorSensorSettings{
 void ColorSensorHandler(uint32_t * args){
 	struct ColorSensorSettings * setting = ((struct ColorSensorSettings *)args);
 
-	ColorSensorRead(setting->sensor);
+	ColorSensorSample(setting->sensor);
 	
 }
 
@@ -170,7 +170,7 @@ ColorSensor_t ColorSensorInit(ColorSensorConfig_t config){
  * 
  * @param ColorSensor_t instance passed as a pointer
  **/
-void ColorSensorRead(ColorSensor_t * sensor){
+void ColorSensorSample(ColorSensor_t * sensor){
 
   uint8_t dataL[] = { 0 };
   uint8_t dataH[] = { 0 };
