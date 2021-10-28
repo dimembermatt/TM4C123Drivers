@@ -126,10 +126,10 @@ int main(void) {
         DelayMillisec(50);
         /* Run this on an oscilloscope to check if the waveform matches 2 kHz.
          * What if you change the frequency? Duty cycle?
-		 * 
+         * 
          * At what minimum frequency/period can you load onto the pin and still
          * have an accurate waveform? Use the divisor field to try to lower the
-		 * frequency! */
+         * frequency! */
         pwmConfigPF2.sourceInfo.pwmSelect.period = freqToPeriod(2000, MAX_FREQ);
         pwmConfigPF2.dutyCycle = dutyCycle;
         PWMInit(pwmConfigPF2);
