@@ -1,9 +1,9 @@
 /**
  * @file PWM.h
  * @author Matthew Yu (matthewjkyu@gmail.com)
- * @brief An example project showing how to use the PWM driver.
+ * @brief PWM peripheral driver.
  * @version 0.1
- * @date 2021-09-24
+ * @date 2021-10-28
  * @copyright Copyright (c) 2021
  * @note
  * Modes. This driver will support both the TM4C's existing PWM modules as well
@@ -55,6 +55,111 @@ enum PWMSource {
     PWM_SOURCE_TIMER
 };
 
+/** @brief PWMDivisor is an enumeration that specifies the PWM unit clock
+ *         divisor. */
+enum PWMDivisor {
+    PWM_DIV_OFF,
+    PWM_DIV_2,
+    PWM_DIV_4,
+    PWM_DIV_8,
+    PWM_DIV_16,
+    PWM_DIV_32,
+    PWM_DIV_64
+};
+
+/** @brief PWMModuleConfig is a struct defined by the user to specify a PWM
+ *         module configuration. */
+struct PWMModuleConfig {
+    /** 
+     * @brief Pin to output PWM with.
+     *
+     * Default M0_PB6.
+     */
+    PWMPin_t pin;
+
+    /** 
+     * @brief PWM reload period, in cycles. This period is dependent on
+     *        the system clock, which is typically defined at 80 MHZ by
+     *        PLLInit. This period can be extended by using the divisor.
+     * 
+     * This value must be specified and be greater than zero. Failing
+     * these conditions will trigger an internal assert in debug mode. 
+     * In production, this causes undefined behavior. 
+     * 
+     * @note PWM modules can only have a maximum period of 16 bits. At
+     *       80 MHz, the maximum period is 819,187.5 ns if not using the divisor
+     *       field.
+     */
+    uint16_t period;
+
+    /** ------------- Optional Fields. ------------- */
+
+    /**
+     * @brief The divisor of the PWM clock. For example, a divisor value
+     *        of 2 will drop the effective system clock used by the PWM
+     *        module in half, doubling the effective period and halving
+     *        the effective frequency.
+     * 
+     * Default is PWM_DIV_OFF, or disabled.
+     */
+    enum PWMDivisor divisor;
+};
+
+/** @brief PWMTimerConfig is a struct defined by the user to specify a PWM timer
+ *         based configuration. */
+struct PWMTimerConfig {
+    /** 
+     * @brief Pin to output PWM with.
+     * 
+     * Default PIN_A0.
+     */
+    GPIOPin_t pin;
+
+    /**
+     * @brief The Timer module to enable.
+     *
+     * Default is TIMER_0A.
+     */
+    TimerID_t timerID;
+
+    /**
+     * @brief The timer reload period, in cycles. This period is
+     *        multiplied by the prescale value, which is optional.
+     *
+     * This value must be specified and be greater than zero. Failing
+     * this condition will trigger an internal assert in debug mode. In
+     * production, this causes undefined behavior.
+     * 
+     * @note Values greater than 0xFFFF or 0xFFFFFFFF are truncated for
+     *       16 bit timers and 32 bit timers, respectively. 
+     */
+    uint64_t period;
+
+    /** ------------- Optional Fields. ------------- */
+
+    /**
+     * @brief Whether the Timer is separated from the B side timer to
+     *        make a 16/32 bit timer.
+     * 
+     * Default is false (Timers are concatenated and are 32/64 bits
+     * wide). 
+     */
+    bool isIndividual;
+
+    /**
+     * @brief A multiplier for the timer reload period. For example, a
+     *        prescale value of 1 doubles the base period, effectively
+     *        halving the frequency. A prescale value of 2 triples the
+     *        period, and so on. The multiplier is the prescale value +
+     *        1.
+     * 
+     * Default is 0 (No scaling, or 1x scaling).
+     * 
+     * @note Values greater than 0xFF are truncated for non wide timers.
+     */
+    uint16_t prescale;
+};
+
 /** @brief PWMConfig_t is a user defined struct that specifies a PWM pin
  *         configuration. */
 typedef struct PWMConfig {
@@ -67,45 +172,21 @@ typedef struct PWMConfig {
 
     /** @brief A union that specifies the PWM based or TIMER based configuration. */
     union {
-        /** 
-         * @brief Pin to output PWM with.
-         *
-         * Default M0_PB6.
+        /**
+         * @brief Struct configuration used with a PWM module source.
+         * 
+         * Default M0_PB6, with the divisor off.
          */
-        PWMPin_t pin;
-        
+        struct PWMModuleConfig pwmSelect;
+
         /** 
          * @brief Struct configuration used with a TIMER source.
          * 
-         * Default PIN_A0 and TIMER_0A.
+         * Default PIN_A0, TIMER_0A, concatenated A and B sides, with no
+         * prescaling. 
          */
-        struct {
-            /** 
-             * @brief Pin to output PWM with.
-             * 
-             * Default PIN_A0.
-             */
-            GPIOPin_t pin;
-
-            /** 
-             * @brief Timer to execute the PWM on.
-             * 
-             * Default TIMER_0A.
-             */
-            TimerID_t timerID;
-        } timerSelect;
+        struct PWMTimerConfig timerSelect;
     } sourceInfo;
-
-    /** 
-     * @brief PWM cycle duration. This is dependent on the system
-     *        clock, which is typically defined at 80 MHZ by PLLInit.
-     * 
-     * @note This value must be specified and be greater than zero. PWM modules  
-	 *       can only have a maximum period of 16 bit; timers can go up to 32 bit. 
-	 *       Failing these conditions will trigger an internal assert in debug 
-	 *       mode. In production, this causes undefined behavior.
-     */
-    uint32_t period;
 
     /**
      * @brief Percentage of the PWM that is on. This is a value from [0, 100].
@@ -145,27 +226,12 @@ typedef struct PWM {
  *       initialization. Make sure the timer specified for TIMER based PWMs is
  *       not already in use.
  * 
- *       It is highly recommended that a timer based PWM is used when the period
- *       is a value larger than 0xFFFF. The PWM load register saturates at this 
- *       period. This may mean different cutoff frequencies depending on the system
- *       clock. At 80 MHz, this is around 2441 Hz.
+ *       Note that users should use the provided PWM divisor fields or Timer 
+ *       prescaler fields when defining low PWM frequencies with periods large 
+ *       enough that may overflow the period registers. See the period field 
+ *       documentation for each config on the register size.
  */
 PWM_t PWMInit(PWMConfig_t config);
-
-/**
- * @brief PWMUpdateConfig updates the PWM period and duty cycle. And then starts
- *        it. Does not check if the PWM was previously initialized.
- * 
- * @param pwm The PWM instance that should be updated and restarted.
- * @param period The period of one cycle of the PWM.
- *               This value must be specified and be greater than zero. PWM modules 
- *               can only have a maximum period of 16 bit; timers can go up to 32 bit. 
- *               Failing these conditions will trigger an internal assert in debug 
- *               mode. In production, this causes undefined behavior.
- * @param dutyCycle The duty cycle of one cycle of the PWM, from 0 to 100.
- * @note Only one Timer based PWM can be on at a time.  
- */
-void PWMUpdateConfig(PWM_t pwm, uint32_t period, uint8_t dutyCycle);
 
 /**
  * @brief PWMStop disables a PWM configuration.

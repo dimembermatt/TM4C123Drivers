@@ -3,7 +3,7 @@
  * @author Matthew Yu (matthewjkyu@gmail.com)
  * @brief GPIO peripheral driver.
  * @version 0.1
- * @date 2021-09-28
+ * @date 2021-10-28
  * @copyright Copyright (c) 2021
  * @note
  * Fast Mode. Use optional compilation flag (1) or define a preprocessor macro

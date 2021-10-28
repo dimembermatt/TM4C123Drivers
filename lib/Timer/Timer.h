@@ -3,7 +3,7 @@
  * @author Matthew Yu (matthewjkyu@gmail.com)
  * @brief Timer peripheral driver.
  * @version 0.1
- * @date 2021-10-27
+ * @date 2021-10-28
  * @copyright Copyright (c) 2021
  * @note
  * Unsupported Features. This driver does not support multiple clock
