@@ -15,7 +15,7 @@
  * __MAIN__ = 0 - Initialization and management of a timer acting as a PWM for low freq.
  *          = 1 - Initialization and management of a PWM module for high freq.
  */
-#define __MAIN__ 0
+#define __MAIN__ 1
 
 /** General imports. */
 #include <stdlib.h>
@@ -49,10 +49,12 @@ int main(void) {
         .sourceInfo={
             .timerSelect={
                 .pin=PIN_F1,
-                .timerID=TIMER_0A
+                .timerID=TIMER_0A,
+                .period=freqToPeriod(2, MAX_FREQ),
+                .isIndividual=false,
+                .prescale=0
             }
         },
-        .period=freqToPeriod(2, MAX_FREQ),
         .dutyCycle=50
     };
 
@@ -66,11 +68,15 @@ int main(void) {
         switch (mode) {
             case 0:
                 /* The LED connected to PF1 should flash at 2 Hz with short on and long off times. */
-                PWMUpdateConfig(pwm, freqToPeriod(2, MAX_FREQ), 12);
+                pwmConfigPF1.sourceInfo.timerSelect.period = freqToPeriod(2, MAX_FREQ);
+                pwmConfigPF1.dutyCycle = 12;
+                PWMInit(pwmConfigPF1);
                 break;
             case 1:
                 /* The LED connected to PF1 should flash at 5 Hz with even on-off times. */
-                PWMUpdateConfig(pwm, freqToPeriod(5, MAX_FREQ), 50);
+                pwmConfigPF1.sourceInfo.timerSelect.period = freqToPeriod(5, MAX_FREQ);
+                pwmConfigPF1.dutyCycle = 50;
+                PWMInit(pwmConfigPF1);
                 break;
             case 2:
                 /* The LED connected to PF1 should stop in the on position. */
@@ -103,9 +109,12 @@ int main(void) {
     PWMConfig_t pwmConfigPF1 = {
         .source=PWM_SOURCE_DEFAULT,
         .sourceInfo={
-            .pin=M1_PF1
+            .pwmSelect={
+                .pin=M1_PF1,
+                .period=freqToPeriod(2000, MAX_FREQ),
+                .divisor=PWM_DIV_OFF
+            }
         },
-        .period=freqToPeriod(2000, MAX_FREQ),
         .dutyCycle=0
     };
     
@@ -121,7 +130,9 @@ int main(void) {
          * At what minimum frequency/period can you load onto the pin and still
          * have an accurate waveform?
          */
-        PWMUpdateConfig(pwm, freqToPeriod(2000, MAX_FREQ), dutyCycle);
+        pwmConfigPF1.sourceInfo.pwmSelect.period = freqToPeriod(2000, MAX_FREQ);
+        pwmConfigPF1.dutyCycle = dutyCycle;
+        PWMInit(pwmConfigPF1);
         dutyCycle = (dutyCycle + 1)%100;
     }
 }
