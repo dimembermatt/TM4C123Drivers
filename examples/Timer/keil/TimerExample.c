@@ -40,10 +40,14 @@ void dummyTask2(uint32_t * args) { ++counter0B; }
 void dummyTask3(uint32_t * args) { ++counter1A; }
 
 void dummyTask4(uint32_t * args) {
-	++counter2A;
+    ++counter2A;
 
     if (counter2A == 200) {
-        /* 1. Place a breakpoint at L47! Notice that at counter2A = 200, counter1A ~= 100, counter0B ~= 50, and counter0A ~= 25. */
+        /* 1. Place a breakpoint at L47! Notice that at counter2A = 200,
+              counter1A ~= 100, counter0B ~= 50, and counter0A ~= 25.
+              What does this imply about the frequency of TIMER_0A and
+              TIMER_0B? The prescale value modifies the effective frequency
+              to frequency / (prescale + 1). */
         timers[3].period = freqToPeriod(100, MAX_FREQ);
         TimerUpdatePeriod(timers[3]); 
     }
@@ -134,12 +138,12 @@ int main(void) {
         .enableSlew=false
     };
     GPIOInit(PF1Config);
-	
+    
     /* Initialize a timer executing at 5 Hz. */
     TimerConfig_t timerConfig = {
         .timerID=TIMER_0A,
         .period=freqToPeriod(5, MAX_FREQ), 
-		.isIndividual=false,
+        .isIndividual=false,
         .timerTask=dummyTask,
         .isPeriodic=true, 
         .priority=5, 
