@@ -3,11 +3,11 @@
  * @author Matthew Yu (matthewjkyu@gmail.com)
  * @brief Timer peripheral driver.
  * @version 0.1
- * @date 2021-09-24
+ * @date 2021-10-27
  * @copyright Copyright (c) 2021
  * @note
- * Unsupported Features. This driver does not support WTimers, multiple clock
- * modes, nor count up vs count down. B-side timers are currently broken.
+ * Unsupported Features. This driver does not support multiple clock
+ * modes, nor count up vs count down.
  */
 #pragma once
 
@@ -45,15 +45,41 @@ typedef struct TimerConfig {
     TimerID_t timerID;
 
     /**
-     * @brief Timer reload time, in cycles.
+     * @brief The base timer reload time, in cycles.
      *
      * This value must be specified and be greater than zero. Failing this
      * condition will trigger an internal assert in debug mode. In production,
      * this causes undefined behavior.
+     * 
+     * @note Values greater than 0xFFFF or 0xFFFFFFFF are truncated for 16 bit
+     *       timers and 32 bit timers, respectively. This period is extended by
+     *       the prescale value, which is optional.
      */
-    uint32_t period;
+    uint64_t period;
 
     /** ------------- Optional Fields. ------------- */
+
+    /**
+     * @brief Whether the Timer is separated from the B side timer to make a 16/32
+     *        bit timer.
+     * 
+     * Default is false (Timers are concatenated and are 32/64 bits wide).
+     * 
+     */
+    bool isIndividual;
+
+    /**
+     * @brief A multiple extension of the base timer reload period, in cycles.
+     * For example, a prescale value of 1 doubles the base period, effectively
+     * halving the frequency.
+     * 
+     * Default is 0 (No scaling).
+     * 
+     * @note Values greater than 0xFF are truncated for non wide timers. Values
+     *       are offset by one. I.E. a prescale value of 1 doubles the period,
+     *       and a prescale value of 2 triples the period, and so on.
+     */
+    uint16_t prescale;
 
     /**
      * @brief Pointer to function called on timer interrupt. Accepts any

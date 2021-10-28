@@ -3,7 +3,7 @@
  * @author Matthew Yu (matthewjkyu@gmail.com)
  * @brief An example project showing how to use the Timer driver.
  * @version 0.1
- * @date 2021-09-24
+ * @date 2021-10-27
  * @copyright Copyright (c) 2021
  * @note 
  * Modify __MAIN__ on L13 to determine which main method is executed.
@@ -35,23 +35,23 @@ Timer_t timers[4];
 
 void dummyTask1(uint32_t * args) { ++counter0A; }
 
-void dummyTask2(uint32_t * args) { ++counter1A; }
+void dummyTask2(uint32_t * args) { ++counter0B; }
 
-void dummyTask3(uint32_t * args) {
-    ++counter2A;
-    
-    if (counter2A == 100) {
-        /* 1. Place a breakpoint at L45! Notice that at counter2A = 100, counter0A ~= 25, counter1A ~= 50. */
+void dummyTask3(uint32_t * args) { ++counter1A; }
+
+void dummyTask4(uint32_t * args) {
+	++counter2A;
+
+    if (counter2A == 200) {
+        /* 1. Place a breakpoint at L47! Notice that at counter2A = 200, counter1A ~= 100, counter0B ~= 50, and counter0A ~= 25. */
         timers[3].period = freqToPeriod(100, MAX_FREQ);
         TimerUpdatePeriod(timers[3]); 
     }
-    if (counter2A == 105) {
-        /* 2. Place a breakpoint at L50! Notice here that when counter2A = 105, counter0A ~= 30, counter1A ~= 60. */
+    if (counter2A == 205) {
+        /* 2. Place a breakpoint at L52! Notice here that when counter2A = 205, counter1A ~= 120, counter0B ~= 60, and counter0A ~= 30. */
         uint8_t i = 0;
     }
 }
-
-void dummyTask4(uint32_t * args) { ++counter0B; }
 
 int main(void) {
     /** 
@@ -63,10 +63,10 @@ int main(void) {
 
     TimerConfig_t timerConfigs[4] = {
         /* The first timer has keyed arguments notated to show you what each positional argument means. */
-        {.timerID=TIMER_0A, .period=freqToPeriod(100, MAX_FREQ), .timerTask=dummyTask1, .isPeriodic=true, .priority=5, .timerArgs=NULL},
-        {         TIMER_0B,         freqToPeriod(800, MAX_FREQ),            dummyTask4,             true,           5,            NULL},
-        {         TIMER_1A,         freqToPeriod(200, MAX_FREQ),            dummyTask2,             true,           5,            NULL},
-        {         TIMER_2A,         freqToPeriod(400, MAX_FREQ),            dummyTask3,             true,           5,            NULL},
+        {.timerID=TIMER_0A, .period=freqToPeriod(1600, MAX_FREQ), .isIndividual=true,  .prescale=15, .timerTask=dummyTask1, .isPeriodic=true, .priority=5, .timerArgs=NULL},
+        {         TIMER_0B,         freqToPeriod(1600, MAX_FREQ),               true,             7,            dummyTask2,             true,           5,            NULL},
+        {         TIMER_1A,         freqToPeriod(400, MAX_FREQ),                false,            0,            dummyTask3,             true,           5,            NULL},
+        {         WTIMER_0A,        freqToPeriod(800, MAX_FREQ),                false,            0,            dummyTask4,             true,           5,            NULL},
     };
 
     /* Initialize four timers based on the timer configuration array above. */
@@ -78,16 +78,9 @@ int main(void) {
     EnableInterrupts();
     while (1) {
         /* View in debugging mode with counter0A, counter0B, counter1A, and
-           counter2A added to watch 1. Put a breakpoint at L45 and L50. Run 
+           counter2A added to watch 1. Put a breakpoint at L47 and L52. Run 
            until the first breakpoint is hit, and check the register value
-           ratios. It should be 1 : 0 : 2 : 4. When then change Timer 2A to 
-           100 Hz, and run it again. See if the counters match comment L49.
-           
-           Note that you can't run both A side and B side timers at once.
-           Try it again with isPeriod set to false for single trigger mode,
-           or with different priorities on the timers. What do you see?
-          
-           NOTE: As of (09/13/21) B-side timers do not activate properly. 
+           ratios. Check to see if your watch values match the expected values at L46 and L51!
          */
         WaitForInterrupt();
     };
@@ -146,6 +139,7 @@ int main(void) {
     TimerConfig_t timerConfig = {
         .timerID=TIMER_0A,
         .period=freqToPeriod(5, MAX_FREQ), 
+		.isIndividual=false,
         .timerTask=dummyTask,
         .isPeriodic=true, 
         .priority=5, 

@@ -3,11 +3,11 @@
  * @author Matthew Yu (matthewjkyu@gmail.com)
  * @brief Timer peripheral driver.
  * @version 0.1
- * @date 2021-09-24
+ * @date 2021-10-27
  * @copyright Copyright (c) 2021
  * @note
- * Unsupported Features. This driver does not support WTimers, multiple clock
- * modes, nor count up vs count down. B-side timers are currently broken.
+ * Unsupported Features. This driver does not support multiple clock
+ * modes, nor count up vs count down.
  */
 
 /** General Imports. */
@@ -62,18 +62,18 @@ static struct TimerInterruptSettings {
     {INTA, (uint32_t *)(PERIPHERALS_BASE + NVIC_PRI23_OFFSET), (uint32_t *)(PERIPHERALS_BASE + NVIC_EN2_OFFSET), 92-64, NULL,   NULL}, /* Timer 5A. */
     {INTB, (uint32_t *)(PERIPHERALS_BASE + NVIC_PRI23_OFFSET), (uint32_t *)(PERIPHERALS_BASE + NVIC_EN2_OFFSET), 93-64, NULL,   NULL}, /* Timer 5B. */
 
-    // {}, /* WTimer 0A. */
-    // {}, /* WTimer 0B. */
-    // {}, /* WTimer 1A. */
-    // {}, /* WTimer 1B. */
-    // {}, /* WTimer 2A. */
-    // {}, /* WTimer 2B. */
-    // {}, /* WTimer 3A. */
-    // {}, /* WTimer 3B. */
-    // {}, /* WTimer 4A. */
-    // {}, /* WTimer 4B. */
-    // {}, /* WTimer 5A. */
-    // {}, /* WTimer 5B. */
+    {INTC, (uint32_t *)(PERIPHERALS_BASE + NVIC_PRI23_OFFSET), (uint32_t *)(PERIPHERALS_BASE + NVIC_EN2_OFFSET), 94-64, NULL,   NULL}, /* WTimer 0A. */
+    {INTD, (uint32_t *)(PERIPHERALS_BASE + NVIC_PRI23_OFFSET), (uint32_t *)(PERIPHERALS_BASE + NVIC_EN2_OFFSET), 95-64, NULL,   NULL}, /* WTimer 0B. */
+    {INTA, (uint32_t *)(PERIPHERALS_BASE + NVIC_PRI24_OFFSET), (uint32_t *)(PERIPHERALS_BASE + NVIC_EN3_OFFSET), 96-96, NULL,   NULL}, /* WTimer 1A. */
+    {INTB, (uint32_t *)(PERIPHERALS_BASE + NVIC_PRI24_OFFSET), (uint32_t *)(PERIPHERALS_BASE + NVIC_EN3_OFFSET), 97-96, NULL,   NULL}, /* WTimer 1B. */
+    {INTC, (uint32_t *)(PERIPHERALS_BASE + NVIC_PRI24_OFFSET), (uint32_t *)(PERIPHERALS_BASE + NVIC_EN3_OFFSET), 98-96, NULL,   NULL}, /* WTimer 2A. */
+    {INTD, (uint32_t *)(PERIPHERALS_BASE + NVIC_PRI24_OFFSET), (uint32_t *)(PERIPHERALS_BASE + NVIC_EN3_OFFSET), 99-96, NULL,   NULL}, /* WTimer 2B. */
+    {INTA, (uint32_t *)(PERIPHERALS_BASE + NVIC_PRI25_OFFSET), (uint32_t *)(PERIPHERALS_BASE + NVIC_EN3_OFFSET), 100-96, NULL,  NULL}, /* WTimer 3A. */
+    {INTB, (uint32_t *)(PERIPHERALS_BASE + NVIC_PRI25_OFFSET), (uint32_t *)(PERIPHERALS_BASE + NVIC_EN3_OFFSET), 101-96, NULL,  NULL}, /* WTimer 3B. */
+    {INTC, (uint32_t *)(PERIPHERALS_BASE + NVIC_PRI25_OFFSET), (uint32_t *)(PERIPHERALS_BASE + NVIC_EN3_OFFSET), 102-96, NULL,  NULL}, /* WTimer 4A. */
+    {INTD, (uint32_t *)(PERIPHERALS_BASE + NVIC_PRI25_OFFSET), (uint32_t *)(PERIPHERALS_BASE + NVIC_EN3_OFFSET), 103-96, NULL,  NULL}, /* WTimer 4B. */
+    {INTA, (uint32_t *)(PERIPHERALS_BASE + NVIC_PRI26_OFFSET), (uint32_t *)(PERIPHERALS_BASE + NVIC_EN3_OFFSET), 104-96, NULL,  NULL}, /* WTimer 5A. */
+    {INTB, (uint32_t *)(PERIPHERALS_BASE + NVIC_PRI26_OFFSET), (uint32_t *)(PERIPHERALS_BASE + NVIC_EN3_OFFSET), 105-96, NULL,  NULL}, /* WTimer 5B. */
 
     {INTA, 0, 0, 0, NULL, NULL}, /* SYSTICK. */
 };
@@ -142,8 +142,8 @@ Timer_t TimerInit(TimerConfig_t config) {
     GET_REG(GPTM_BASE + timerOffset + GPTMCTL_OFFSET) &=
         ((ID % 2) == 0) ? 0xFFFFFF00 : 0xFFFFFF00FF;
 
-    /* 3. Configure for 32-bit mode. */
-    GET_REG(GPTM_BASE + timerOffset + GPTMCFG_OFFSET) = 0x00000000;
+    /* 3. Configure for individual or concatenated mode. */
+    GET_REG(GPTM_BASE + timerOffset + GPTMCFG_OFFSET) = config.isIndividual ? 0x4 : 0x0;
 
     /* 4. Configure for periodic mode.
        5. Set reload value.
@@ -152,12 +152,12 @@ Timer_t TimerInit(TimerConfig_t config) {
         GET_REG(GPTM_BASE + timerOffset + GPTMTAMR_OFFSET)  =
             config.isPeriodic ? 0x00000002 : 0x00000001;
         GET_REG(GPTM_BASE + timerOffset + GPTMTAILR_OFFSET) = config.period - 1;
-        GET_REG(GPTM_BASE + timerOffset + GPTMTAPR_OFFSET)  = 0x00000000;
+        GET_REG(GPTM_BASE + timerOffset + GPTMTAPR_OFFSET)  = config.prescale;
     } else { /* Timer B. */
         GET_REG(GPTM_BASE + timerOffset + GPTMTBMR_OFFSET)  =
             config.isPeriodic ? 0x00000002 : 0x00000001;
         GET_REG(GPTM_BASE + timerOffset + GPTMTBILR_OFFSET) = config.period - 1;
-        GET_REG(GPTM_BASE + timerOffset + GPTMTBPR_OFFSET)  = 0x00000000;
+        GET_REG(GPTM_BASE + timerOffset + GPTMTBPR_OFFSET)  = config.prescale;
     }
 
     /* 7. Clear timer timeout flag. */
@@ -342,18 +342,78 @@ void Timer5B_Handler(void) {
 }
 
 /** Handler implementations for wide timers. */
-void WideTimer0A_Handler(void) {}
-void WideTimer0B_Handler(void) {}
-void WideTimer1A_Handler(void) {}
-void WideTimer1B_Handler(void) {}
-void WideTimer2A_Handler(void) {}
-void WideTimer2B_Handler(void) {}
-void WideTimer3A_Handler(void) {}
-void WideTimer3B_Handler(void) {}
-void WideTimer4A_Handler(void) {}
-void WideTimer4B_Handler(void) {}
-void WideTimer5A_Handler(void) {}
-void WideTimer5B_Handler(void) {}
+void WideTimer0A_Handler(void) {
+    GET_REG(GPTM_BASE + 0x6000 + GPTMICR_OFFSET) |= TIMERXA_ICR_TATOCINT;
+    if (TimerInterruptSettings[12].timerTask != NULL) {
+        TimerInterruptSettings[12].timerTask(TimerInterruptSettings[12].timerArgs);
+    }
+}
+void WideTimer0B_Handler(void) {
+    GET_REG(GPTM_BASE + 0x6000 + GPTMICR_OFFSET) |= TIMERXB_ICR_TATOCINT;
+    if (TimerInterruptSettings[13].timerTask != NULL) {
+        TimerInterruptSettings[13].timerTask(TimerInterruptSettings[13].timerArgs);
+    }
+}
+void WideTimer1A_Handler(void) {
+    GET_REG(GPTM_BASE + 0x7000 + GPTMICR_OFFSET) |= TIMERXA_ICR_TATOCINT;
+    if (TimerInterruptSettings[14].timerTask != NULL) {
+        TimerInterruptSettings[14].timerTask(TimerInterruptSettings[14].timerArgs);
+    }
+}
+void WideTimer1B_Handler(void) {
+    GET_REG(GPTM_BASE + 0x7000 + GPTMICR_OFFSET) |= TIMERXB_ICR_TATOCINT;
+    if (TimerInterruptSettings[15].timerTask != NULL) {
+        TimerInterruptSettings[15].timerTask(TimerInterruptSettings[15].timerArgs);
+    }
+}
+void WideTimer2A_Handler(void) {
+    GET_REG(GPTM_BASE + 0x1C000 + GPTMICR_OFFSET) |= TIMERXA_ICR_TATOCINT;
+    if (TimerInterruptSettings[16].timerTask != NULL) {
+        TimerInterruptSettings[16].timerTask(TimerInterruptSettings[16].timerArgs);
+    }
+}
+void WideTimer2B_Handler(void) {
+    GET_REG(GPTM_BASE + 0x1C000 + GPTMICR_OFFSET) |= TIMERXB_ICR_TATOCINT;
+    if (TimerInterruptSettings[17].timerTask != NULL) {
+        TimerInterruptSettings[17].timerTask(TimerInterruptSettings[17].timerArgs);
+    }
+}
+void WideTimer3A_Handler(void) {
+    GET_REG(GPTM_BASE + 0x1D000 + GPTMICR_OFFSET) |= TIMERXA_ICR_TATOCINT;
+    if (TimerInterruptSettings[18].timerTask != NULL) {
+        TimerInterruptSettings[18].timerTask(TimerInterruptSettings[18].timerArgs);
+    }
+}
+void WideTimer3B_Handler(void) {
+    GET_REG(GPTM_BASE + 0x1D000 + GPTMICR_OFFSET) |= TIMERXB_ICR_TATOCINT;
+    if (TimerInterruptSettings[19].timerTask != NULL) {
+        TimerInterruptSettings[19].timerTask(TimerInterruptSettings[19].timerArgs);
+    }
+}
+void WideTimer4A_Handler(void) {
+    GET_REG(GPTM_BASE + 0x1E000 + GPTMICR_OFFSET) |= TIMERXA_ICR_TATOCINT;
+    if (TimerInterruptSettings[20].timerTask != NULL) {
+        TimerInterruptSettings[20].timerTask(TimerInterruptSettings[20].timerArgs);
+    }
+}
+void WideTimer4B_Handler(void) {
+    GET_REG(GPTM_BASE + 0x1E000 + GPTMICR_OFFSET) |= TIMERXB_ICR_TATOCINT;
+    if (TimerInterruptSettings[21].timerTask != NULL) {
+        TimerInterruptSettings[21].timerTask(TimerInterruptSettings[21].timerArgs);
+    }
+}
+void WideTimer5A_Handler(void) {
+    GET_REG(GPTM_BASE + 0x1F000 + GPTMICR_OFFSET) |= TIMERXA_ICR_TATOCINT;
+    if (TimerInterruptSettings[22].timerTask != NULL) {
+        TimerInterruptSettings[22].timerTask(TimerInterruptSettings[22].timerArgs);
+    }
+}
+void WideTimer5B_Handler(void) {
+    GET_REG(GPTM_BASE + 0x1F000 + GPTMICR_OFFSET) |= TIMERXB_ICR_TATOCINT;
+    if (TimerInterruptSettings[23].timerTask != NULL) {
+        TimerInterruptSettings[23].timerTask(TimerInterruptSettings[23].timerArgs);
+    }
+}
 
 /** @brief System clock ticks since program start. Used for delay functions. */
 static uint64_t systick = 0;
@@ -375,6 +435,7 @@ void DelayInit(void) {
     TimerConfig_t config = {
         .timerID=SYSTICK,
         .period=freqToPeriod(MAX_FREQ/80, MAX_FREQ),
+        .isIndividual=false,
         .timerTask=NULL,
         .isPeriodic=true,
         .priority=1,
