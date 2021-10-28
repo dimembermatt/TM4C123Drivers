@@ -15,7 +15,7 @@
  * __MAIN__ = 0 - Initialization and management of a timer acting as a PWM for low freq.
  *          = 1 - Initialization and management of a PWM module for high freq.
  */
-#define __MAIN__ 0
+#define __MAIN__ 1
 
 /** General imports. */
 #include <stdlib.h>

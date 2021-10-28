@@ -35,10 +35,11 @@ void PWMTimerHandler(uint32_t * args) {
     bool on = args[3];
 
     /* i.e. 0 - 69: ON; 70 - 99: OFF for a 70% duty cycle. */
-    if (on != idx <= dutyCycle)
-        GPIOSetBit(pin, on);
-
-    args[3] = idx <= dutyCycle;
+    if (on != (idx <= dutyCycle)) {
+        args[3] = idx <= dutyCycle;
+        GPIOSetBit(pin, args[3]);
+    }
+    
     args[2] = (idx + 1) % 100;
 }
 
@@ -92,7 +93,7 @@ PWM_t PWMInit(PWMConfig_t config) {
         assert(config.period <= 0xFFFF);
         assert(config.sourceInfo.pin < PWM_COUNT);
         PWMPin_t pwmPin = config.sourceInfo.pin;
-        pwm.sourceInfo.pin=pwmPin;
+        pwm.sourceInfo.pin = pwmPin;
 
         /* 1. Enable PWM clock and stall until ready. */
         GET_REG(SYSCTL_BASE + SYSCTL_RCGCPWM_OFFSET) =

@@ -380,17 +380,17 @@ static void GPIOGeneric_Handler(GPIOPin_t pin) {
     }
 }
 
-static void GPIOPortA_Handler(void) { GPIOGeneric_Handler(PIN_A0); }
+void GPIOPortA_Handler(void) { GPIOGeneric_Handler(PIN_A0); }
 
-static void GPIOPortB_Handler(void) { GPIOGeneric_Handler(PIN_B0); }
+void GPIOPortB_Handler(void) { GPIOGeneric_Handler(PIN_B0); }
 
-static void GPIOPortC_Handler(void) { GPIOGeneric_Handler(PIN_C0); }
+void GPIOPortC_Handler(void) { GPIOGeneric_Handler(PIN_C0); }
 
-static void GPIOPortD_Handler(void) { GPIOGeneric_Handler(PIN_D0); }
+void GPIOPortD_Handler(void) { GPIOGeneric_Handler(PIN_D0); }
 
-static void GPIOPortE_Handler(void) { GPIOGeneric_Handler(PIN_E0); }
+void GPIOPortE_Handler(void) { GPIOGeneric_Handler(PIN_E0); }
 
-static void GPIOPortF_Handler(void) { GPIOGeneric_Handler(PIN_F0); }
+void GPIOPortF_Handler(void) { GPIOGeneric_Handler(PIN_F0); }
 
 #ifdef __FAST__
 void GPIOSetBit(GPIOPin_t pin, bool val) {
