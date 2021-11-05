@@ -4,8 +4,11 @@
  * @brief This file contains user implementations of fault handlers such as
  *        HardFault_Handler, __aeabi_assert, and so on.
  * @version 0.1
- * @date 2021-09-28
+ * @date 2021-11-05
  * @copyright Copyright (c) 2021
+ * @note There is a dependency on GPIO, UART, and Timer, but FaultHandler
+ * doesn't need need to be added to the project if you don't want those
+ * dependencies.
  */
 
 #pragma once
