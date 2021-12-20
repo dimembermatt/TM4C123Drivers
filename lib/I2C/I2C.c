@@ -72,7 +72,7 @@ I2C_t I2CInit(I2CConfig_t config) {
     };
     GPIOInit(sdaPin);
 
-    uint32_t moduleBase = config.module * 1000 + I2C0_BASE;
+    uint32_t moduleBase = config.module * 0x1000 + I2C0_BASE;
 
     /* 4. Set transmission mode. */
     /* Glitch filter is disabled, master mode enabled, and loopback mode is on. */
@@ -81,7 +81,20 @@ I2C_t I2CInit(I2CConfig_t config) {
     /* If in master mode. */
     /* 5. Select clock speed. */
     /* Default 80 MHz. */
-    uint8_t tpr = 80000000 / (20 * I2CSpeedMapping[config.speed]) - 1;
+    uint32_t tpr = 0;
+    if (config.speed == I2C_SPEED_3_33_MBPS) {
+        #define SCL_LP 6
+        #define SCL_HP 4
+        tpr = 80000000 / (2 * (SCL_LP + SCL_HP) * I2CSpeedMapping[config.speed]) - 1;
+        #undef SCL_LP
+        #undef SCL_HP
+    } else {
+        #define SCL_LP 2
+        #define SCL_HP 1
+        tpr = 80000000 / (2 * (SCL_LP + SCL_HP) * I2CSpeedMapping[config.speed]) - 1;
+        #undef SCL_LP
+        #undef SCL_HP
+    }
     GET_REG(moduleBase + I2C_MTPR_OFFSET) = tpr;
 
     I2C_t i2c = {
@@ -97,7 +110,7 @@ I2C_t I2CInit(I2CConfig_t config) {
 
 /* Hidden test methods. Remove eventually. */
 bool I2CTx1(I2C_t i2c, uint8_t slaveAddress, uint8_t byte) {
-    uint32_t moduleBase = i2c.module * 1000 + I2C0_BASE;
+    uint32_t moduleBase = i2c.module * 0x1000 + I2C0_BASE;
 
     /* 1. Wait for I2C ready. */
     while (GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x1) {}
@@ -119,7 +132,7 @@ bool I2CTx1(I2C_t i2c, uint8_t slaveAddress, uint8_t byte) {
 }
 
 bool I2CRx1(I2C_t i2c, uint8_t slaveAddress, uint8_t * byte) {
-    uint32_t moduleBase = i2c.module * 1000 + I2C0_BASE;
+    uint32_t moduleBase = i2c.module * 0x1000 + I2C0_BASE;
 
     /* 1. Wait for I2C ready. */
     while (GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x1) {}
@@ -141,7 +154,7 @@ bool I2CRx1(I2C_t i2c, uint8_t slaveAddress, uint8_t * byte) {
 }
 
 bool I2CMasterTransmit(I2C_t i2c, uint8_t slaveAddress, uint8_t * bytes, uint8_t numBytes) {
-    uint32_t moduleBase = i2c.module * 1000 + I2C0_BASE;
+    uint32_t moduleBase = i2c.module * 0x1000 + I2C0_BASE;
 
     /* 1. Wait for I2C ready. */
     while (GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x1) {}
@@ -192,7 +205,7 @@ bool I2CMasterTransmit(I2C_t i2c, uint8_t slaveAddress, uint8_t * bytes, uint8_t
 }
 
 bool I2CMasterReceive(I2C_t i2c, uint8_t slaveAddress, uint8_t bytes[], uint8_t numBytes) {
-    uint32_t moduleBase = i2c.module * 1000 + I2C0_BASE;
+    uint32_t moduleBase = i2c.module * 0x1000 + I2C0_BASE;
 
     /* 1. Wait for I2C ready. */
     while (GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x1) {}
@@ -260,7 +273,7 @@ bool I2CMasterReceive(I2C_t i2c, uint8_t slaveAddress, uint8_t bytes[], uint8_t 
  *       I2CSlaveProcess parent call.
  */
 // void I2CSlaveProcess(I2C_t i2c, uint8_t slaveAddress, void (*readTask)(uint8_t), uint8_t (*writeTask)(void)) {
-//     uint32_t moduleBase = i2c.module * 1000 + I2C0_BASE;
+//     uint32_t moduleBase = i2c.module * 0x1000 + I2C0_BASE;
 
 //     /* Write own slave address to I2CSOAR. */
 //     GET_REG(moduleBase + I2C_SOAR_OFFSET) = slaveAddress << 1;
