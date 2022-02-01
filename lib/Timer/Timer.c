@@ -228,6 +228,13 @@ void TimerStop(Timer_t timer) {
 
     uint8_t ID = timer.timerID;
 
+    /* Special case for SYSTICK. */
+    if (ID == SYSTICK) {
+        /* Disable during setup. */
+        GET_REG(PERIPHERALS_BASE + SYSTICK_CTRL_OFFSET) = 0x00000000;
+        return;
+    }
+
     /* 1. We'll generate the timer offset to find the correct addresses for each
        timer. */
     uint32_t timerOffset = 0;
@@ -431,7 +438,7 @@ uint64_t SysTickGetTick(void) {
     return systick;
 }
 
-void DelayInit(void) {
+Timer_t DelayInit(void) {
     TimerConfig_t config = {
         .timerID=SYSTICK,
         .period=freqToPeriod(MAX_FREQ/80, MAX_FREQ),
@@ -441,7 +448,7 @@ void DelayInit(void) {
         .priority=1,
         .timerArgs=NULL
     };
-    TimerInit(config);
+    return TimerInit(config);
 }
 
 void DelayMillisec(uint32_t n) {

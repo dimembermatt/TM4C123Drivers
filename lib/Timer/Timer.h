@@ -214,10 +214,11 @@ uint64_t SysTickGetTick(void);
  * @brief DelayInit initializes the SysTick timer to run at 1 MHz and start an
  *        internal ticker.
  *
+ * @return Configuration for SysTick.
  * @note This can be overwritten by other SysTick initializations. If another
  * SysTick initializer is not at 1 MHz, this will break.
  */
-void DelayInit(void);
+Timer_t DelayInit(void);
 
 /**
  * @brief DelayMillisec delays the process by 1 ms. This is BLOCKING.
