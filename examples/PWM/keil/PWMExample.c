@@ -110,12 +110,12 @@ int main(void) {
         .source=PWM_SOURCE_DEFAULT,
         .sourceInfo={
             .pwmSelect={
-                .pin=M1_PF2,
+                .pin=M0_PB7,
                 .period=freqToPeriod(2000, MAX_FREQ),
                 .divisor=PWM_DIV_OFF
             }
         },
-        .dutyCycle=0
+        .dutyCycle=99
     };
     
     PWM_t pwm = PWMInit(pwmConfigPF2);
@@ -130,10 +130,10 @@ int main(void) {
          * At what minimum frequency/period can you load onto the pin and still
          * have an accurate waveform? Use the divisor field to try to lower the
          * frequency! */
-        pwmConfigPF2.sourceInfo.pwmSelect.period = freqToPeriod(2000, MAX_FREQ);
-        pwmConfigPF2.dutyCycle = dutyCycle;
-        PWMInit(pwmConfigPF2);
-        dutyCycle = (dutyCycle + 1)%100;
+//        pwmConfigPF2.sourceInfo.pwmSelect.period = freqToPeriod(2000, MAX_FREQ);
+//        pwmConfigPF2.dutyCycle = dutyCycle;
+//        PWMInit(pwmConfigPF2);
+//        dutyCycle = (dutyCycle + 1)%100;
     }
 }
 #endif

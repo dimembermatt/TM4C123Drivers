@@ -147,7 +147,7 @@ Timer_t TimerInit(TimerConfig_t config) {
 
     /* 4. Configure for periodic mode.
        5. Set reload value.
-       6. Set prescaler to 1. */
+       6. Set prescaler. */
     if ((ID % 2) == 0) { /* Timer A. */
         GET_REG(GPTM_BASE + timerOffset + GPTMTAMR_OFFSET)  =
             config.isPeriodic ? 0x00000002 : 0x00000001;
@@ -269,8 +269,37 @@ void TimerStart(Timer_t timer) {
         ((ID % 2) == 0) ? 0x00000001 : 0x00000100;
 }
 
+uint64_t TimerGetValue(Timer_t timer) {
+    /* Initialization asserts. */
+    assert(timer.timerID < TIMER_COUNT);
+
+    /* Special case for SYSTICK. */
+    if (timer.timerID == SYSTICK) {
+        /* Set reload value. */
+        GET_REG(PERIPHERALS_BASE + SYSTICK_LOAD_OFFSET) = timer.period - 1;
+        return 0;
+    }
+
+    uint8_t ID = timer.timerID;
+    uint32_t timerOffset = 0;
+
+    /* Timers TIMER_0A to WTIMER_1B. */
+    if (ID < WTIMER_2A) timerOffset = 0x1000 * (uint32_t)(ID >> 1);
+    /* Timers WTIMER_2A to WTIMER_5B. Jump the base to 0x4004.C000. Our magic
+       number, 16, is the enumerated value of WTIMER_2A. */
+    else timerOffset = 0x1000 * (uint32_t)((ID-16) >> 1) + 0x0001C000;
+
+    /* For normal timers, in 32 bit mode, [63:, 15:0] ...
+       For wide timers, In 64 bit mode, returns 64 bits of the timer. In 32 bit
+       mode, [63:32 contains B-side timer, 31:0 contains A-side
+       timer]. */ 
+    return (uint64_t)GET_REG(GPTM_BASE + timerOffset + GPTMTAV_OFFSET) | 
+        ((uint64_t)GET_REG(GPTM_BASE + timerOffset + GPTMTBV_OFFSET) << 32);
+}
+
 uint32_t freqToPeriod(uint32_t freq, uint32_t maxFreq) {
-    return (uint32_t) ceil(maxFreq/freq);
+    /* https://stackoverflow.com/a/2745086 */
+    return (uint32_t) (1 + ((maxFreq - 1) / freq));
 }
 
 
