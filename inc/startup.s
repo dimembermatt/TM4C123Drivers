@@ -5,23 +5,23 @@
 ;
 ; Copyright (c) 2013-2020 Texas Instruments Incorporated.  All rights reserved.
 ; Software License Agreement
-; 
+;
 ; Texas Instruments (TI) is supplying this software for use solely and
 ; exclusively on TI's microcontroller products. The software is owned by
 ; TI and/or its suppliers, and is protected under applicable copyright
 ; laws. You may not combine this software with "viral" open-source
 ; software in order to form a larger program.
-; 
+;
 ; THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
 ; NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
 ; NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
 ; A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
 ; CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
 ; DAMAGES, FOR ANY REASON WHATSOEVER.
-; 
+;
 ; This is part of revision 2.2.0.295 of the EK-TM4C123GXL Firmware Package.
 ;
-; Modified by Matthew Yu (2021).
+; Modified by Matthew Yu (2022).
 ;
 ;******************************************************************************
 
@@ -286,7 +286,7 @@ Reset_Handler
 ;******************************************************************************
 NMI_Handler
         B       NMI_Handler
-        
+
 ;******************************************************************************
 ;
 ; This is the code that gets called when the processor receives a fault
@@ -294,12 +294,6 @@ NMI_Handler
 ; for examination by a debugger.
 ;
 ;******************************************************************************
-HardFault_Handler\
-                PROC
-                EXPORT  HardFault_Handler         [WEAK]
-                B       .
-                ENDP
-
 MemManage_Handler\
                 PROC
                 EXPORT  MemManage_Handler         [WEAK]
@@ -451,6 +445,12 @@ IntDefaultHandler\
                 EXPORT  USB0_Handler              [WEAK]
                 EXPORT  __aeabi_assert            [WEAK]
 
+                ; _ReportHardFault by default is an inf. loop.
+                ; Users can override _ReportHardFault or even 
+                ; (e.g. FaultHandler.h) to change the behavior.
+                EXPORT  _ReportHardFault          [WEAK] 
+                EXPORT  HardFault_Handler         [WEAK]
+
 GPIOPortA_Handler
 GPIOPortB_Handler
 GPIOPortC_Handler
@@ -566,6 +566,7 @@ PWM1Generator3_Handler
 PWM1Fault_Handler
 USB0_Handler
 __aeabi_assert
+_ReportHardFault
                 B       .
 
                 ENDP
@@ -635,6 +636,23 @@ EndCritical
 WaitForInterrupt
         WFI
         BX     LR
+
+;*********** HardFault_Handler ************************
+; capture the stack trace for the assembly that just hardfaulted,
+; and go to the reporter to set up an indicator LED and print debug
+; output to UART.
+; inputs: none
+; outputs: none
+; Source: https://www.freertos.org/Debugging-Hard-Faults-On-Cortex-M-Microcontrollers.html
+;         https://github.com/ferenc-nemeth/arm-hard-fault-handler
+HardFault_Handler
+        MOV    R0, #4 ; Compiler V5 does not play nice with binary
+        TST    LR, R0
+        ITE    EQ
+        MRSEQ  R0, MSP
+        MRSNE  R0, PSP
+        MOV    R1, LR
+        B      _ReportHardFault
 
 ;******************************************************************************
 ;
