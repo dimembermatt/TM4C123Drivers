@@ -18,7 +18,6 @@
 #include <lib/FaultHandler/FaultHandler.h>
 #include <lib/GPIO/GPIO.h>
 #include <lib/UART/UART.h>
-#include <lib/Timer/Timer.h>
 
 
 void DisableInterrupts(void);   // Defined in startup.s
@@ -63,9 +62,6 @@ UART_t _enableFaultState(void) {
 
     /* This delay is required to get the TM4C running. If this is not included,
        then there's a 60% chance that the UART debug output is garbage. */
-    EnableInterrupts();
-    //DelayInit();
-    //DelayMillisec(10);
     for (uint32_t i = 0; i < 100000; ++i ){ uint8_t j = 0; }
 
     return uart;
