@@ -11,7 +11,7 @@
  *                loopback mode.
  *            1 - Initialization, transmission of UART messages to a PC via COM.
  */
-#define __MAIN__ 0
+#define __MAIN__ 1
 
 /** General imports. */
 #include <stdlib.h>

@@ -163,13 +163,22 @@ void TimerStop(Timer_t timer);
 void TimerStart(Timer_t timer);
 
 /**
+ * @brief TimerGetValue returns the current register value of the timer specified. 
+ * 
+ * @param timer Timer to get value from.
+ * @return uint64_t Value of register.
+ * @note TODO: this function is incomplete and is not stable.
+ */
+uint64_t TimerGetValue(Timer_t timer);
+
+/**
  * @brief freqToPeriod converts a desired frequency into the equivalent period
  *        in cycles given the base system clock, rounded up.
- *
+ * 
  * @param freq Desired frequency.
- * @param maxFreq Base clock frequency.
- * @return Output period, in cycles.
- * @note If freq > maxFreq, the period 0 is returned (an error).
+ * @param maxFreq Base clock frequency (typically 80 MHZ - 80_000_000).
+ * @return uint32_t Period of the desired frequency, in cycles.
+ * @note If freq > maxFreq, freq is throttled to maxFreq. The output is 1.
  */
 uint32_t freqToPeriod(uint32_t freq, uint32_t maxFreq);
 
