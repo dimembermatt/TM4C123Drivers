@@ -162,7 +162,7 @@ UART_t UARTInit(UARTConfig_t config);
  * @param uart The UART module to transmit across.
  * @param values Pointer to the data array to send.
  * @param numValues The number of values in the data array to send.
- * @return Whether the transmission was successful or not.
+ * @return Whether any values were transmitted or not.
  */
 bool UARTSend(UART_t uart, uint8_t * values, uint8_t numValues);
 
@@ -172,6 +172,6 @@ bool UARTSend(UART_t uart, uint8_t * values, uint8_t numValues);
  * @param uart The UART module to receive across.
  * @param values Pointer to the data array to fill.
  * @param numValues The number of values in the data array to fill.
- * @return Whether the transmission was successful or not.
+ * @return Whether any values were received or not.
  */
 bool UARTReceive(UART_t uart, uint8_t * values, uint8_t numValues);

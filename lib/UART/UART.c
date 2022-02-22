@@ -91,7 +91,7 @@ UART_t UARTInit(UARTConfig_t config) {
         ((config.parity > UART_PARITY_DISABLED) << 1);
 
     /* 7. Enable UART TX and RX, and loopback mode, if necessary. */
-    GET_REG(moduleBase + UART_CTL_OFFSET) |= 
+    GET_REG(moduleBase + UART_CTL_OFFSET) |=
         (1 << 9) |
         (1 << 8) |
         (config.isLoopback << 7);
@@ -127,16 +127,18 @@ bool UARTSend(UART_t uart, uint8_t * values, uint8_t numValues) {
 bool UARTReceive(UART_t uart, uint8_t * values, uint8_t maxNumValues) {
     uint32_t moduleBase = 0x1000 * uart.module + UART_BASE;
 
+    if (GET_REG(moduleBase + UART_FR_OFFSET) & 0x10) return false;
+
     uint8_t i = 0;
-	while (i < maxNumValues) {
+    while (i < maxNumValues) {
         /* 1. Check for UART ready (if Receive FIFO is empty, early exit). */
-		if (GET_REG(moduleBase + UART_FR_OFFSET) & 0x10) break;
+        if (GET_REG(moduleBase + UART_FR_OFFSET) & 0x10) return true;
 
         /* 2. Retrieve from DR. */
         values[i] = GET_REG(moduleBase + UART_DR_OFFSET);
-		
-		++i;
-	}
-	
+
+        ++i;
+    }
+
     return true;
 }
