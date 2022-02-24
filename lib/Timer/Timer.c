@@ -305,10 +305,12 @@ uint32_t freqToPeriod(uint32_t freq, uint32_t maxFreq) {
 
 /** Handler implementations for wide timers. */
 void Timer0A_Handler(void) {
+    DisableInterrupts();
     GET_REG(GPTM_BASE + GPTMICR_OFFSET) |= TIMERXA_ICR_TATOCINT;
     if (TimerInterruptSettings[0].timerTask != NULL) {
         TimerInterruptSettings[0].timerTask(TimerInterruptSettings[0].timerArgs);
     }
+    EnableInterrupts();
 }
 void Timer0B_Handler(void) {
     GET_REG(GPTM_BASE + GPTMICR_OFFSET) |= TIMERXB_ICR_TATOCINT;
@@ -352,12 +354,12 @@ void Timer3B_Handler(void) {
         TimerInterruptSettings[7].timerTask(TimerInterruptSettings[7].timerArgs);
     }
 }
-void Timer4A_Handler(void) {
-    GET_REG(GPTM_BASE + 0x4000 + GPTMICR_OFFSET) |= TIMERXA_ICR_TATOCINT;
-    if (TimerInterruptSettings[8].timerTask != NULL) {
-        TimerInterruptSettings[8].timerTask(TimerInterruptSettings[8].timerArgs);
-    }
-}
+//void Timer4A_Handler(void) {
+//    GET_REG(GPTM_BASE + 0x4000 + GPTMICR_OFFSET) |= TIMERXA_ICR_TATOCINT;
+//    if (TimerInterruptSettings[8].timerTask != NULL) {
+//        TimerInterruptSettings[8].timerTask(TimerInterruptSettings[8].timerArgs);
+//    }
+//}
 void Timer4B_Handler(void) {
     GET_REG(GPTM_BASE + 0x4000 + GPTMICR_OFFSET) |= TIMERXB_ICR_TATOCINT;
     if (TimerInterruptSettings[9].timerTask != NULL) {

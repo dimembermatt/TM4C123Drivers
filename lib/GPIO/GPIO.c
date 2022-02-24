@@ -390,7 +390,11 @@ void GPIOPortD_Handler(void) { GPIOGeneric_Handler(PIN_D0); }
 
 void GPIOPortE_Handler(void) { GPIOGeneric_Handler(PIN_E0); }
 
-void GPIOPortF_Handler(void) { GPIOGeneric_Handler(PIN_F0); }
+void GPIOPortF_Handler(void) { 
+    DisableInterrupts();
+    GPIOGeneric_Handler(PIN_F0);
+    EnableInterrupts();
+}
 
 #ifdef __FAST__
 void GPIOSetBit(GPIOPin_t pin, bool val) {
