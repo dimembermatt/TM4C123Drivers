@@ -61,7 +61,8 @@ int main(void) {
         .priority=6,
         .timerArgs=NULL
     };
-    TimerInit(heartbeatTimerConfig);
+    Timer_t timer = TimerInit(heartbeatTimerConfig);
+    TimerStart(timer);
 
     EnableInterrupts();
     

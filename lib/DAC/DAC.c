@@ -34,7 +34,6 @@ static struct DACMap {
 };
 
 DAC_t DACInit(DACConfig_t config) {
-
     /** For each specified pin. */
     uint8_t i;
     for (i = 0; i < config.numPins; ++i) {

@@ -3,10 +3,10 @@
  * @author Matthew Yu (matthewjkyu@gmail.com)
  * @brief An example project showing how to use the ADC driver.
  * @version 0.1
- * @date 2021-09-23
+ * @date 2022-02-27
  * @copyright Copyright (c) 2021
  * @note
- * Modify __MAIN__ on L12 to determine which main method is executed.
+ * Modify __MAIN__ on L13 to determine which main method is executed.
  * __MAIN__ = 0 - Initialization and software sampling of a default ADC and pin.
  *          = 1 - Initialization software sampling of multiple pins on a single ADC.
  */
@@ -44,13 +44,20 @@ int main(void) {
     ADCConfig_t adcConfig = {};
     ADC_t adc = ADCInit(adcConfig);
 
-    volatile uint32_t adcOutput = 0;
+    volatile uint16_t adcOutput = 0;
+    volatile float adcOutputVoltage = 0;
 
     EnableInterrupts();
     while (1) {
         /* Every 300ms, sample from PE3. */
         DelayMillisec(300);
         adcOutput = ADCSampleSingle(adc);
+        adcOutputVoltage = 3.3 * adcOutput / 4096 * 1000;
+        /* Put a breakpoint at L53 and a watch for adcOutput. Tie this to 3.3V,
+           or 0V, and so on. Do the values make sense? We can convert our reading
+           into a voltage using the following formula:
+               measured voltage (mV) = adcOutput / 4096 * 3.3 * 1000;
+         */
     };
 }
 #elif __MAIN__ == 1

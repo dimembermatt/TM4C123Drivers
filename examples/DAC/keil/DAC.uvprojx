@@ -413,6 +413,16 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\lib\PLL\PLL.c</FilePath>
             </File>
+            <File>
+              <FileName>UART.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\lib\UART\UART.c</FilePath>
+            </File>
+            <File>
+              <FileName>FaultHandler.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\lib\FaultHandler\FaultHandler.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

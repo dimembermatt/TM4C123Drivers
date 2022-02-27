@@ -3,7 +3,7 @@
  * @author Matthew Yu (matthewjkyu@gmail.com)
  * @brief An example project showing how to use the Timer driver.
  * @version 0.1
- * @date 2021-10-27
+ * @date 2022-02-27
  * @copyright Copyright (c) 2021
  * @note 
  * Modify __MAIN__ on L13 to determine which main method is executed.
@@ -29,7 +29,7 @@ void WaitForInterrupt(void);    // Defined in startup.s
 volatile uint32_t counter0A = 0;
 volatile uint32_t counter0B = 0;
 volatile uint32_t counter1A = 0;
-volatile uint32_t counter2A = 0;
+volatile uint32_t counterW0A = 0;
 
 Timer_t timers[4];
 
@@ -40,19 +40,22 @@ void dummyTask2(uint32_t * args) { ++counter0B; }
 void dummyTask3(uint32_t * args) { ++counter1A; }
 
 void dummyTask4(uint32_t * args) {
-    ++counter2A;
+    ++counterW0A;
 
-    if (counter2A == 200) {
-        /* 1. Place a breakpoint at L47! Notice that at counter2A = 200,
-              counter1A ~= 100, counter0B ~= 50, and counter0A ~= 25.
+    if (counterW0A == 200) {
+        /* 1. Place a breakpoint at L51! Notice that at counterW0A = 200,
+              counter1A = 100, counter0B = 50, and counter0A = 25.
               What does this imply about the frequency of TIMER_0A and
               TIMER_0B? The prescale value modifies the effective frequency
               to frequency / (prescale + 1). */
         timers[3].period = freqToPeriod(100, MAX_FREQ);
         TimerUpdatePeriod(timers[3]); 
     }
-    if (counter2A == 205) {
-        /* 2. Place a breakpoint at L52! Notice here that when counter2A = 205, counter1A ~= 120, counter0B ~= 60, and counter0A ~= 30. */
+    if (counterW0A == 205) {
+        /* 2. Place a breakpoint at L59! Notice here that when counterW0A = 205,
+              counter1A ~= 120, counter0B ~= 60, and counter0A = 30. Why is
+              counter0B and counter1A not exactly 120 and 60? They are not
+              highest priority! */ 
         uint8_t i = 0;
     }
 }
@@ -67,25 +70,25 @@ int main(void) {
 
     TimerConfig_t timerConfigs[4] = {
         /* The first timer has keyed arguments notated to show you what each positional argument means. */
-        {.timerID=TIMER_0A, .period=freqToPeriod(1600, MAX_FREQ), .isIndividual=true,  .prescale=15, .timerTask=dummyTask1, .isPeriodic=true, .priority=5, .timerArgs=NULL},
-        {         TIMER_0B,         freqToPeriod(1600, MAX_FREQ),               true,             7,            dummyTask2,             true,           5,            NULL},
-        {         TIMER_1A,         freqToPeriod(400, MAX_FREQ),                false,            0,            dummyTask3,             true,           5,            NULL},
-        {         WTIMER_0A,        freqToPeriod(800, MAX_FREQ),                false,            0,            dummyTask4,             true,           5,            NULL},
+        {.timerID=TIMER_0A, .period=freqToPeriod(1600, MAX_FREQ), .isIndividual=true,  .prescale=15, .timerTask=dummyTask1, .isPeriodic=true, .priority=0, .timerArgs=NULL},
+        {         TIMER_0B,         freqToPeriod(1600, MAX_FREQ),               true,             7,            dummyTask2,             true,           1,            NULL},
+        {         TIMER_1A,         freqToPeriod(400, MAX_FREQ),                false,            0,            dummyTask3,             true,           2,            NULL},
+        {         WTIMER_0A,        freqToPeriod(800, MAX_FREQ),                false,            0,            dummyTask4,             true,           3,            NULL},
     };
 
-    /* Initialize four timers based on the timer configuration array above. */
-    timers[0] = TimerInit(timerConfigs[0]);
-    timers[1] = TimerInit(timerConfigs[1]);
-    timers[2] = TimerInit(timerConfigs[2]);
-    timers[3] = TimerInit(timerConfigs[3]);
+    /* Initialize and start four timers based on the timer configuration array above. */
+    for (uint8_t i = 0; i < 4; ++i) {
+        timers[i] = TimerInit(timerConfigs[i]);
+        TimerStart(timers[i]);
+    }
 
     EnableInterrupts();
     while (1) {
         /* View in debugging mode with counter0A, counter0B, counter1A, and
-           counter2A added to watch 1. Put a breakpoint at L47 and L52. Run 
+           counterW0A added to watch 1. Put a breakpoint at L51 and L59. Run 
            until the first breakpoint is hit, and check the register value
-           ratios. Check to see if your watch values match the expected values at L46 and L51!
-         */
+           ratios. Check to see if your watch values match the expected values
+           at L51 and L59! */
         WaitForInterrupt();
     };
 }
@@ -147,8 +150,10 @@ int main(void) {
         .timerTask=dummyTask,
         .isPeriodic=true, 
         .priority=5, 
-        .timerArgs=NULL};
-    TimerInit(timerConfig);
+        .timerArgs=NULL
+    };
+    timer = TimerInit(timerConfig);
+    TimerStart(timer);
 
     EnableInterrupts();
     while (1) { WaitForInterrupt(); }
