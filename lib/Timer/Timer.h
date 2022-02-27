@@ -130,22 +130,21 @@ typedef struct Timer {
 } Timer_t;
 
 /**
- * @brief TimerInit initializes a Timer module given a configuration.
+ * @brief TimerInit initializes a Timer module given a configuration. Does not
+ *        start execution. Call TimerStart(timer) to begin execution. 
  *
  * @param config Configuration for the timer.
  * @return A Timer_t struct containing relevant data.
  * @note Use freqToPeriod() for frequency conversion.
- * @note Requires the EnableInterrupts() call since the interrupts are
- *       enabled.
  */
 Timer_t TimerInit(TimerConfig_t config);
 
 /**
- * @brief TimerUpdatePeriod adjusts the timer period.
+ * @brief TimerStart Starts execution of the timer specified.
  *
  * @param timer A timer configuration to adjust.
  */
-void TimerUpdatePeriod(Timer_t timer);
+void TimerStart(Timer_t timer);
 
 /**
  * @brief TimerStop halts execution of the timer specified.
@@ -155,19 +154,33 @@ void TimerUpdatePeriod(Timer_t timer);
 void TimerStop(Timer_t timer);
 
 /**
- * @brief TimerStart Starts execution of the timer specified. This is only
- *        needed when the Timer has stopped prior for any reason.
+ * @brief TimerUpdatePeriod adjusts the timer period.
  *
  * @param timer A timer configuration to adjust.
  */
-void TimerStart(Timer_t timer);
+void TimerUpdatePeriod(Timer_t timer);
 
 /**
  * @brief TimerGetValue returns the current register value of the timer specified. 
  * 
  * @param timer Timer to get value from.
- * @return uint64_t Value of register.
- * @note TODO: this function is incomplete and is not stable.
+ * @return uint64_t Value of register dependent on configuration.
+ * @note
+ *     Normal timers, 16 bit mode:
+ *         - [63:56] Doesn't matter
+ *         - [55:48] Prescaler B
+ *         - [47:32] B side timer values
+ *         - [31:24] Doesn't matter
+ *         - [23:16] Prescaler A
+ *         - [15:00] A side timer values
+ *     Normal timers, 32 bit mode:
+ *         - [63:32] B side timer values
+ *         - [31:00] A side timer values
+ *     Wide timers, 32 bit mode:
+ *         - [63:32] B side timer values
+ *         - [31:00] A side timer values
+ *     Wide timers, 64 bit mode:
+ *         - [63:00] A/B side timer value.
  */
 uint64_t TimerGetValue(Timer_t timer);
 

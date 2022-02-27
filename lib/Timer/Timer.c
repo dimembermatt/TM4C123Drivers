@@ -110,8 +110,6 @@ Timer_t TimerInit(TimerConfig_t config) {
         GET_REG(PERIPHERALS_BASE + SYS_PRI3_OFFSET) &= 0x00FFFFFF;
         GET_REG(PERIPHERALS_BASE + SYS_PRI3_OFFSET) |= config.priority << 29;
 
-        /* Re-enable after setup. */
-        GET_REG(PERIPHERALS_BASE + SYSTICK_CTRL_OFFSET) = 0x00000007;
         return timer;
     }
 
@@ -183,11 +181,61 @@ Timer_t TimerInit(TimerConfig_t config) {
     /* 10. Enable IRQ X in NVIC. */
     (*TimerInterruptSettings[ID].NVIC_EN_ADDR) = 1 << TimerInterruptSettings[ID].IRQ;
 
-    /* 11. Enable timer after setup. */
+    return timer;
+}
+
+void TimerStart(Timer_t timer) {
+    /* Initialization asserts. */
+    assert(timer.timerID < TIMER_COUNT);
+
+    uint8_t ID = timer.timerID;
+
+    /* Special case for SYSTICK. */
+    if (ID == SYSTICK) {
+        /* Disable during setup. */
+        GET_REG(PERIPHERALS_BASE + SYSTICK_CTRL_OFFSET) = 0x00000007;
+        return;
+    }
+
+    /* 1. We'll generate the timer offset to find the correct addresses for each
+       timer. */
+    uint32_t timerOffset = 0;
+    /* Timers TIMER_0A to WTIMER_1B. */
+    if (ID < WTIMER_2A) timerOffset = 0x1000 * (uint32_t)(ID >> 1);
+    /* Timers WTIMER_2A to WTIMER_5B. Jump the base to 0x4004.C000. Our magic
+       number, 16, is the enumerated value of WTIMER_2A. */
+    else timerOffset = 0x1000 * (uint32_t)((ID-16) >> 1) + 0x0001C000;
+
+    /* 2. Enable timer during setup. */
     GET_REG(GPTM_BASE + timerOffset + GPTMCTL_OFFSET) |=
         ((ID % 2) == 0) ? 0x00000001 : 0x00000100;
+}
 
-    return timer;
+void TimerStop(Timer_t timer) {
+    /* Initialization asserts. */
+    assert(timer.timerID < TIMER_COUNT);
+
+    uint8_t ID = timer.timerID;
+
+    /* Special case for SYSTICK. */
+    if (ID == SYSTICK) {
+        /* Disable during setup. */
+        GET_REG(PERIPHERALS_BASE + SYSTICK_CTRL_OFFSET) = 0x00000000;
+        return;
+    }
+
+    /* 1. We'll generate the timer offset to find the correct addresses for each
+       timer. */
+    uint32_t timerOffset = 0;
+    /* Timers TIMER_0A to WTIMER_1B. */
+    if (ID < WTIMER_2A) timerOffset = 0x1000 * (uint32_t)(ID >> 1);
+    /* Timers WTIMER_2A to WTIMER_5B. Jump the base to 0x4004.C000. Our magic
+       number, 16, is the enumerated value of WTIMER_2A. */
+    else timerOffset = 0x1000 * (uint32_t)((ID-16) >> 1) + 0x0001C000;
+
+    /* 2. Disable timer during setup. */
+    GET_REG(GPTM_BASE + timerOffset + GPTMCTL_OFFSET) &=
+        ((ID % 2) == 0) ? 0xFFFFFF00 : 0xFFFFFF00FF;
 }
 
 void TimerUpdatePeriod(Timer_t timer) {
@@ -222,62 +270,14 @@ void TimerUpdatePeriod(Timer_t timer) {
         ((ID % 2) == 0) ? 0x00000001 : 0x00000100;
 }
 
-void TimerStop(Timer_t timer) {
-    /* Initialization asserts. */
-    assert(timer.timerID < TIMER_COUNT);
-
-    uint8_t ID = timer.timerID;
-
-    /* Special case for SYSTICK. */
-    if (ID == SYSTICK) {
-        /* Disable during setup. */
-        GET_REG(PERIPHERALS_BASE + SYSTICK_CTRL_OFFSET) = 0x00000000;
-        return;
-    }
-
-    /* 1. We'll generate the timer offset to find the correct addresses for each
-       timer. */
-    uint32_t timerOffset = 0;
-    /* Timers TIMER_0A to WTIMER_1B. */
-    if (ID < WTIMER_2A) timerOffset = 0x1000 * (uint32_t)(ID >> 1);
-    /* Timers WTIMER_2A to WTIMER_5B. Jump the base to 0x4004.C000. Our magic
-       number, 16, is the enumerated value of WTIMER_2A. */
-    else timerOffset = 0x1000 * (uint32_t)((ID-16) >> 1) + 0x0001C000;
-
-    /* 2. Disable timer during setup. */
-    GET_REG(GPTM_BASE + timerOffset + GPTMCTL_OFFSET) &=
-        ((ID % 2) == 0) ? 0xFFFFFF00 : 0xFFFFFF00FF;
-}
-
-void TimerStart(Timer_t timer) {
-    /* Initialization asserts. */
-    assert(timer.timerID < TIMER_COUNT);
-
-    uint8_t ID = timer.timerID;
-
-    /* 1. We'll generate the timer offset to find the correct addresses for each
-       timer. */
-    uint32_t timerOffset = 0;
-    /* Timers TIMER_0A to WTIMER_1B. */
-    if (ID < WTIMER_2A) timerOffset = 0x1000 * (uint32_t)(ID >> 1);
-    /* Timers WTIMER_2A to WTIMER_5B. Jump the base to 0x4004.C000. Our magic
-       number, 16, is the enumerated value of WTIMER_2A. */
-    else timerOffset = 0x1000 * (uint32_t)((ID-16) >> 1) + 0x0001C000;
-
-    /* 2. Enable timer during setup. */
-    GET_REG(GPTM_BASE + timerOffset + GPTMCTL_OFFSET) |=
-        ((ID % 2) == 0) ? 0x00000001 : 0x00000100;
-}
-
 uint64_t TimerGetValue(Timer_t timer) {
     /* Initialization asserts. */
     assert(timer.timerID < TIMER_COUNT);
 
     /* Special case for SYSTICK. */
     if (timer.timerID == SYSTICK) {
-        /* Set reload value. */
-        GET_REG(PERIPHERALS_BASE + SYSTICK_LOAD_OFFSET) = timer.period - 1;
-        return 0;
+        /* Get current value. */
+        return GET_REG(PERIPHERALS_BASE + SYSTICK_CURR_OFFSET) & 0x00FFFFFF;
     }
 
     uint8_t ID = timer.timerID;
@@ -289,12 +289,24 @@ uint64_t TimerGetValue(Timer_t timer) {
        number, 16, is the enumerated value of WTIMER_2A. */
     else timerOffset = 0x1000 * (uint32_t)((ID-16) >> 1) + 0x0001C000;
 
-    /* For normal timers, in 32 bit mode, [63:, 15:0] ...
-       For wide timers, In 64 bit mode, returns 64 bits of the timer. In 32 bit
-       mode, [63:32 contains B-side timer, 31:0 contains A-side
-       timer]. */ 
-    return (uint64_t)GET_REG(GPTM_BASE + timerOffset + GPTMTAV_OFFSET) | 
-        ((uint64_t)GET_REG(GPTM_BASE + timerOffset + GPTMTBV_OFFSET) << 32);
+    /* Normal timers, 16 bit mode:
+           - [63:56] Doesn't matter
+           - [55:48] Prescaler B
+           - [47:32] B side timer values
+           - [31:24] Doesn't matter
+           - [23:16] Prescaler A
+           - [15:00] A side timer values
+       Normal timers, 32 bit mode:
+           - [63:32] B side timer values
+           - [31:00] A side timer values
+       Wide timers, 32 bit mode:
+           - [63:32] B side timer values
+           - [31:00] A side timer values
+       Wide timers, 64 bit mode:
+           - [63:00] A/B side timer value. */ 
+    uint32_t lower = GET_REG(GPTM_BASE + timerOffset + GPTMTAV_OFFSET);
+    uint32_t upper = GET_REG(GPTM_BASE + timerOffset + GPTMTBV_OFFSET);
+    return (((uint64_t)upper << 32) | (uint64_t)lower);
 }
 
 uint32_t freqToPeriod(uint32_t freq, uint32_t maxFreq) {
@@ -477,7 +489,9 @@ Timer_t DelayInit(void) {
         .priority=1,
         .timerArgs=NULL
     };
-    return TimerInit(config);
+    Timer_t timer = TimerInit(config);
+    TimerStart(timer);
+    return timer;
 }
 
 void DelayMillisec(uint32_t n) {
