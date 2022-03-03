@@ -263,11 +263,13 @@ Reset_Handler
         ; Note that this does not use DriverLib since it might not be included
         ; in this project.
         ;
-        MOVW    R0, #0xED88
-        MOVT    R0, #0xE000
-        LDR     R1, [R0]
-        ORR     R1, #0x00F00000
-        STR     R1, [R0]
+
+; @note Comment this in if you are using FP.
+;        MOVW    R0, #0xED88
+;        MOVT    R0, #0xE000
+;        LDR     R1, [R0]
+;        ORR     R1, #0x00F00000
+;        STR     R1, [R0]
 
         ;
         ; Call the C library enty point that handles startup.  This will copy
