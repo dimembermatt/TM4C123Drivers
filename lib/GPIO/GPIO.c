@@ -10,7 +10,7 @@
  * (2) in your project for compiling with GPIOSetBit(Fast) and GPIOGetBit(Fast).
  *      (1) `-D__FAST__`
  *      (2) `#define __FAST__ 1`
- * This is high recommended for programs using interrupts that call these
+ * This is highly recommended for programs using interrupts that call these
  * functions to edit GPIO bits, or for high frequency operation programs. There
  * is a tradeoff of on the order of 100x speedup vs 1KB more lines of DATA.
  *
