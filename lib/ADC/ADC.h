@@ -35,6 +35,7 @@ enum ADCPin {
     AIN9, // PE4
     AIN10,// PB4
     AIN11 // PB5
+    AIN_COUNT
 };
 
 /** @brief ADCModule is an enumeration specifying of the two ADC modules. */
