@@ -141,7 +141,7 @@ bool I2CRx1(I2C_t i2c, uint8_t slaveAddress, uint8_t * byte) {
     GET_REG(moduleBase + I2C_MSA_OFFSET) = ((slaveAddress << 1) & 0xFE) | 0x1;
     
     /* 3. Generate stop, start, run bits. */
-    GET_REG(moduleBase + I2C_MCS_OFFSET) = 0x7;
+    GET_REG(moduleBase + I2C_MCS_OFFSET) = 0b0111;
 
     /* 4. Wait for I2C ready. */
     while (GET_REG(moduleBase + I2C_MCS_OFFSET) & 0x1) {}
