@@ -109,7 +109,7 @@ UART_t UARTInit(UARTConfig_t config) {
     return uart;
 }
 
-bool UARTSend(UART_t uart, uint8_t * values, uint8_t numValues) {
+uint8_t UARTSend(UART_t uart, uint8_t * values, uint8_t numValues) {
     uint32_t moduleBase = 0x1000 * uart.module + UART_BASE;
 
     uint8_t i;
@@ -121,10 +121,10 @@ bool UARTSend(UART_t uart, uint8_t * values, uint8_t numValues) {
         GET_REG(moduleBase + UART_DR_OFFSET) = values[i];
     }
 
-    return true;
+    return i;
 }
 
-bool UARTReceive(UART_t uart, uint8_t * values, uint8_t maxNumValues) {
+uint8_t UARTReceive(UART_t uart, uint8_t * values, uint8_t maxNumValues) {
     uint32_t moduleBase = 0x1000 * uart.module + UART_BASE;
 
     if (GET_REG(moduleBase + UART_FR_OFFSET) & 0x10) return false;
@@ -132,13 +132,12 @@ bool UARTReceive(UART_t uart, uint8_t * values, uint8_t maxNumValues) {
     uint8_t i = 0;
     while (i < maxNumValues) {
         /* 1. Check for UART ready (if Receive FIFO is empty, early exit). */
-        if (GET_REG(moduleBase + UART_FR_OFFSET) & 0x10) return true;
+        if (GET_REG(moduleBase + UART_FR_OFFSET) & 0x10) break;
 
         /* 2. Retrieve from DR. */
         values[i] = GET_REG(moduleBase + UART_DR_OFFSET);
 
         ++i;
     }
-
-    return true;
+    return i;
 }

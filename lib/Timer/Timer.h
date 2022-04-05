@@ -54,6 +54,8 @@ typedef struct TimerConfig {
      * @note Values greater than 0xFFFF or 0xFFFFFFFF are truncated for 16 bit
      *       timers and 32 bit timers, respectively. This period is extended by
      *       the prescale value, which is optional.
+     * @note For Systick, the maximum period is 0xFFFFFF. At 80 MHz, this works
+     *       out to be around 0.2097151875s or 4.768 Hz.
      */
     uint64_t period;
 
@@ -154,7 +156,8 @@ void TimerStart(Timer_t timer);
 void TimerStop(Timer_t timer);
 
 /**
- * @brief TimerUpdatePeriod adjusts the timer period.
+ * @brief TimerUpdatePeriod adjusts the timer period. Does not affect whether
+ *        the timer is running or stopped.
  *
  * @param timer A timer configuration to adjust.
  */

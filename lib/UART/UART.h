@@ -162,9 +162,9 @@ UART_t UARTInit(UARTConfig_t config);
  * @param uart The UART module to transmit across.
  * @param values Pointer to the data array to send.
  * @param numValues The number of values in the data array to send.
- * @return Whether any values were transmitted or not.
+ * @return The number of values transmitted successfully.
  */
-bool UARTSend(UART_t uart, uint8_t * values, uint8_t numValues);
+uint8_t UARTSend(UART_t uart, uint8_t * values, uint8_t numValues);
 
 /**
  * @brief UARTReceive receives a variable number of values from the receive FIFO.
@@ -172,6 +172,6 @@ bool UARTSend(UART_t uart, uint8_t * values, uint8_t numValues);
  * @param uart The UART module to receive across.
  * @param values Pointer to the data array to fill.
  * @param numValues The number of values in the data array to fill.
- * @return Whether any values were received or not.
+ * @return The number of values received.
  */
-bool UARTReceive(UART_t uart, uint8_t * values, uint8_t numValues);
+uint8_t UARTReceive(UART_t uart, uint8_t * values, uint8_t numValues);
