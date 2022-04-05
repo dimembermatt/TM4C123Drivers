@@ -255,7 +255,7 @@ GPIOPin_t GPIOIntInit(GPIOConfig_t config, GPIOInterruptConfig_t intConfig) {
     if (intConfig.touchTask || intConfig.releaseTask) {
         /* 4. Set pin as edge sensitive. */
         GET_REG(GPIO_PORT_BASE + portOffset + GPIO_IS_OFFSET) &= ~pinAddress;
-        if (!intConfig.touchTask && !intConfig.releaseTask) {
+        if (intConfig.touchTask && intConfig.releaseTask) {
             /* 5. Set pin to interrupt on both edges. */
             GET_REG(GPIO_PORT_BASE + portOffset + GPIO_IBE_OFFSET) |= pinAddress;
         } else {
@@ -353,7 +353,7 @@ static void GPIOGeneric_Handler(GPIOPin_t pin) {
             /* Get pin number. */
             GPIOPin_t pinIdx = (GPIOPin_t)(pin + i);
 
-            if (!GPIOInterruptSettings[pinIdx].touchTask && !GPIOInterruptSettings[pinIdx].releaseTask) {
+            if (GPIOInterruptSettings[pinIdx].touchTask && GPIOInterruptSettings[pinIdx].releaseTask) {
                 /* Both edge triggered. */
                 /* Get pin status. */
                 bool status = GPIOGetBit(pinIdx);
@@ -367,7 +367,7 @@ static void GPIOGeneric_Handler(GPIOPin_t pin) {
                     GPIOInterruptSettings[pinIdx].releaseTask(GPIOInterruptSettings[pinIdx].releaseArgs);
                     GPIOInterruptSettings[pinIdx].pinStatus = LOWERED;
                 }
-            } else if (GPIOInterruptSettings[pinIdx].touchTask != NULL) {
+            } else if (GPIOInterruptSettings[pinIdx].touchTask) {
                 /* Rising edge trigger. */
                 GPIOInterruptSettings[pinIdx].touchTask(GPIOInterruptSettings[pinIdx].touchArgs);
                 GPIOInterruptSettings[pinIdx].pinStatus = RAISED;
