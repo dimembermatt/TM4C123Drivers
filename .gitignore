@@ -19,7 +19,6 @@
 *.pch
 
 # Libraries
-*.lib
 *.a
 *.la
 *.lo
@@ -84,7 +83,6 @@ dkms.conf
 *.elf
 *.hex
 *.h86
-*.lib
 *.obj
 *.o
 *.sbr
