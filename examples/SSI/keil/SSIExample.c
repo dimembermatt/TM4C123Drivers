@@ -75,6 +75,7 @@ int main(void) {
     
     /* Initialize a timer sending bits across SPI regularly. */
     timer = TimerInit(timerConfig);
+		TimerStart(timer);
 
     EnableInterrupts();
 
