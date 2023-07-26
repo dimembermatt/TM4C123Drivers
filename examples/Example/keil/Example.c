@@ -31,7 +31,7 @@ void WaitForInterrupt(void);    // Defined in startup.s
  * Put your global variables and function declarations and/or implementations
  * here. 
  */
-void heartbeat(uint32_t * args) { GPIOSetBit(PIN_F1, !GPIOGetBit(PIN_F1)); }
+void heartbeat(uint32_t * args) { GPIOSetBit(PIN_B4, !GPIOGetBit(PIN_B4)); }
 
 /** Your main execution loop. */
 int main(void) {
@@ -43,7 +43,7 @@ int main(void) {
 
     /* Initialize PF1 GPIO (red LED) to flash at 1 Hz. */
     GPIOConfig_t PF1Config = {
-        .pin=PIN_F1,
+        .pin=PIN_B4,
         .pull=GPIO_PULL_DOWN,
         .isOutput=true,
         .alternateFunction=0,
@@ -55,7 +55,7 @@ int main(void) {
 
     TimerConfig_t heartbeatTimerConfig = {
         .timerID=TIMER_0A,
-        .period=freqToPeriod(2, MAX_FREQ),
+        .period=freqToPeriod(1, MAX_FREQ)*2,
         .timerTask=heartbeat,
         .isPeriodic=true,
         .priority=6,
